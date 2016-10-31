@@ -4,7 +4,7 @@ import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import ru.falseteam.schedule.server.socket.Worker;
-import ru.falseteam.schedule.server.sql.Java2MySQL;
+import ru.falseteam.schedule.server.sql.SQLConnection;
 
 public class Main {
     public static VkApiClient vk;
@@ -20,7 +20,7 @@ public class Main {
         vk = new VkApiClient(transportClient);
 
         StaticSettings.init();
-        Java2MySQL.init();
+        SQLConnection.init();
         Worker.init();
         ru.falseteam.schedule.server.updater.Worker.init();
     }
@@ -28,7 +28,7 @@ public class Main {
     public static void stop() {
         ru.falseteam.schedule.server.updater.Worker.stop();
         Worker.stop();
-        Java2MySQL.stop();
+        SQLConnection.stop();
     }
 
 }
