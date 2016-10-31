@@ -19,6 +19,8 @@ public class StaticSettings {
     // Main
     private static int port;
     private static int updatePort;
+    private static String lastClientVersion;
+    private static String lastClientPath;
 
     // Database
     private static String url;
@@ -55,6 +57,8 @@ public class StaticSettings {
             properties.loadFromXML(new FileInputStream(main));
             port = Integer.parseInt(properties.getProperty("port"));
             updatePort = Integer.parseInt(properties.getProperty("update_port"));
+            lastClientVersion = properties.getProperty("lastClientVersion");
+            lastClientPath = properties.getProperty("lastClientPath");
 
             properties.loadFromXML(new FileInputStream(database));
             url = properties.getProperty("url");
@@ -89,6 +93,8 @@ public class StaticSettings {
         Properties properties = new Properties();
         properties.setProperty("port", "7101");
         properties.setProperty("update_port", "7102");
+        properties.setProperty("lastClientVersion", "0");
+        properties.setProperty("lastClientPath", "./schedule.apk");
         try {
             properties.storeToXML(new FileOutputStream(file), "");
         } catch (IOException e) {
@@ -102,6 +108,14 @@ public class StaticSettings {
 
     public static int getUpdatePort() {
         return updatePort;
+    }
+
+    public static String getLastClientVersion() {
+        return lastClientVersion;
+    }
+
+    public static String getLastClientPath() {
+        return lastClientPath;
     }
 
     public static String getUrl() {
