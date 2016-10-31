@@ -1,6 +1,7 @@
 package ru.falseteam.schedule.server.updater;
 
 import ru.falseteam.schedule.server.Console;
+import ru.falseteam.schedule.server.StaticSettings;
 
 import javax.net.ServerSocketFactory;
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class Worker implements Runnable {
             ss.close();
         } catch (IOException ignore) {
         }
-        Console.print("Port 7102 closed");
+        Console.print("Port " + StaticSettings.getUpdatePort() + " closed");
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
@@ -27,8 +28,8 @@ public class Worker implements Runnable {
     public void run() {
         try {
             ServerSocketFactory ssf = ServerSocketFactory.getDefault();
-            ss = ssf.createServerSocket(7102);
-            Console.print("Port 7102 has been binded");
+            ss = ssf.createServerSocket(StaticSettings.getUpdatePort());
+            Console.print("Port " + StaticSettings.getUpdatePort() + " has been binded");
             while (true) new Connection(ss.accept());
         } catch (IOException ignore) {
         }
