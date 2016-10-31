@@ -6,12 +6,14 @@ import com.vk.api.sdk.queries.users.UserField;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
-import ru.falseteam.schedule.server.sql.Java2MySQL;
+import ru.falseteam.schedule.server.sql.UserInfo;
 
 import java.util.List;
 import java.util.Map;
 
 import static ru.falseteam.schedule.server.Main.vk;
+import static ru.falseteam.schedule.server.sql.Java2MySQL.addUser;
+import static ru.falseteam.schedule.server.sql.Java2MySQL.getUserInfo;
 
 public class Auth extends CommandAbstract {
     public Auth() {
@@ -26,26 +28,26 @@ public class Auth extends CommandAbstract {
             UserActor actor = new UserActor(0, token);
             List<UserXtrCounters> users = vk.users().get(actor).fields(UserField.PHOTO_50).execute();
             if (users.isEmpty()) throw new Exception("response is empty");
-            UserXtrCounters user = users.get(0);
-            int id = user.getId();
-            String name = user.getLastName() + " " + user.getFirstName();
-            if (Java2MySQL.existsUser(id)) {
-                permissions = Java2MySQL.getPermissions(id);
-                try {
-                    Connection.Groups.valueOf(permissions);
-                } catch (Exception e) {
-                    Console.err("Permissions '" + permissions + "' not found");
-                    e.printStackTrace();
-                    permissions = Connection.Groups.guest.name();
+            UserXtrCounters vk_user = users.get(0);
+
+            UserInfo user = getUserInfo(vk_user.getId());
+            if (user == null) throw new Exception("user info is null");
+            if (user.isExists()) {
+                permissions = user.getGroup().name();
+            } else {
+                user.setName(vk_user.getLastName() + " " + vk_user.getFirstName());
+                user.setVk_token(token);
+                user.setGroup(Connection.Groups.unconfirmed);
+                if (!addUser(user)) {
+                    Console.err("Can't add user with vk_id " + user.getVk_id());
                 }
-            } else if (!Java2MySQL.addUser(id, name, Connection.Groups.unconfirmed.name(), token))
-                System.out.println("not add user with id " + id);
+            }
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
         map.clear();
         map.put("command", "auth");
-        map.put("version", "0.1b");
+        map.put("version", "1.1a");
         map.put("group", permissions);
         connection.send(map);
     }
