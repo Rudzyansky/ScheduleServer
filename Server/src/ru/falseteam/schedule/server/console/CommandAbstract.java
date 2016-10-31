@@ -1,7 +1,14 @@
 package ru.falseteam.schedule.server.console;
 
-/**
- * Created by Vlad on 31.10.2016.
- */
-public class CommandAbstract {
+abstract class CommandAbstract implements CommandInterface {
+    private final String name;
+
+    public CommandAbstract(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public final String getName() {
+        return name;
+    }
 }
