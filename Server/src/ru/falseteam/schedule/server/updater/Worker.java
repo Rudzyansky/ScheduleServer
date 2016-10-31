@@ -17,7 +17,7 @@ public class Worker implements Runnable {
     public static void stop() {
         try {
             ss.close();
-        } catch (IOException ignore) {
+        } catch (Exception ignore) {
         }
         Console.print("Port 7102 closed");
     }
