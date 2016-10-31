@@ -13,6 +13,45 @@ import java.util.Map;
 
 public class Connection implements Runnable {
 
+    public class Info {
+        private String name;
+        private String vk_id;
+        private String vk_token;
+        private Groups group;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getVk_id() {
+            return vk_id;
+        }
+
+        public void setVk_id(String vk_id) {
+            this.vk_id = vk_id;
+        }
+
+        public String getVk_token() {
+            return vk_token;
+        }
+
+        public void setVk_token(String vk_token) {
+            this.vk_token = vk_token;
+        }
+
+        public Groups getGroup() {
+            return group;
+        }
+
+        public void setGroup(Groups group) {
+            this.group = group;
+        }
+    }
+
     private Socket socket;
     private ObjectOutputStream out;
 
