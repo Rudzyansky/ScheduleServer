@@ -1,7 +1,7 @@
 package ru.falseteam.schedule.server.console;
 
 import ru.falseteam.schedule.server.Console;
-import ru.falseteam.schedule.server.Main;
+import ru.falseteam.schedule.server.console.commands.Stop;
 
 import java.io.IOException;
 import java.util.*;
@@ -14,7 +14,7 @@ public class ConsoleWorker implements Runnable {
     private static Map<String, CommandInterface> commands = new HashMap<>();
 
     static {
-        addNewCommand(new _Stop());
+        addNewCommand(new Stop());
     }
 
     private static void addNewCommand(CommandInterface command) {
