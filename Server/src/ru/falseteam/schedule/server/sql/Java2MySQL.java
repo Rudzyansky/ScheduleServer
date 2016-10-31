@@ -2,22 +2,23 @@ package ru.falseteam.schedule.server.sql;
 
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.Main;
+import ru.falseteam.schedule.server.StaticSettings;
 import ru.falseteam.schedule.server.socket.Connection.Groups;
-
 import java.sql.*;
 import java.sql.Connection;
 
 public class Java2MySQL {
-    private static final String url = "jdbc:mysql://localhost:3306/schedule";
-    private static final String user = "scheduleServer";
-    private static final String pass = "Et11ZGz9LPwmwpf0";
+    //private static final String url = "jdbc:mysql://localhost:3306/schedule";
+    //private static final String user = "scheduleServer";
+    //private static final String pass = "Et11ZGz9LPwmwpf0";
 
     private static Connection connection;
     private static Statement statement;
 
     public static void init() {
         try {
-            connection = DriverManager.getConnection(url, user, pass);
+            connection = DriverManager
+                    .getConnection(StaticSettings.getUrl(), StaticSettings.getUser(), StaticSettings.getPassword());
             statement = connection.createStatement();
         } catch (Exception e) {
             Console.err(e.getMessage());

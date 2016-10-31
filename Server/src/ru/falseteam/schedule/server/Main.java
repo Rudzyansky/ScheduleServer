@@ -15,8 +15,11 @@ public class Main {
 
     private static void start() {
         Console.print("Server has been started");
+
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
+
+        StaticSettings.init();
         Java2MySQL.init();
         Worker.init();
         ru.falseteam.schedule.server.updater.Worker.init();
