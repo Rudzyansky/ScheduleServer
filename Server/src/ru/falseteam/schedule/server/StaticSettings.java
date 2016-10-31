@@ -25,11 +25,6 @@ public class StaticSettings {
     private static String user;
     private static String password;
 
-
-    public static void main(String[] args) {
-        init();
-    }
-
     static void init() {
         Console.print("Loading settings from config files");
         final String separator = File.separator;
@@ -65,6 +60,10 @@ public class StaticSettings {
             url = properties.getProperty("url");
             user = properties.getProperty("user");
             password = properties.getProperty("password");
+
+            if (user.equals("user") && password.equals("password"))
+                Console.err("WARNING uses default database config, please edit "
+                        + CONFIG_FOLDER + File.separator + CONFIG_DATABASE + " file.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,8 +82,6 @@ public class StaticSettings {
         } catch (IOException e) {
             Console.err("Can not open file stream from " + file.getPath());
         }
-        Console.err("WARNING create default database config, please edit "
-                + CONFIG_FOLDER + File.separator + CONFIG_DATABASE + " file.");
     }
 
     private static void createMainConfigFile(File file) {
