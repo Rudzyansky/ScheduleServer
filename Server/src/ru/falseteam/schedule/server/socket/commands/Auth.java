@@ -7,6 +7,7 @@ import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.UserInfo;
+import ru.falseteam.schedule.server.sql.UserInfo.User;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,6 @@ import java.util.Map;
 import static ru.falseteam.schedule.server.Main.vk;
 import static ru.falseteam.schedule.server.StaticSettings.getLastClientVersion;
 import static ru.falseteam.schedule.server.socket.Connection.Groups.*;
-import static ru.falseteam.schedule.server.sql.Java2MySQL.*;
 
 public class Auth extends CommandAbstract {
     public Auth() {
@@ -31,20 +31,20 @@ public class Auth extends CommandAbstract {
             if (users.isEmpty()) throw new Exception("response is empty");
             UserXtrCounters vk_user = users.get(0);
 
-            UserInfo user = getUserInfo(vk_user.getId());
+            User user = UserInfo.getUser(vk_user.getId());
             if (user == null) throw new Exception("user info is null");
             if (user.isExists()) {
-                if (!user.getVk_token().equals(token)) {
-                    user.setVk_token(token);
-                    updateToken(user);
+                if (!user.getVkToken().equals(token)) {
+                    user.setVkToken(token);
+                    UserInfo.updateToken(user);
                 }
                 permissions = user.getGroup().name();
             } else {
                 user.setName(vk_user.getLastName() + " " + vk_user.getFirstName());
-                user.setVk_token(token);
+                user.setVkToken(token);
                 user.setGroup(unconfirmed);
-                if (!addUser(user)) {
-                    Console.err("Can't add user with vk_id " + user.getVk_id());
+                if (!UserInfo.addUser(user)) {
+                    Console.err("Can't add user with vk_id " + user.getVkId());
                 }
             }
         } catch (Exception ignore) {
