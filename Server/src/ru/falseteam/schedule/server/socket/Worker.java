@@ -20,7 +20,7 @@ public class Worker implements Runnable {
     public static void stop() {
         try {
             ss.close();
-        } catch (IOException ignore) {
+        } catch (Exception ignore) {
         }
         Console.print("Port 7101 closed");
     }
@@ -29,13 +29,13 @@ public class Worker implements Runnable {
         clients.remove(c);
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
         try {
             ServerSocketFactory ssf = ServerSocketFactory.getDefault();
             ss = ssf.createServerSocket(7101);
             Console.print("Port 7101 has been binded");
-            //noinspection InfiniteLoopStatement
             while (true) clients.add(new Connection(ss.accept()));
         } catch (IOException ignore) {
         }
