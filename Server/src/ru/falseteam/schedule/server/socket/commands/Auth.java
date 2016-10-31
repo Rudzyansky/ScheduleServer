@@ -38,7 +38,7 @@ public class Auth extends CommandAbstract {
                     e.printStackTrace();
                     permissions = Connection.Groups.guest.name();
                 }
-            } else if (!Java2MySQL.addUser(id, name, connection.currentGroup.name(), token))
+            } else if (!Java2MySQL.addUser(id, name, Connection.Groups.unconfirmed.name(), token))
                 System.out.println("not add user with id " + id);
         } catch (Exception ignore) {
             ignore.printStackTrace();
