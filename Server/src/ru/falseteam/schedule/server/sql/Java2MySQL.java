@@ -3,8 +3,9 @@ package ru.falseteam.schedule.server.sql;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.Main;
 import ru.falseteam.schedule.server.StaticSettings;
-
+import ru.falseteam.schedule.server.socket.Connection.Groups;
 import java.sql.*;
+import java.sql.Connection;
 
 public class Java2MySQL {
     //private static final String url = "jdbc:mysql://localhost:3306/schedule";
@@ -43,23 +44,52 @@ public class Java2MySQL {
         }
     }
 
-    public static boolean existsUser(final int vk_id) throws Exception {
+    public static UserInfo getUserInfo(final int vk_id) {
         try {
-            return statement.executeQuery("SELECT * FROM `users` WHERE `vk_id` LIKE '" + vk_id + "';").first();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("DB error");
-        }
-    }
-
-    public static String getPermissions(final int vk_id) {
-        try {
-            ResultSet rs = statement.executeQuery("SELECT `permissions` FROM `users` WHERE `vk_id` LIKE '" + vk_id + "';");
-            rs.first();
-            return rs.getString(1);
+            UserInfo userInfo = new UserInfo();
+            userInfo.setVk_id(vk_id);
+            ResultSet rs = statement.executeQuery("SELECT * FROM `users` WHERE `vk_id` LIKE '" + vk_id + "';");
+            userInfo.setExists(rs.first());
+            if (!userInfo.isExists()) return userInfo;
+            userInfo.setName(rs.getString("name"));
+            String permissions = rs.getString("permissions");
+            try {
+                Groups.valueOf(rs.getString("permissions"));
+            } catch (Exception ignore) {
+                permissions = Groups.guest.name();
+            }
+            userInfo.setGroup(Groups.valueOf(permissions));
+            userInfo.setVk_id(rs.getInt("vk_id"));
+            userInfo.setVk_token(rs.getString("vk_token"));
+            return userInfo;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static boolean updateToken(UserInfo userInfo) {
+        try {
+            statement.executeUpdate("UPDATE `users` " +
+                    "SET `vk_token` LIKE " + userInfo.getVk_token() +
+                    "WHERE `vk_id` LIKE '" + userInfo.getVk_id() + "';");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean addUser(final UserInfo userInfo) {
+        try {
+            statement.executeUpdate("INSERT INTO `users` " +
+                    "(`vk_id`, `name`, `permissions`, `vk_token`)" +
+                    " VALUES ('" + userInfo.getVk_id() + "', '" + userInfo.getName() + "', '" +
+                    userInfo.getGroup() + "', '" + userInfo.getVk_token() + "');");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
