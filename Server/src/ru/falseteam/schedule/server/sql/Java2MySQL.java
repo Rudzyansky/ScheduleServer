@@ -8,9 +8,6 @@ import java.sql.*;
 import java.sql.Connection;
 
 public class Java2MySQL {
-    //private static final String url = "jdbc:mysql://localhost:3306/schedule";
-    //private static final String user = "scheduleServer";
-    //private static final String pass = "Et11ZGz9LPwmwpf0";
 
     private static Connection connection;
     private static Statement statement;
@@ -71,8 +68,8 @@ public class Java2MySQL {
     public static boolean updateToken(UserInfo userInfo) {
         try {
             statement.executeUpdate("UPDATE `users` " +
-                    "SET `vk_token` LIKE " + userInfo.getVk_token() +
-                    "WHERE `vk_id` LIKE '" + userInfo.getVk_id() + "';");
+                    "SET `vk_token`='" + userInfo.getVk_token() + "' " +
+                    "WHERE `vk_id`='" + userInfo.getVk_id() + "';");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,21 +79,9 @@ public class Java2MySQL {
 
     public static boolean addUser(final UserInfo userInfo) {
         try {
-            statement.executeUpdate("INSERT INTO `users` " +
-                    "(`vk_id`, `name`, `permissions`, `vk_token`)" +
+            statement.executeUpdate("INSERT INTO `users` (`vk_id`, `name`, `permissions`, `vk_token`)" +
                     " VALUES ('" + userInfo.getVk_id() + "', '" + userInfo.getName() + "', '" +
                     userInfo.getGroup() + "', '" + userInfo.getVk_token() + "');");
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean addUser(final int vk_id, final String name, final String group, final String vk_token) {
-        try {
-            statement.executeUpdate("INSERT INTO `users` (`vk_id`, `name`, `permissions`, `vk_token`)" +
-                    " VALUES ('" + vk_id + "', '" + name + "', '" + group + "', '" + vk_token + "');");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
