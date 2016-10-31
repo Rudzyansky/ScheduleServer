@@ -1,10 +1,13 @@
 package ru.falseteam.schedule.server.updater;
 
 import ru.falseteam.schedule.server.Console;
+import ru.falseteam.schedule.server.StaticSettings;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+
+import static ru.falseteam.schedule.server.StaticSettings.getLastClientPath;
 
 class Connection implements Runnable {
 
@@ -33,7 +36,7 @@ class Connection implements Runnable {
         try {
             OutputStream sout = new BufferedOutputStream(socket.getOutputStream());
             Console.print("[Update] Client " + socket.getInetAddress().getHostAddress() + " connected");
-            String path = "/home/admin/workspace/AndroidStudioProjects/Schedule/app/build/outputs/apk/app-debug.apk";
+            String path = getLastClientPath();
             File file = new File(path);
             if (!file.exists()) throw new MyException("File not found " + path);
             InputStream fin = new FileInputStream(file);
