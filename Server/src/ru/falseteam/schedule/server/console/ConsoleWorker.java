@@ -1,6 +1,7 @@
 package ru.falseteam.schedule.server.console;
 
 import ru.falseteam.schedule.server.Console;
+import ru.falseteam.schedule.server.console.commands.Connections;
 import ru.falseteam.schedule.server.console.commands.Stop;
 import ru.falseteam.schedule.server.console.commands.Uptime;
 
@@ -17,6 +18,7 @@ public class ConsoleWorker implements Runnable {
     static {
         addNewCommand(new Stop());
         addNewCommand(new Uptime());
+        addNewCommand(new Connections());
     }
 
     private static void addNewCommand(CommandInterface command) {
