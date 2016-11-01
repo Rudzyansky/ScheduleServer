@@ -4,8 +4,6 @@ import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.console.CommandAbstract;
 import ru.falseteam.schedule.server.utils.StringUtils;
 
-import java.util.Date;
-
 public class Uptime extends CommandAbstract {
     private static long uptime = System.currentTimeMillis();
 
