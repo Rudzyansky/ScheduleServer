@@ -1,6 +1,7 @@
 package ru.falseteam.schedule.server.socket;
 
 import ru.falseteam.schedule.serializable.Groups;
+import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.socket.commands.*;
 
@@ -13,12 +14,14 @@ import java.util.Map;
 
 public class Connection implements Runnable {
 
+    private static Map<Groups, Map<String, CommandInterface>> permissions;
+
     private Socket socket;
     private ObjectOutputStream out;
 
-    private long uptime = System.currentTimeMillis();
+    private User user = User.Factory.getDefault();
 
-    private static Map<Groups, Map<String, CommandInterface>> permissions;
+    private long uptime = System.currentTimeMillis();
 
     static {
         permissions = new HashMap<>();
@@ -40,11 +43,13 @@ public class Connection implements Runnable {
         for (Groups g : groupies) permissions.get(g).put(c.getName(), c);
     }
 
-    public Groups currentGroup = Groups.guest;
-
     Connection(Socket socket) {
         this.socket = socket;
         new Thread(this).start();
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void send(Map<String, Object> map) {
@@ -82,7 +87,7 @@ public class Connection implements Runnable {
                 if (!(o instanceof Map)) throw new MyException("not Map");
                 Map<String, Object> map = (Map<String, Object>) o;
                 if (!map.containsKey("command")) throw new MyException("command not found");
-                Map<String, CommandInterface> currentPermissions = permissions.get(currentGroup);
+                Map<String, CommandInterface> currentPermissions = permissions.get(user.group);
                 if (!currentPermissions.containsKey(map.get("command"))) {
                     currentPermissions.get("forbidden").exec(this, map);
                     continue;

@@ -32,7 +32,8 @@ public class Auth extends CommandAbstract {
             if (users.isEmpty()) throw new Exception("response is empty");
             UserXtrCounters vk_user = users.get(0);
 
-            User user = UserInfo.getUser(vk_user.getId());
+            User user = connection.getUser();
+            UserInfo.getUser(vk_user.getId(), user);
             if (user == null) throw new Exception("user info is null");
             if (user.exists) {
                 if (!user.vkToken.equals(token)) {
@@ -51,7 +52,7 @@ public class Auth extends CommandAbstract {
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
-        connection.currentGroup = Groups.valueOf(permissions);
+        connection.getUser().group = Groups.valueOf(permissions);
         map.clear();
         map.put("command", "auth");
         map.put("version", getLastClientVersion());

@@ -37,7 +37,7 @@ public class Connections extends CommandAbstract {
                     sb2.append(count[0]).append(") ").append(connection.getName()).append('\n');
                     StringBuilder sb3 = new StringBuilder();
                     sb3.append("Uptime: ").append(StringUtils.getUptime(connection.getUptime())).append('\n');
-                    sb3.append("Group: ").append(connection.currentGroup.name()).append('\n');
+                    sb3.append("Group: ").append(connection.getUser().group.name()).append('\n');
                     sb2.append(StringUtils.addMargin(sb3.toString(), SHORT_DEFAULT_MARGIN_LENGTH));
                 });
                 sb1.append(StringUtils.addMargin(sb2.toString(), SHORT_DEFAULT_MARGIN_LENGTH));
