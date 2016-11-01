@@ -35,6 +35,7 @@ public class Uptime extends CommandAbstract {
         sb.append("s\n");
 
         //Выводим данные об использовании памяти.
+        sb.append(Console.DEFAULT_MARGIN);
         Runtime runtime = Runtime.getRuntime();
         long totalMemoryMB = runtime.totalMemory() / 1024 / 1024;
         long usedMemoryMB = totalMemoryMB - runtime.freeMemory() / 1024 / 1024;
