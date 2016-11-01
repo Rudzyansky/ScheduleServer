@@ -1,7 +1,5 @@
 package ru.falseteam.schedule.server.utils;
 
-import ru.falseteam.schedule.server.console.commands.Uptime;
-
 public class StringUtils {
     public static String addMargin(String data, int margin) {
         StringBuilder sb = new StringBuilder();

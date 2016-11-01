@@ -6,12 +6,8 @@ import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.utils.StringUtils;
 
-import javax.swing.*;
-import java.net.Socket;
 import java.util.LinkedList;
-import java.util.function.Consumer;
 
-import static ru.falseteam.schedule.server.Console.DEFAULT_MARGIN;
 import static ru.falseteam.schedule.server.Console.DEFAULT_MARGIN_LENGTH;
 import static ru.falseteam.schedule.server.Console.SHORT_DEFAULT_MARGIN_LENGTH;
 
