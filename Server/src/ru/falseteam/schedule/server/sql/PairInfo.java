@@ -37,7 +37,7 @@ public class PairInfo {
                 pair.setTeacher(rs.getString("teacher"));
                 pair.setLastTask(rs.getString("last_task"));
                 pairs.add(pair);
-            } while (!rs.next());
+            } while (rs.next());
         } catch (Exception e) {
             e.printStackTrace();
         }
