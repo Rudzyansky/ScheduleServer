@@ -2,6 +2,7 @@ package ru.falseteam.schedule.server.console;
 
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.console.commands.Stop;
+import ru.falseteam.schedule.server.console.commands.Uptime;
 
 import java.io.IOException;
 import java.util.*;
@@ -15,6 +16,7 @@ public class ConsoleWorker implements Runnable {
 
     static {
         addNewCommand(new Stop());
+        addNewCommand(new Uptime());
     }
 
     private static void addNewCommand(CommandInterface command) {
