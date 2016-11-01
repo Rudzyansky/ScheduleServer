@@ -15,6 +15,8 @@ public class Connection implements Runnable {
     private Socket socket;
     private ObjectOutputStream out;
 
+    private long uptime = System.currentTimeMillis();
+
     private static Map<Groups, Map<String, CommandInterface>> permissions;
 
     static {
@@ -100,5 +102,13 @@ public class Connection implements Runnable {
         } catch (Exception ignore) {
         }
         disconnect();
+    }
+
+    public long getUptime() {
+        return uptime;
+    }
+
+    public String getName() {
+        return socket.getInetAddress().getHostAddress();
     }
 }
