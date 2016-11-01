@@ -16,10 +16,10 @@ public class ChangePair extends CommandAbstract {
     public void exec(Connection connection, Map<String, Object> map) {
         Pair pair = (Pair) map.get("pair");
         map.clear();
-        map.put("command", "change_pair");
+        map.put("command", "toast_short");
         boolean e = pair.isExists();
         boolean b = e ? PairInfo.updatePair(pair) : PairInfo.addPair(pair);
-        map.put("result", b ? "Предмет изменен" : "Произошла ошибка при изменении предмета");
+        map.put("message", b ? "Предмет изменен" : "Произошла ошибка при изменении предмета");
         connection.send(map);
     }
 }

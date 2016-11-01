@@ -15,8 +15,8 @@ public class DeletePair extends CommandAbstract {
     public void exec(Connection connection, Map<String, Object> map) {
         boolean b = PairInfo.deletePair((Integer) map.get("id"));
         map.clear();
-        map.put("command", "change_pair");
-        map.put("result", b ? "Предмет удален" : "Произошла ошибка при удалении предмета");
+        map.put("command", "toast_short");
+        map.put("message", b ? "Предмет удален" : "Произошла ошибка при удалении предмета");
         connection.send(map);
     }
 }
