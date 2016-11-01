@@ -13,6 +13,7 @@ public class Worker implements Runnable {
     private static ServerSocket ss;
     private static LinkedList<Connection> clients = new LinkedList<>();
 
+    private static int connectionsFromAllTime = 0;
 
     public static void init() {
         new Thread(new Worker()).start();
@@ -37,8 +38,19 @@ public class Worker implements Runnable {
             ServerSocketFactory ssf = ServerSocketFactory.getDefault();
             ss = ssf.createServerSocket(StaticSettings.getPort());
             Console.print("Port " + StaticSettings.getPort() + " has been binded");
-            while (true) clients.add(new Connection(ss.accept()));
+            while (true) {
+                clients.add(new Connection(ss.accept()));
+                ++connectionsFromAllTime;
+            }
         } catch (IOException ignore) {
         }
+    }
+
+    public static LinkedList<Connection> getClients() {
+        return clients;
+    }
+
+    public static int getConnectionsFromAllTime() {
+        return connectionsFromAllTime;
     }
 }

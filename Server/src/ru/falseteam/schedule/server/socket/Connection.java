@@ -1,8 +1,9 @@
 package ru.falseteam.schedule.server.socket;
 
+import ru.falseteam.schedule.serializable.Groups;
+import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.Console;
-import ru.falseteam.schedule.server.socket.commands.AccessDenied;
-import ru.falseteam.schedule.server.socket.commands.Auth;
+import ru.falseteam.schedule.server.socket.commands.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,49 +14,14 @@ import java.util.Map;
 
 public class Connection implements Runnable {
 
-    public class Info {
-        private String name;
-        private String vk_id;
-        private String vk_token;
-        private Groups group;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getVk_id() {
-            return vk_id;
-        }
-
-        public void setVk_id(String vk_id) {
-            this.vk_id = vk_id;
-        }
-
-        public String getVk_token() {
-            return vk_token;
-        }
-
-        public void setVk_token(String vk_token) {
-            this.vk_token = vk_token;
-        }
-
-        public Groups getGroup() {
-            return group;
-        }
-
-        public void setGroup(Groups group) {
-            this.group = group;
-        }
-    }
+    private static Map<Groups, Map<String, CommandInterface>> permissions;
 
     private Socket socket;
     private ObjectOutputStream out;
 
-    private static Map<Groups, Map<String, CommandInterface>> permissions;
+    private User user = User.Factory.getDefault();
+
+    private long uptime = System.currentTimeMillis();
 
     static {
         permissions = new HashMap<>();
@@ -66,27 +32,24 @@ public class Connection implements Runnable {
         permissions.put(Groups.admin, new HashMap<>());
         permissions.put(Groups.developer, new HashMap<>());
 
-        addCommand(new AccessDenied(), Groups.developer, Groups.admin, Groups.user, Groups.guest);
-        addCommand(new Auth(), Groups.developer, Groups.admin, Groups.user, Groups.guest);
+        addCommand(new AccessDenied(), Groups.values());
+        addCommand(new Auth(), Groups.guest);
+        addCommand(new GetPairs(), Groups.developer, Groups.admin, Groups.user);
+        addCommand(new ChangePair(), Groups.developer, Groups.admin);
+        addCommand(new DeletePair(), Groups.developer, Groups.admin);
     }
 
     private static void addCommand(CommandInterface c, Groups... groupies) {
         for (Groups g : groupies) permissions.get(g).put(c.getName(), c);
     }
 
-    public enum Groups {
-        guest,
-        unconfirmed,
-        user,
-        admin,
-        developer
-    }
-
-    public Groups currentGroup = Groups.guest;
-
     Connection(Socket socket) {
         this.socket = socket;
         new Thread(this).start();
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void send(Map<String, Object> map) {
@@ -124,7 +87,7 @@ public class Connection implements Runnable {
                 if (!(o instanceof Map)) throw new MyException("not Map");
                 Map<String, Object> map = (Map<String, Object>) o;
                 if (!map.containsKey("command")) throw new MyException("command not found");
-                Map<String, CommandInterface> currentPermissions = permissions.get(currentGroup);
+                Map<String, CommandInterface> currentPermissions = permissions.get(user.group);
                 if (!currentPermissions.containsKey(map.get("command"))) {
                     currentPermissions.get("forbidden").exec(this, map);
                     continue;
@@ -137,5 +100,13 @@ public class Connection implements Runnable {
         } catch (Exception ignore) {
         }
         disconnect();
+    }
+
+    public long getUptime() {
+        return uptime;
+    }
+
+    public String getName() {
+        return socket.getInetAddress().getHostAddress();
     }
 }
