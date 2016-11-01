@@ -15,10 +15,7 @@ public class GetPairs extends CommandAbstract {
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
         PairInfo.loadFromBase();
-        map.put("count", PairInfo.count());
-        int i = 0;
-        for (Pair pair : PairInfo.getPairs())
-            map.put(String.valueOf(i++), pair);
+        map.put("pairs", PairInfo.getPairs());
         connection.send(map);
     }
 }
