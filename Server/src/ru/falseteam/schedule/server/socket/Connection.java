@@ -1,5 +1,6 @@
 package ru.falseteam.schedule.server.socket;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.socket.commands.*;
 
@@ -28,8 +29,8 @@ public class Connection implements Runnable {
         permissions.put(Groups.admin, new HashMap<>());
         permissions.put(Groups.developer, new HashMap<>());
 
-        addCommand(new AccessDenied(), Groups.developer, Groups.admin, Groups.user, Groups.unconfirmed, Groups.guest);
-        addCommand(new Auth(), Groups.developer, Groups.guest);
+        addCommand(new AccessDenied(), Groups.values());
+        addCommand(new Auth(), Groups.guest);
         addCommand(new GetPairs(), Groups.developer, Groups.admin, Groups.user);
         addCommand(new ChangePair(), Groups.developer, Groups.admin);
         addCommand(new DeletePair(), Groups.developer, Groups.admin);
@@ -37,14 +38,6 @@ public class Connection implements Runnable {
 
     private static void addCommand(CommandInterface c, Groups... groupies) {
         for (Groups g : groupies) permissions.get(g).put(c.getName(), c);
-    }
-
-    public enum Groups {
-        guest,
-        unconfirmed,
-        user,
-        admin,
-        developer
     }
 
     public Groups currentGroup = Groups.guest;
