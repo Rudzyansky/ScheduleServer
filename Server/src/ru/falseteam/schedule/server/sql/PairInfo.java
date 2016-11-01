@@ -1,5 +1,7 @@
 package ru.falseteam.schedule.server.sql;
 
+import ru.falseteam.schedule.serializable.Pair;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -11,70 +13,22 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  */
 public class PairInfo {
 
-    private static class Pair {
-        private boolean exists = false;
-        private int id;
-        private String name;
-        private String audience;
-        private String teacher;
-        private String lastTask;
+    private static ArrayList<Pair> pairs = new ArrayList<>();
 
-        public boolean isExists() {
-            return exists;
-        }
-
-        public void setExists(boolean exists) {
-            this.exists = exists;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getAudience() {
-            return audience;
-        }
-
-        public void setAudience(String audience) {
-            this.audience = audience;
-        }
-
-        public String getTeacher() {
-            return teacher;
-        }
-
-        public void setTeacher(String teacher) {
-            this.teacher = teacher;
-        }
-
-        public String getLastTask() {
-            return lastTask;
-        }
-
-        public void setLastTask(String lastTask) {
-            this.lastTask = lastTask;
-        }
+    public static ArrayList<Pair> getPairs() {
+        return pairs;
     }
 
-    private static ArrayList<Pair> pairs;
+    public static int count() {
+        return pairs.size();
+    }
 
     public static void loadFromBase() {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `pairs`;");
             pairs.clear();
-            while (!rs.next()) {
+            if (!rs.first()) return;
+            do {
                 Pair pair = new Pair();
                 pair.setExists(true);
                 pair.setId(rs.getInt("id"));
@@ -83,7 +37,7 @@ public class PairInfo {
                 pair.setTeacher(rs.getString("teacher"));
                 pair.setLastTask(rs.getString("last_task"));
                 pairs.add(pair);
-            }
+            } while (rs.next());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,9 +77,19 @@ public class PairInfo {
         }
     }
 
+    public static boolean deletePair(int id) {
+        try {
+            executeUpdate("DELETE FROM `pairs` WHERE `id` LIKE '" + id + "';");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean addPair(Pair pair) {
         try {
-            executeUpdate("INSERT INTO `pairs` (`name`, `audience`, `teacher`, `last_task`) VALUES (" +
+            executeUpdate("INSERT INTO `pairs` (`name`, `audience`, `teacher`, `last_task`) VALUES ('" +
                     pair.getName() + "', '" +
                     pair.getAudience() + "', '" +
                     pair.getTeacher() + "', '" +
