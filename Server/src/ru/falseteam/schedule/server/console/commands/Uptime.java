@@ -2,8 +2,7 @@ package ru.falseteam.schedule.server.console.commands;
 
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.console.CommandAbstract;
-
-import java.util.Date;
+import ru.falseteam.schedule.server.utils.StringUtils;
 
 public class Uptime extends CommandAbstract {
     private static long uptime = System.currentTimeMillis();
@@ -19,20 +18,7 @@ public class Uptime extends CommandAbstract {
         long uptime = System.currentTimeMillis() - Uptime.uptime;
         long tmp = 0;
         StringBuilder sb = new StringBuilder();
-        sb.append("Uptime: ");
-
-        tmp = uptime / 1000 / 60 / 60 / 24;
-        if (tmp != 0)
-            sb.append(tmp).append("day "); //TODO пофиксить тут.
-        tmp = uptime / 1000 / 60 / 60 % 24;
-        sb.append(tmp).append("h");
-        tmp = uptime / 1000 / 60 % 60;
-        if (tmp < 10) sb.append('0');
-        sb.append(tmp).append("m");
-        tmp = uptime / 1000 % 60;
-        if (tmp < 10) sb.append('0');
-        sb.append(tmp);
-        sb.append("s\n");
+        sb.append("Uptime: ").append(StringUtils.getUptime(uptime)).append('\n');
 
         //Выводим данные об использовании памяти.
         sb.append(Console.DEFAULT_MARGIN);
