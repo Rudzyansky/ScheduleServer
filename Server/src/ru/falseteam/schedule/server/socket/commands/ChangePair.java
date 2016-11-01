@@ -19,7 +19,7 @@ public class ChangePair extends CommandAbstract {
         map.put("command", "change_pair");
         boolean e = pair.isExists();
         boolean b = e ? PairInfo.updatePair(pair) : PairInfo.addPair(pair);
-        map.put("result", b ? "complete" : "failed");
+        map.put("result", b ? "Предмет изменен" : "Произошла ошибка при изменении предмета");
         connection.send(map);
     }
 }
