@@ -15,7 +15,6 @@ public class Worker implements Runnable {
 
     private static int connectionsFromAllTime = 0;
 
-
     public static void init() {
         new Thread(new Worker()).start();
     }
