@@ -3,6 +3,7 @@ package ru.falseteam.schedule.server.socket;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.socket.commands.AccessDenied;
 import ru.falseteam.schedule.server.socket.commands.Auth;
+import ru.falseteam.schedule.server.socket.commands.GetPairs;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -27,8 +28,9 @@ public class Connection implements Runnable {
         permissions.put(Groups.admin, new HashMap<>());
         permissions.put(Groups.developer, new HashMap<>());
 
-        addCommand(new AccessDenied(), Groups.developer, Groups.admin, Groups.user, Groups.guest);
-        addCommand(new Auth(), Groups.developer, Groups.admin, Groups.user, Groups.guest);
+        addCommand(new AccessDenied(), Groups.developer, Groups.admin, Groups.user, Groups.unconfirmed, Groups.guest);
+        addCommand(new Auth(), Groups.developer, Groups.guest);
+        addCommand(new GetPairs(), Groups.developer, Groups.admin, Groups.user);
     }
 
     private static void addCommand(CommandInterface c, Groups... groupies) {
