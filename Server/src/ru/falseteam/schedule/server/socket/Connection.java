@@ -1,10 +1,7 @@
 package ru.falseteam.schedule.server.socket;
 
 import ru.falseteam.schedule.server.Console;
-import ru.falseteam.schedule.server.socket.commands.AccessDenied;
-import ru.falseteam.schedule.server.socket.commands.Auth;
-import ru.falseteam.schedule.server.socket.commands.ChangePair;
-import ru.falseteam.schedule.server.socket.commands.GetPairs;
+import ru.falseteam.schedule.server.socket.commands.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,6 +30,7 @@ public class Connection implements Runnable {
         addCommand(new Auth(), Groups.developer, Groups.guest);
         addCommand(new GetPairs(), Groups.developer, Groups.admin, Groups.user);
         addCommand(new ChangePair(), Groups.developer, Groups.admin);
+        addCommand(new DeletePair(), Groups.developer, Groups.admin);
     }
 
     private static void addCommand(CommandInterface c, Groups... groupies) {

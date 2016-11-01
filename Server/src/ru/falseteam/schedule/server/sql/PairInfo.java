@@ -77,9 +77,19 @@ public class PairInfo {
         }
     }
 
+    public static boolean deletePair(int id) {
+        try {
+            executeUpdate("DELETE FROM `pairs` WHERE `id` LIKE '" + id + "';");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean addPair(Pair pair) {
         try {
-            executeUpdate("INSERT INTO `pairs` (`name`, `audience`, `teacher`, `last_task`) VALUES (" +
+            executeUpdate("INSERT INTO `pairs` (`name`, `audience`, `teacher`, `last_task`) VALUES ('" +
                     pair.getName() + "', '" +
                     pair.getAudience() + "', '" +
                     pair.getTeacher() + "', '" +
