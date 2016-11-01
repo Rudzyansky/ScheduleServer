@@ -50,6 +50,7 @@ public class Auth extends CommandAbstract {
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
+        connection.currentGroup = Connection.Groups.valueOf(permissions);
         map.clear();
         map.put("command", "auth");
         map.put("version", getLastClientVersion());
