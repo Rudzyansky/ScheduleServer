@@ -29,7 +29,7 @@ public class PairInfo {
             pairs.clear();
             if (!rs.first()) return;
             do {
-                Pair pair = new Pair();
+                Pair pair = Pair.Factory.getDefault();
                 pair.exists = true;
                 pair.id = rs.getInt("id");
                 pair.name = rs.getString("name");
@@ -46,7 +46,7 @@ public class PairInfo {
     public static Pair getPair(final int id) {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `pairs` WHERE `id` LIKE '" + id + "';");
-            Pair pair = new Pair();
+            Pair pair = Pair.Factory.getDefault();
             pair.exists = rs.first();
             if (!pair.exists) return pair;
             pairs.clear();

@@ -10,9 +10,8 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
 
 public class UserInfo {
 
-    public static User getUser(final int vkId) {
+    public static User getUser(final int vkId, User user) {
         try {
-            User user = new User();
             user.vkId = vkId;
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `vk_id` LIKE '" + vkId + "';");
             user.exists = rs.first();
