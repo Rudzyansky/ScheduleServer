@@ -1,5 +1,6 @@
 package ru.falseteam.schedule.server.sql;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -11,7 +12,7 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  */
 public class PairInfo {
 
-    private static class Pair {
+    private static class Pair implements Serializable {
         private boolean exists = false;
         private int id;
         private String name;
