@@ -30,12 +30,12 @@ public class PairInfo {
             if (!rs.first()) return;
             do {
                 Pair pair = new Pair();
-                pair.setExists(true);
-                pair.setId(rs.getInt("id"));
-                pair.setName(rs.getString("name"));
-                pair.setAudience(rs.getString("audience"));
-                pair.setTeacher(rs.getString("teacher"));
-                pair.setLastTask(rs.getString("last_task"));
+                pair.exists = true;
+                pair.id = rs.getInt("id");
+                pair.name = rs.getString("name");
+                pair.audience = rs.getString("audience");
+                pair.teacher = rs.getString("teacher");
+                pair.lastTask = rs.getString("last_task");
                 pairs.add(pair);
             } while (rs.next());
         } catch (Exception e) {
@@ -47,14 +47,14 @@ public class PairInfo {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `pairs` WHERE `id` LIKE '" + id + "';");
             Pair pair = new Pair();
-            pair.setExists(rs.first());
-            if (!pair.isExists()) return pair;
+            pair.exists = rs.first();
+            if (!pair.exists) return pair;
             pairs.clear();
-            pair.setId(rs.getInt("id"));
-            pair.setName(rs.getString("name"));
-            pair.setAudience(rs.getString("audience"));
-            pair.setTeacher(rs.getString("teacher"));
-            pair.setLastTask(rs.getString("last_task"));
+            pair.id = rs.getInt("id");
+            pair.name = rs.getString("name");
+            pair.audience = rs.getString("audience");
+            pair.teacher = rs.getString("teacher");
+            pair.lastTask = rs.getString("last_task");
             return pair;
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,11 +65,11 @@ public class PairInfo {
     public static boolean updatePair(Pair pair) {
         try {
             executeUpdate("UPDATE `pairs` SET" +
-                    " `name`='" + pair.getName() + "'," +
-                    " `audience`='" + pair.getAudience() + "'," +
-                    " `teacher`='" + pair.getTeacher() + "'," +
-                    " `last_task`='" + pair.getLastTask() + "'" +
-                    " WHERE `id` LIKE '" + pair.getId() + "';");
+                    " `name`='" + pair.name + "'," +
+                    " `audience`='" + pair.audience + "'," +
+                    " `teacher`='" + pair.teacher + "'," +
+                    " `last_task`='" + pair.lastTask + "'" +
+                    " WHERE `id` LIKE '" + pair.id + "';");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,10 +90,10 @@ public class PairInfo {
     public static boolean addPair(Pair pair) {
         try {
             executeUpdate("INSERT INTO `pairs` (`name`, `audience`, `teacher`, `last_task`) VALUES ('" +
-                    pair.getName() + "', '" +
-                    pair.getAudience() + "', '" +
-                    pair.getTeacher() + "', '" +
-                    pair.getLastTask() + "');");
+                    pair.name + "', '" +
+                    pair.audience + "', '" +
+                    pair.teacher + "', '" +
+                    pair.lastTask + "');");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
