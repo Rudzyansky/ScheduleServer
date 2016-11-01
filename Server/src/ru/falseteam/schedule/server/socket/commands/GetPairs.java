@@ -18,7 +18,7 @@ public class GetPairs extends CommandAbstract {
         map.put("count", PairInfo.count());
         int i = 0;
         for (Pair pair : PairInfo.getPairs())
-            map.put(String.valueOf(++i), pair);
+            map.put(String.valueOf(i++), pair);
         connection.send(map);
     }
 }
