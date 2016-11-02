@@ -1,5 +1,6 @@
 package ru.falseteam.schedule.server.socket.commands;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
@@ -15,6 +16,7 @@ public class UpdateUser extends CommandAbstract {
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
         User user = (User) map.get("user");
+//        if (user.group.equals(Groups.developer))
         map.clear();
         map.put("command", "toast_short");
         boolean e = user.exists;
