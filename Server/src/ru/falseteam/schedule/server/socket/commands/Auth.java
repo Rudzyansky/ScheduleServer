@@ -32,16 +32,15 @@ public class Auth extends CommandAbstract {
             if (users.isEmpty()) throw new Exception("response is empty");
             UserXtrCounters vk_user = users.get(0);
 
-            User user = connection.getUser();
-            UserInfo.getUser(vk_user.getId());
-            if (user == null) throw new Exception("user info is null");
-            if (user.exists) {
+            User user = UserInfo.getUser(vk_user.getId());
+            if (user != null) {
                 if (!user.vkToken.equals(token)) {
                     user.vkToken = token;
                     UserInfo.updateToken(user);
                 }
                 permissions = user.group.name();
             } else {
+                user = User.Factory.getDefault();
                 user.name = vk_user.getLastName() + " " + vk_user.getFirstName();
                 user.vkToken = token;
                 user.group = unconfirmed;

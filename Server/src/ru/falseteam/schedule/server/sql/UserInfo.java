@@ -33,12 +33,16 @@ public class UserInfo {
         return users;
     }
 
+    /**
+     * @param vkId - vk id
+     * @return {@link User} if user exists, null if user not exists
+     */
     public static User getUser(final int vkId) {
         try {
-            User user = User.Factory.getDefault();
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `vk_id` LIKE '" + vkId + "';");
-            user.exists = rs.first();
-            if (!user.exists) return user;
+            if (!rs.first()) return null;
+            User user = User.Factory.getDefault();
+            user.exists = true;
             user.name = rs.getString("name");
             String permissions = rs.getString("permissions");
             try {
@@ -56,12 +60,16 @@ public class UserInfo {
         }
     }
 
+    /**
+     * @param name - family and name
+     * @return {@link User} if user exists, null if user not exists
+     */
     public static User getUser(final String name) {
         try {
-            User user = User.Factory.getDefault();
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `name` LIKE '" + name + "';");
-            user.exists = rs.first();
-            if (!user.exists) return null;
+            if (!rs.first()) return null;
+            User user = User.Factory.getDefault();
+            user.exists = true;
             user.id = rs.getInt("id");
             user.name = rs.getString("name");
             String permissions = rs.getString("permissions");
@@ -81,8 +89,8 @@ public class UserInfo {
     }
 
     public static boolean updateUser(final User user) {
+        if (!user.exists) throw new RuntimeException();
         try {
-            if (!user.exists) return false;
             executeUpdate("UPDATE `users` SET" +
                     " `name`='" + user.name + "'," +
                     " `permissions`='" + user.group.name() + "'," +
