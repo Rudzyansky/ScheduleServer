@@ -13,7 +13,6 @@ public class GetUsers extends CommandAbstract {
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        UserInfo.loadFromBase();
         map.put("users", UserInfo.getUsers());
         connection.send(map);
     }
