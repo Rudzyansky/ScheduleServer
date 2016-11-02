@@ -1,10 +1,13 @@
 package ru.falseteam.schedule.server.socket.commands;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.UserInfo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class UpdateUser extends CommandAbstract {
@@ -15,6 +18,11 @@ public class UpdateUser extends CommandAbstract {
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
         User user = (User) map.get("user");
+        List<Groups> groups = new ArrayList<>();
+        groups.add(Groups.unconfirmed);
+        groups.add(Groups.user);
+        groups.add(Groups.admin);
+        if (user.group.equals(Groups.developer))
         map.clear();
         map.put("command", "toast_short");
         boolean e = user.exists;

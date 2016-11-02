@@ -33,7 +33,7 @@ public class Auth extends CommandAbstract {
             UserXtrCounters vk_user = users.get(0);
 
             User user = connection.getUser();
-            UserInfo.getUser(vk_user.getId(), user);
+            UserInfo.getUser(vk_user.getId());
             if (user == null) throw new Exception("user info is null");
             if (user.exists) {
                 if (!user.vkToken.equals(token)) {
