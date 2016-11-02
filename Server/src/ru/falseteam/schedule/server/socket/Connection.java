@@ -35,9 +35,11 @@ public class Connection implements Runnable {
         addCommand(new AccessDenied(), Groups.values());
         addCommand(new Auth(), Groups.guest);
         addCommand(new GetPairs(), Groups.developer, Groups.admin, Groups.user);
-        addCommand(new ChangePair(), Groups.developer, Groups.admin);
+        addCommand(new UpdatePair(), Groups.developer, Groups.admin);
         addCommand(new DeletePair(), Groups.developer, Groups.admin);
         addCommand(new GetUsers(), Groups.developer, Groups.admin, Groups.user);
+        addCommand(new UpdatePair(), Groups.developer, Groups.admin);
+        addCommand(new DeletePair(), Groups.developer, Groups.admin);
     }
 
     private static void addCommand(CommandInterface c, Groups... groupies) {

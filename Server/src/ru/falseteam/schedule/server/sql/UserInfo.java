@@ -60,11 +60,60 @@ public class UserInfo {
         }
     }
 
+    public static User getUser(final String name) {
+        try {
+            User user = User.Factory.getDefault();
+            ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `name` LIKE '" + name + "';");
+            user.exists = rs.first();
+            if (!user.exists) return null;
+            user.id = rs.getInt("id");
+            user.name = rs.getString("name");
+            String permissions = rs.getString("permissions");
+            try {
+                Groups.valueOf(rs.getString("permissions"));
+            } catch (Exception ignore) {
+                permissions = Groups.guest.name();
+            }
+            user.group = Groups.valueOf(permissions);
+            user.vkId = rs.getInt("vk_id");
+            user.vkToken = rs.getString("vk_token");
+            return rs.next() ? null : user;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static boolean updateUser(final User user) {
+        try {
+            executeUpdate("UPDATE `users` SET" +
+                    " `name`='" + user.name + "'," +
+                    " `permissions`='" + user.group.name() + "'," +
+                    " `vk_id`='" + user.vkId + "'," +
+                    " `vk_token`='" + user.vkToken + "'" +
+                    " WHERE `id` LIKE '" + user.id + "';");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean updateToken(final User user) {
         try {
             executeUpdate("UPDATE `users` SET" +
                     " `vk_token`='" + user.vkToken + "'" +
                     " WHERE `vk_id` LIKE '" + user.vkId + "';");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteUser(int id) {
+        try {
+            executeUpdate("DELETE FROM `users` WHERE `id` LIKE '" + id + "';");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
