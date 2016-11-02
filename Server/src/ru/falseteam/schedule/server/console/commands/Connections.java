@@ -1,5 +1,6 @@
 package ru.falseteam.schedule.server.console.commands;
 
+import org.apache.commons.cli.CommandLine;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.console.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
@@ -18,7 +19,7 @@ public class Connections extends CommandAbstract {
 
 
     @Override
-    public void exec(String params) {
+    public void exec(CommandLine commandLine) {
         StringBuilder sb = new StringBuilder();
 
         synchronized (Worker.getClients()) {
