@@ -22,12 +22,15 @@ public class UpdateUser extends CommandAbstract {
         groups.add(Groups.unconfirmed);
         groups.add(Groups.user);
         groups.add(Groups.admin);
-        if (user.group.equals(Groups.developer))
         map.clear();
         map.put("command", "toast_short");
-        boolean e = user.exists;
-        boolean b = e ? UserInfo.updateUser(user) : UserInfo.addUser(user);
-        map.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
+        if (user.group.equals(Groups.developer)) {
+            map.put("message", "Произошла ошибка при изменении пользователя");
+        } else {
+            boolean e = user.exists;
+            boolean b = e ? UserInfo.updateUser(user) : UserInfo.addUser(user);
+            map.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
+        }
         connection.send(map);
     }
 }

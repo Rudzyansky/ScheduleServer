@@ -38,8 +38,10 @@ public class Connection implements Runnable {
         addCommand(new UpdatePair(), Groups.developer, Groups.admin);
         addCommand(new DeletePair(), Groups.developer, Groups.admin);
         addCommand(new GetUsers(), Groups.developer, Groups.admin, Groups.user);
-        addCommand(new UpdatePair(), Groups.developer, Groups.admin);
-        addCommand(new DeletePair(), Groups.developer, Groups.admin);
+        // следующие 2 строки пока опасно добавлять
+//        addCommand(new UpdateUser(), Groups.developer, Groups.admin);
+//        addCommand(new DeleteUser(), Groups.developer, Groups.admin);
+        // ----------------------------------------
     }
 
     private static void addCommand(CommandInterface c, Groups... groupies) {
@@ -103,7 +105,7 @@ public class Connection implements Runnable {
         } catch (MyException e) {
             Console.err("Client " + socket.getInetAddress().getHostAddress()
                     + " disconnected // Reason: " + e.getMessage());
-        } catch (Exception ignore) {
+        } catch (IOException | ClassNotFoundException ignore) {
         }
         disconnect();
     }
