@@ -84,13 +84,34 @@ public class UserInfo {
         }
     }
 
-    public static boolean updateUser(final User user) {
+    public static boolean updateName(final User user) {
         try {
             executeUpdate("UPDATE `users` SET" +
-                    " `name`='" + user.name + "'," +
-                    " `vk_token`='" + user.group.name() + "'," +
-                    " `vk_id`='" + user.vkId + "'," +
-                    " `vk_token`='" + user.vkToken + "'" +
+                    " `name`='" + user.name + "'" +
+                    " WHERE `id` LIKE '" + user.id + "';");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateGroup(final User user) {
+        try {
+            executeUpdate("UPDATE `users` SET" +
+                    " `permissions`='" + user.group.name() + "'" +
+                    " WHERE `id` LIKE '" + user.id + "';");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateVkId(final User user) {
+        try {
+            executeUpdate("UPDATE `users` SET" +
+                    " `vk_id`='" + user.vkId + "'" +
                     " WHERE `id` LIKE '" + user.id + "';");
             return true;
         } catch (Exception e) {
