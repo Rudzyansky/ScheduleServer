@@ -84,34 +84,13 @@ public class UserInfo {
         }
     }
 
-    public static boolean updateName(final User user) {
+    public static boolean updateUser(final User user) {
         try {
             executeUpdate("UPDATE `users` SET" +
-                    " `name`='" + user.name + "'" +
-                    " WHERE `id` LIKE '" + user.id + "';");
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean updateGroup(final User user) {
-        try {
-            executeUpdate("UPDATE `users` SET" +
-                    " `permissions`='" + user.group.name() + "'" +
-                    " WHERE `id` LIKE '" + user.id + "';");
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean updateVkId(final User user) {
-        try {
-            executeUpdate("UPDATE `users` SET" +
-                    " `vk_id`='" + user.vkId + "'" +
+                    " `name`='" + user.name + "'," +
+                    " `permissions`='" + user.group.name() + "'," +
+                    " `vk_id`='" + user.vkId + "'," +
+                    " `vk_token`='" + user.vkToken + "'" +
                     " WHERE `id` LIKE '" + user.id + "';");
             return true;
         } catch (Exception e) {
@@ -125,6 +104,16 @@ public class UserInfo {
             executeUpdate("UPDATE `users` SET" +
                     " `vk_token`='" + user.vkToken + "'" +
                     " WHERE `vk_id` LIKE '" + user.vkId + "';");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteUser(int id) {
+        try {
+            executeUpdate("DELETE FROM `users` WHERE `id` LIKE '" + id + "';");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
