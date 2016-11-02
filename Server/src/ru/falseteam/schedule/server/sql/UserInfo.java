@@ -6,23 +6,18 @@ import ru.falseteam.schedule.serializable.User;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
 
 public class UserInfo {
 
-    private static ArrayList<User> users = new ArrayList<>();
-
-    public static ArrayList<User> getUsers() {
-        return users;
-    }
-
-    public static void loadFromBase() {
+    public static List<User> getUsers() {
+        List<User> users = new ArrayList<>();
         try {
             ResultSet rs = executeQuery("SELECT * FROM `users`;");
-            users.clear();
-            if (!rs.first()) return;
+            if (!rs.first()) return users;
             do {
                 User user = User.Factory.getDefault();
                 user.exists = true;
@@ -35,6 +30,7 @@ public class UserInfo {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return users;
     }
 
     public static User getUser(final int vkId) {
@@ -112,9 +108,9 @@ public class UserInfo {
         }
     }
 
-    public static boolean deleteUser(int id) {
+    public static boolean deleteUser(final User user) {
         try {
-            executeUpdate("DELETE FROM `users` WHERE `id` LIKE '" + id + "';");
+            executeUpdate("DELETE FROM `users` WHERE `id` LIKE '" + user.id + "';");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
