@@ -2,6 +2,7 @@ package ru.falseteam.schedule.server.console;
 
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.console.commands.Connections;
+import ru.falseteam.schedule.server.console.commands.SetGroup;
 import ru.falseteam.schedule.server.console.commands.Stop;
 import ru.falseteam.schedule.server.console.commands.Uptime;
 
@@ -19,6 +20,7 @@ public class ConsoleWorker implements Runnable {
         addNewCommand(new Stop());
         addNewCommand(new Uptime());
         addNewCommand(new Connections());
+        addNewCommand(new SetGroup());
     }
 
     private static void addNewCommand(CommandInterface command) {
@@ -47,10 +49,10 @@ public class ConsoleWorker implements Runnable {
                     if (command.length > 1)
                         commands.get(command[0]).exec(command[1]);
                     else
-                        commands.get(command[0]).exec(null);
+                        commands.get(command[0]).exec("");
                 else
                     Console.err("Command not found");
-            } catch (Exception ignore) {
+            } catch (NoSuchElementException ignore) {
                 // normal situation. If System.in close Scanner throw exception
                 return;
             }
