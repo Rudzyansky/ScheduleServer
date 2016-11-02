@@ -1,14 +1,41 @@
 package ru.falseteam.schedule.server.sql;
 
 import ru.falseteam.schedule.serializable.Groups;
+import ru.falseteam.schedule.serializable.Pair;
 import ru.falseteam.schedule.serializable.User;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
 
 public class UserInfo {
+
+    private static ArrayList<User> users = new ArrayList<>();
+
+    public static ArrayList<User> getUsers() {
+        return users;
+    }
+
+    public static void loadFromBase() {
+        try {
+            ResultSet rs = executeQuery("SELECT * FROM `users`;");
+            users.clear();
+            if (!rs.first()) return;
+            do {
+                User user = User.Factory.getDefault();
+                user.exists = true;
+                user.id = rs.getInt("id");
+                user.name = rs.getString("name");
+                user.vkId = rs.getInt("vk_id");
+                user.group = Groups.valueOf(rs.getString("permissions"));
+                users.add(user);
+            } while (rs.next());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static User getUser(final int vkId, User user) {
         try {

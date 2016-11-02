@@ -4,6 +4,7 @@ import ru.falseteam.schedule.serializable.Pair;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
@@ -13,31 +14,29 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  */
 public class PairInfo {
 
-    private static ArrayList<Pair> pairs = new ArrayList<>();
+    private static final List<Pair> pairs = new ArrayList<>();
 
-    public static ArrayList<Pair> getPairs() {
+    public static List<Pair> getPairs() {
         return pairs;
-    }
-
-    public static int count() {
-        return pairs.size();
     }
 
     public static void loadFromBase() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `pairs`;");
-            pairs.clear();
-            if (!rs.first()) return;
-            do {
-                Pair pair = Pair.Factory.getDefault();
-                pair.exists = true;
-                pair.id = rs.getInt("id");
-                pair.name = rs.getString("name");
-                pair.audience = rs.getString("audience");
-                pair.teacher = rs.getString("teacher");
-                pair.lastTask = rs.getString("last_task");
-                pairs.add(pair);
-            } while (rs.next());
+            synchronized (pairs) {
+                ResultSet rs = executeQuery("SELECT * FROM `pairs`;");
+                pairs.clear();
+                if (!rs.first()) return;
+                do {
+                    Pair pair = Pair.Factory.getDefault();
+                    pair.exists = true;
+                    pair.id = rs.getInt("id");
+                    pair.name = rs.getString("name");
+                    pair.audience = rs.getString("audience");
+                    pair.teacher = rs.getString("teacher");
+                    pair.lastTask = rs.getString("last_task");
+                    pairs.add(pair);
+                } while (rs.next());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

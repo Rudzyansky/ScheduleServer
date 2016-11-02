@@ -5,6 +5,8 @@ import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.serializable.Pair;
 import ru.falseteam.schedule.server.sql.PairInfo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class GetPairs extends CommandAbstract {

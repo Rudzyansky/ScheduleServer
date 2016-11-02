@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class User implements Serializable {
     public boolean exists;
+    public int id;
     public String name;
     public String vkToken;
     public int vkId;
