@@ -7,9 +7,9 @@ import ru.falseteam.schedule.server.sql.PairInfo;
 
 import java.util.Map;
 
-public class ChangePair extends CommandAbstract {
-    public ChangePair() {
-        super("change_pair");
+public class UpdatePair extends CommandAbstract {
+    public UpdatePair() {
+        super("update_pair");
     }
 
     @Override
