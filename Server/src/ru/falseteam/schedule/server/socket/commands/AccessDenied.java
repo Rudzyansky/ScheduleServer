@@ -12,8 +12,10 @@ public class AccessDenied extends CommandAbstract {
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
+        String command = (String) map.get("command");
         map.clear();
         map.put("command", "forbidden");
+        map.put("forbidden", command);
         connection.send(map);
     }
 }
