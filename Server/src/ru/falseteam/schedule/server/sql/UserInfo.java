@@ -37,9 +37,9 @@ public class UserInfo {
         }
     }
 
-    public static User getUser(final int vkId, User user) {
+    public static User getUser(final int vkId) {
         try {
-            user.vkId = vkId;
+            User user = User.Factory.getDefault();
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `vk_id` LIKE '" + vkId + "';");
             user.exists = rs.first();
             if (!user.exists) return user;
@@ -86,6 +86,7 @@ public class UserInfo {
 
     public static boolean updateUser(final User user) {
         try {
+            if (!user.exists) return false;
             executeUpdate("UPDATE `users` SET" +
                     " `name`='" + user.name + "'," +
                     " `permissions`='" + user.group.name() + "'," +
