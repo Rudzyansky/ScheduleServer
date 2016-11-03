@@ -25,7 +25,6 @@ public class Worker implements Runnable {
                 while (iterator.hasNext()) {
                     Connection c = iterator.next();
                     if (System.currentTimeMillis() - c.getLastPing() > 95 * 1000) {
-                        Console.err("test");
                         iterator.remove();
                         c.disconnect();
                     } else {
@@ -38,7 +37,7 @@ public class Worker implements Runnable {
 
     public static void init() {
         new Thread(new Worker()).start();
-        //Schedule.addPeriodicalTask(ping, 30 * 1000);
+        Schedule.addPeriodicalTask(ping, 30 * 1000);
     }
 
     public static void stop() {
