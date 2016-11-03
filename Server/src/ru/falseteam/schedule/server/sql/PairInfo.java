@@ -11,7 +11,8 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
 
 /**
- * Created by Prog on 31.10.16.
+ * @author Evgeny Rudzyansky
+ * @version 1.0
  */
 public class PairInfo {
 
@@ -36,7 +37,8 @@ public class PairInfo {
                 pairs.add(pair);
             } while (rs.next());
             return pairs;
-        } catch (SQLException ignore) {
+        } catch (SQLException e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -44,7 +46,7 @@ public class PairInfo {
     /**
      * getPair load lesson from table `pairs` using `id` field
      *
-     * @param id - identificator in base
+     * @param id - id in base
      * @return {@link Pair} if exists in base, {null} if not exists or SQLException
      */
     public static Pair getPair(final int id) {
@@ -106,6 +108,7 @@ public class PairInfo {
 
     static boolean createTable() {
         try {
+            //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `pairs` (" +
                     " `id` INT UNSIGNED NOT NULL AUTO_INCREMENT," +
                     " `name` TEXT NOT NULL," +

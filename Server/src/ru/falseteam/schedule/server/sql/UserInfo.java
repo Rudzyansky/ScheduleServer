@@ -1,23 +1,32 @@
 package ru.falseteam.schedule.server.sql;
 
 import ru.falseteam.schedule.serializable.Groups;
-import ru.falseteam.schedule.serializable.Pair;
 import ru.falseteam.schedule.serializable.User;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
 
+/**
+ * translator {@link User} to database using {@link SQLConnection}
+ *
+ * @author Evgeny Rudzyansky
+ * @version 1.0
+ */
 public class UserInfo {
 
+    /**
+     * @return all user from database or null if throws internal exceptions.
+     */
     public static List<User> getUsers() {
-        List<User> users = new ArrayList<>();
         try {
+            List<User> users = new ArrayList<>();
             ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `name`;");
-            if (!rs.first()) return users;
+            if (!rs.first()) return users; // если таблица пустая.
             do {
                 User user = User.Factory.getDefault();
                 user.exists = true;
@@ -27,10 +36,11 @@ public class UserInfo {
                 user.group = Groups.valueOf(rs.getString("permissions"));
                 users.add(user);
             } while (rs.next());
-        } catch (Exception e) {
+            return users;
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return users;
+        return null;
     }
 
     /**
@@ -40,18 +50,12 @@ public class UserInfo {
     public static User getUserFromID(final int id) {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `id` LIKE '" + id + "';");
-            if (!rs.first()) return null;
+            if (!rs.first()) return null; // если пользователь не найден.
             User user = User.Factory.getDefault();
             user.exists = true;
             user.id = rs.getInt("id");
             user.name = rs.getString("name");
-            String permissions = rs.getString("permissions");
-            try {
-                Groups.valueOf(rs.getString("permissions"));
-            } catch (Exception ignore) {
-                permissions = Groups.guest.name();
-            }
-            user.group = Groups.valueOf(permissions);
+            user.group = Groups.valueOf(rs.getString("permissions"));
             user.vkId = rs.getInt("vk_id");
             user.vkToken = rs.getString("vk_token");
             return user;
@@ -73,13 +77,7 @@ public class UserInfo {
             user.exists = true;
             user.id = rs.getInt("id");
             user.name = rs.getString("name");
-            String permissions = rs.getString("permissions");
-            try {
-                Groups.valueOf(rs.getString("permissions"));
-            } catch (Exception ignore) {
-                permissions = Groups.guest.name();
-            }
-            user.group = Groups.valueOf(permissions);
+            user.group = Groups.valueOf(rs.getString("permissions"));
             user.vkId = rs.getInt("vk_id");
             user.vkToken = rs.getString("vk_token");
             return user;
@@ -101,16 +99,10 @@ public class UserInfo {
             user.exists = true;
             user.id = rs.getInt("id");
             user.name = rs.getString("name");
-            String permissions = rs.getString("permissions");
-            try {
-                Groups.valueOf(rs.getString("permissions"));
-            } catch (Exception ignore) {
-                permissions = Groups.guest.name();
-            }
-            user.group = Groups.valueOf(permissions);
+            user.group = Groups.valueOf(rs.getString("connections"));
             user.vkId = rs.getInt("vk_id");
             user.vkToken = rs.getString("vk_token");
-            return rs.next() ? null : user;
+            return rs.next() ? null : user; // если юзеров больше одного.
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -171,6 +163,7 @@ public class UserInfo {
 
     static boolean createTable() {
         try {
+            //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `users` (" +
                     " `id` INT UNSIGNED NOT NULL AUTO_INCREMENT," +
                     " `name` TEXT NOT NULL," +
