@@ -35,7 +35,7 @@ public class UserInfo {
 
     /**
      * @param vkId - vk id
-     * @return {@link User} if user exists, null if user not exists
+     * @return {@link User} if user exists, null if user not exists or SQLException
      */
     public static User getUser(final int vkId) {
         try {
@@ -62,7 +62,7 @@ public class UserInfo {
 
     /**
      * @param name - family and name
-     * @return {@link User} if user exists, null if user not exists
+     * @return {@link User} if user exists, null if user not exists or SQLException
      */
     public static User getUser(final String name) {
         try {
