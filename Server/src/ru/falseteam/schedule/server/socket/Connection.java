@@ -13,40 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Connection implements Runnable {
-
-    private static Map<Groups, Map<String, CommandInterface>> permissions;
-
     private Socket socket;
     private ObjectOutputStream out;
 
     private User user = User.Factory.getDefault();
-
     private long uptime = System.currentTimeMillis();
-
-    static {
-        permissions = new HashMap<>();
-
-        permissions.put(Groups.guest, new HashMap<>());
-        permissions.put(Groups.unconfirmed, new HashMap<>());
-        permissions.put(Groups.user, new HashMap<>());
-        permissions.put(Groups.admin, new HashMap<>());
-        permissions.put(Groups.developer, new HashMap<>());
-
-        addCommand(new AccessDenied(), Groups.values());
-        addCommand(new Auth(), Groups.guest);
-        addCommand(new GetPairs(), Groups.developer, Groups.admin, Groups.user);
-        addCommand(new UpdatePair(), Groups.developer, Groups.admin);
-        addCommand(new DeletePair(), Groups.developer, Groups.admin);
-        addCommand(new GetUsers(), Groups.developer, Groups.admin, Groups.user);
-        // опасная зона
-        addCommand(new UpdateUser(), Groups.developer, Groups.admin);
-        addCommand(new DeleteUser(), Groups.developer, Groups.admin);
-        // ------------
-    }
-
-    private static void addCommand(CommandInterface c, Groups... groupies) {
-        for (Groups g : groupies) permissions.get(g).put(c.getName(), c);
-    }
 
     Connection(Socket socket) {
         this.socket = socket;
@@ -78,7 +49,7 @@ public class Connection implements Runnable {
         }
     }
 
-    @SuppressWarnings({"SuspiciousMethodCalls", "InfiniteLoopStatement", "unchecked"})
+    @SuppressWarnings({"InfiniteLoopStatement", "unchecked"})
     @Override
     public void run() {
         class MyException extends Exception {
@@ -95,12 +66,7 @@ public class Connection implements Runnable {
                 if (!(o instanceof Map)) throw new MyException("not Map");
                 Map<String, Object> map = (Map<String, Object>) o;
                 if (!map.containsKey("command")) throw new MyException("command not found");
-                Map<String, CommandInterface> currentPermissions = permissions.get(user.group);
-                if (!currentPermissions.containsKey(map.get("command"))) {
-                    currentPermissions.get("forbidden").exec(this, map);
-                    continue;
-                }
-                currentPermissions.get(map.get("command")).exec(this, map);
+                CommandWorker.exec(this, map);
             }
         } catch (MyException e) {
             Console.err("Client " + socket.getInetAddress().getHostAddress()
