@@ -17,8 +17,7 @@ public class UpdatePair extends CommandAbstract {
         Pair pair = (Pair) map.get("pair");
         map.clear();
         map.put("command", "toast_short");
-        boolean e = pair.exists;
-        boolean b = e ? PairInfo.updatePair(pair) : PairInfo.addPair(pair);
+        boolean b = pair.exists ? PairInfo.updatePair(pair) : PairInfo.addPair(pair);
         map.put("message", b ? "Предмет изменен" : "Произошла ошибка при изменении предмета");
         connection.send(map);
     }
