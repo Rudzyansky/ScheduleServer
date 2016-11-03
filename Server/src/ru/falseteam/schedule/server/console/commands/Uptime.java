@@ -16,8 +16,6 @@ public class Uptime extends CommandAbstract {
     @Override
     public void exec(CommandLine commandLine) {
         // Выводим uptime;
-        long uptime = System.currentTimeMillis() - Uptime.uptime;
-        long tmp = 0;
         StringBuilder sb = new StringBuilder();
         sb.append("Uptime: ").append(StringUtils.getUptime(uptime)).append('\n');
 

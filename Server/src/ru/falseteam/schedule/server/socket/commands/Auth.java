@@ -33,20 +33,18 @@ public class Auth extends CommandAbstract {
             UserXtrCounters vk_user = users.get(0);
 
             User user = UserInfo.getUser(vk_user.getId());
-            if (user != null) {
+            if (user == null) {
+                user = User.Factory.getDefault();
+                user.name = vk_user.getLastName() + " " + vk_user.getFirstName();
+                user.vkToken = token;
+                user.group = unconfirmed;
+                if (!UserInfo.addUser(user)) Console.err("Can't add user with vk_id " + user.vkId);
+            } else {
                 if (!user.vkToken.equals(token)) {
                     user.vkToken = token;
                     UserInfo.updateToken(user);
                 }
                 permissions = user.group.name();
-            } else {
-                user = User.Factory.getDefault();
-                user.name = vk_user.getLastName() + " " + vk_user.getFirstName();
-                user.vkToken = token;
-                user.group = unconfirmed;
-                if (!UserInfo.addUser(user)) {
-                    Console.err("Can't add user with vk_id " + user.vkId);
-                }
             }
         } catch (Exception ignore) {
             ignore.printStackTrace();
