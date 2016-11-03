@@ -4,11 +4,10 @@ package ru.falseteam.schedule.server.socket;
 import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.server.socket.commands.*;
 
-import java.security.acl.Group;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandWorker {
+class CommandWorker {
     private static Map<Groups, Map<String, CommandInterface>> permissions;
 
     static {
