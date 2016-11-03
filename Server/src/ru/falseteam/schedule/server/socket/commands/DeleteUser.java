@@ -1,5 +1,6 @@
 package ru.falseteam.schedule.server.socket.commands;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
@@ -14,9 +15,10 @@ public class DeleteUser extends CommandAbstract {
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        boolean b = UserInfo.deleteUser((User) map.get("user"));
+        User user = (User) map.get("user");
         map.clear();
         map.put("command", "toast_short");
+        boolean b = !user.group.equals(Groups.developer) && UserInfo.deleteUser(user);
         map.put("message", b ? "Пользователь удален" : "Произошла ошибка при удалении пользователя");
         connection.send(map);
     }
