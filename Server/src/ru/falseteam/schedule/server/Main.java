@@ -17,6 +17,7 @@ public class Main {
     private static void start() {
         Console.print("Server has been started");
 
+        // Инициализация клиента вк.
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
 
