@@ -1,5 +1,6 @@
 package ru.falseteam.schedule.server.socket;
 
+import com.sun.istack.internal.NotNull;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.StaticSettings;
 
@@ -7,12 +8,12 @@ import javax.net.ServerSocketFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Worker implements Runnable {
 
     private static ServerSocket ss;
-    private static LinkedList<Connection> clients = new LinkedList<>();
-
+    private static List<Connection> clients = new LinkedList<>();
     private static int connectionsFromAllTime = 0;
 
     public static void init() {
@@ -22,7 +23,8 @@ public class Worker implements Runnable {
     public static void stop() {
         try {
             ss.close();
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         Console.print("Port " + StaticSettings.getPort() + " closed");
     }
@@ -43,10 +45,11 @@ public class Worker implements Runnable {
                 ++connectionsFromAllTime;
             }
         } catch (IOException ignore) {
+            // Normal situations throw while server socket closing.
         }
     }
 
-    public static LinkedList<Connection> getClients() {
+    public static List<Connection> getClients() {
         return clients;
     }
 
