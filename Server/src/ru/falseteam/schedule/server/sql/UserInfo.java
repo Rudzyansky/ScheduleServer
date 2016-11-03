@@ -99,7 +99,7 @@ public class UserInfo {
             user.exists = true;
             user.id = rs.getInt("id");
             user.name = rs.getString("name");
-            user.group = Groups.valueOf(rs.getString("connections"));
+            user.group = Groups.valueOf(rs.getString("permissions"));
             user.vkId = rs.getInt("vk_id");
             user.vkToken = rs.getString("vk_token");
             return rs.next() ? null : user; // если юзеров больше одного.
