@@ -69,7 +69,7 @@ public class Connection implements Runnable {
         }
     }
 
-    private void disconnect() {
+    public void disconnect() {
         try {
             Worker.removeFromList(this);
             Console.print("Client " + socket.getInetAddress().getHostAddress() + " disconnected");
