@@ -4,6 +4,7 @@ import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
+import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.UserInfo;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class UpdateUser extends CommandAbstract {
                 && groups.indexOf(user.group) > -1
                 && !user.group.equals(Groups.developer)
                 && (user.exists ? UserInfo.updateUser(user) : UserInfo.addUser(user));
+        if (b) Worker.getClients().stream().filter(c -> c.getUser().id == user.id).forEach(Connection::disconnect);
         map.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
         connection.send(map);
     }
