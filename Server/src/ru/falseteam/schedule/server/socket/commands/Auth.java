@@ -46,10 +46,10 @@ public class Auth extends CommandAbstract {
                 }
                 permissions = user.group.name();
             }
+            connection.setUser(user);
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
-        connection.getUser().group = Groups.valueOf(permissions);
         map.clear();
         map.put("command", "auth");
         map.put("version", getLastClientVersion());

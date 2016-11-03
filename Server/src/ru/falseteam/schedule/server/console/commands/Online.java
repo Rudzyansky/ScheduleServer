@@ -13,9 +13,9 @@ import java.util.List;
 import static ru.falseteam.schedule.server.Console.DEFAULT_MARGIN_LENGTH;
 import static ru.falseteam.schedule.server.Console.SHORT_DEFAULT_MARGIN_LENGTH;
 
-public class Connections extends CommandAbstract {
-    public Connections() {
-        super("connections");
+public class Online extends CommandAbstract {
+    public Online() {
+        super("online");
     }
 
 
@@ -40,6 +40,9 @@ public class Connections extends CommandAbstract {
                     StringBuilder sb3 = new StringBuilder();
                     sb3.append("Uptime: ").append(StringUtils.getUptime(connection.getUptime())).append('\n');
                     sb3.append("Group: ").append(connection.getUser().group.name()).append('\n');
+                    if (connection.getUser().exists) {
+                        sb3.append("Name: ").append(connection.getUser().name).append('\n');
+                    }
                     sb2.append(StringUtils.addMargin(sb3.toString(), SHORT_DEFAULT_MARGIN_LENGTH));
                 });
                 sb1.append(StringUtils.addMargin(sb2.toString(), SHORT_DEFAULT_MARGIN_LENGTH));

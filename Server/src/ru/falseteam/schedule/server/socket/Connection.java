@@ -28,6 +28,10 @@ public class Connection implements Runnable {
         return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public void send(Map<String, Object> map) {
         try {
             // Эта строчка появилась здесь после двух часов мучений
