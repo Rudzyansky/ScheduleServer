@@ -34,6 +34,34 @@ public class UserInfo {
     }
 
     /**
+     * @param id - id in base
+     * @return {@link User} if user exists, null if user not exists or SQLException
+     */
+    public static User getUserFromID(final int id) {
+        try {
+            ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `id` LIKE '" + id + "';");
+            if (!rs.first()) return null;
+            User user = User.Factory.getDefault();
+            user.exists = true;
+            user.id = rs.getInt("id");
+            user.name = rs.getString("name");
+            String permissions = rs.getString("permissions");
+            try {
+                Groups.valueOf(rs.getString("permissions"));
+            } catch (Exception ignore) {
+                permissions = Groups.guest.name();
+            }
+            user.group = Groups.valueOf(permissions);
+            user.vkId = rs.getInt("vk_id");
+            user.vkToken = rs.getString("vk_token");
+            return user;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * @param vkId - vk id
      * @return {@link User} if user exists, null if user not exists or SQLException
      */
@@ -43,6 +71,7 @@ public class UserInfo {
             if (!rs.first()) return null;
             User user = User.Factory.getDefault();
             user.exists = true;
+            user.id = rs.getInt("id");
             user.name = rs.getString("name");
             String permissions = rs.getString("permissions");
             try {
