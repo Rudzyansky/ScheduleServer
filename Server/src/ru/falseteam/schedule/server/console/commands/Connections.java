@@ -8,6 +8,7 @@ import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.utils.StringUtils;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import static ru.falseteam.schedule.server.Console.DEFAULT_MARGIN_LENGTH;
 import static ru.falseteam.schedule.server.Console.SHORT_DEFAULT_MARGIN_LENGTH;
@@ -23,7 +24,7 @@ public class Connections extends CommandAbstract {
         StringBuilder sb = new StringBuilder();
 
         synchronized (Worker.getClients()) {
-            final LinkedList<Connection> clients = Worker.getClients();
+            final List<Connection> clients = Worker.getClients();
             sb.append("Online: ").append(clients.size()).append('\n');
             StringBuilder sb1 = new StringBuilder();
             sb1.append("Online at all time: ")
