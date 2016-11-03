@@ -38,10 +38,10 @@ public class Connection implements Runnable {
         addCommand(new UpdatePair(), Groups.developer, Groups.admin);
         addCommand(new DeletePair(), Groups.developer, Groups.admin);
         addCommand(new GetUsers(), Groups.developer, Groups.admin, Groups.user);
-        // следующие 2 строки пока опасно добавлять
-//        addCommand(new UpdateUser(), Groups.developer, Groups.admin);
-//        addCommand(new DeleteUser(), Groups.developer, Groups.admin);
-        // ----------------------------------------
+        // опасная зона
+        addCommand(new UpdateUser(), Groups.developer, Groups.admin);
+        addCommand(new DeleteUser(), Groups.developer, Groups.admin);
+        // ------------
     }
 
     private static void addCommand(CommandInterface c, Groups... groupies) {

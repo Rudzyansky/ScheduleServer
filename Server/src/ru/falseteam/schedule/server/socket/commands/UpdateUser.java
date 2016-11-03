@@ -17,20 +17,17 @@ public class UpdateUser extends CommandAbstract {
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        User user = (User) map.get("user");
         List<Groups> groups = new ArrayList<>();
         groups.add(Groups.unconfirmed);
         groups.add(Groups.user);
         groups.add(Groups.admin);
+        User user = (User) map.get("user");
         map.clear();
         map.put("command", "toast_short");
-        if (user.group.equals(Groups.developer)) {
-            map.put("message", "Произошла ошибка при изменении пользователя");
-        } else {
-            boolean e = user.exists;
-            boolean b = e ? UserInfo.updateUser(user) : UserInfo.addUser(user);
-            map.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
-        }
+        boolean b = groups.indexOf(user.group) > -1
+                && !user.group.equals(Groups.developer)
+                && (user.exists ? UserInfo.updateUser(user) : UserInfo.addUser(user));
+        map.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
         connection.send(map);
     }
 }
