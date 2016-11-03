@@ -1,19 +1,16 @@
 package ru.falseteam.schedule.server.socket;
 
-import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.Console;
-import ru.falseteam.schedule.server.socket.commands.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Connection implements Runnable {
-    private Socket socket;
+    private final Socket socket;
     private ObjectOutputStream out;
 
     private User user = User.Factory.getDefault();
@@ -61,6 +58,7 @@ public class Connection implements Runnable {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
             Console.print("Client " + socket.getInetAddress().getHostAddress() + " connected");
+
             while (true) {
                 Object o = in.readObject();
                 if (!(o instanceof Map)) throw new MyException("not Map");
@@ -68,10 +66,11 @@ public class Connection implements Runnable {
                 if (!map.containsKey("command")) throw new MyException("command not found");
                 CommandWorker.exec(this, map);
             }
-        } catch (MyException e) {
+        } catch (MyException | ClassNotFoundException e) {
             Console.err("Client " + socket.getInetAddress().getHostAddress()
                     + " disconnected // Reason: " + e.getMessage());
-        } catch (IOException | ClassNotFoundException ignore) {
+            e.printStackTrace();
+        } catch (IOException ignore) {
         }
         disconnect();
     }
