@@ -20,6 +20,7 @@ class CommandWorker {
         permissions.put(Groups.developer, new HashMap<>());
 
         addCommand(new AccessDenied(), Groups.values());
+        addCommand(new Ping(), Groups.values());
         addCommand(new Auth(), Groups.guest);
         addCommand(new GetPairs(), Groups.developer, Groups.admin, Groups.user);
         addCommand(new UpdatePair(), Groups.developer, Groups.admin);

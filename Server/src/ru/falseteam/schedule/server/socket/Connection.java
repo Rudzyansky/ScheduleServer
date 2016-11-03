@@ -15,6 +15,7 @@ public class Connection implements Runnable {
 
     private User user = User.Factory.getDefault();
     private long uptime = System.currentTimeMillis();
+    private long lastPing = System.currentTimeMillis();
 
     Connection(Socket socket) {
         this.socket = socket;
@@ -81,5 +82,13 @@ public class Connection implements Runnable {
 
     public String getName() {
         return socket.getInetAddress().getHostAddress();
+    }
+
+    public long getLastPing() {
+        return lastPing;
+    }
+
+    public void setLastPing(long lastPing) {
+        this.lastPing = lastPing;
     }
 }
