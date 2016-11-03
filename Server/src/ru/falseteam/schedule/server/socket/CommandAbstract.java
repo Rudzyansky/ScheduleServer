@@ -8,7 +8,7 @@ public abstract class CommandAbstract implements CommandInterface {
     }
 
     @Override
-    public String getName() {
+    public final String getName() {
         return name;
     }
 }
