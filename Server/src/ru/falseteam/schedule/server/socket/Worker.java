@@ -1,6 +1,5 @@
 package ru.falseteam.schedule.server.socket;
 
-import com.sun.istack.internal.NotNull;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.StaticSettings;
 
