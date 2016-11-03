@@ -45,6 +45,7 @@ public class ConsoleWorker implements Runnable {
         while (true) {
             try {
                 String[] command = scanner.nextLine().split(" ", 2);
+                if (command[0].equals("")) continue;
                 if (commands.containsKey(command[0]))
                     if (command.length > 1)
                         commands.get(command[0]).exec(command[1]);
