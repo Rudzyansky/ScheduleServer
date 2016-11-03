@@ -24,9 +24,9 @@ public class Connections extends CommandAbstract {
 
         synchronized (Worker.getClients()) {
             final LinkedList<Connection> clients = Worker.getClients();
-            sb.append("Current connection: ").append(clients.size()).append('\n');
+            sb.append("Online: ").append(clients.size()).append('\n');
             StringBuilder sb1 = new StringBuilder();
-            sb1.append("Connections from all time: ")
+            sb1.append("Online at all time: ")
                     .append(Worker.getConnectionsFromAllTime()).append('\n');
 
             if (clients.size() > 0) {

@@ -22,7 +22,7 @@ public class UpdateUser extends CommandAbstract {
         groups.add(Groups.user);
         groups.add(Groups.admin);
         User user = (User) map.get("user");
-        User inBase = UserInfo.getUserFromID(user.id);
+        User inBase = user.exists ? UserInfo.getUserFromID(user.id) : user;
         map.clear();
         map.put("command", "toast_short");
         boolean b = inBase != null
