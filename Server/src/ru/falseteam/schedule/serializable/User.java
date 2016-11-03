@@ -3,7 +3,10 @@ package ru.falseteam.schedule.serializable;
 import java.io.Serializable;
 
 /**
- * Created by Prog on 01.11.16.
+ * Structure contains all information about user.
+ *
+ * @author Evgeny Rudzyansky
+ * @version 1.0
  */
 public class User implements Serializable {
     public boolean exists;
@@ -13,6 +16,7 @@ public class User implements Serializable {
     public int vkId;
     public Groups group;
 
+    // Empty private constructor.
     private User() {
     }
 
