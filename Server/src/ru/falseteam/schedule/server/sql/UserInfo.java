@@ -16,7 +16,7 @@ public class UserInfo {
     public static List<User> getUsers() {
         List<User> users = new ArrayList<>();
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `users`;");
+            ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `name`;");
             if (!rs.first()) return users;
             do {
                 User user = User.Factory.getDefault();
