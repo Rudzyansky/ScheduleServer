@@ -22,7 +22,7 @@ public class PairInfo {
      */
     public static List<Pair> getPairs() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `pairs`;");
+            ResultSet rs = executeQuery("SELECT * FROM `pairs` ORDER BY `name`;");
             List<Pair> pairs = new ArrayList<>();
             if (!rs.first()) return pairs;
             do {
