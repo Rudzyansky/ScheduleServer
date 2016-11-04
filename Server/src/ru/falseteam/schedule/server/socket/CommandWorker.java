@@ -23,8 +23,8 @@ class CommandWorker {
         addCommand(new Ping(), Groups.values());
         addCommand(new Auth(), Groups.guest);
         addCommand(new GetPairs(), Groups.developer, Groups.admin, Groups.user);
-        addCommand(new UpdatePair(), Groups.developer, Groups.admin);
-        addCommand(new DeletePair(), Groups.developer, Groups.admin);
+        addCommand(new UpdateLesson(), Groups.developer, Groups.admin);
+        addCommand(new DeleteLesson(), Groups.developer, Groups.admin);
         addCommand(new GetUsers(), Groups.developer, Groups.admin, Groups.user);
         // опасная зона
         addCommand(new UpdateUser(), Groups.developer, Groups.admin);
