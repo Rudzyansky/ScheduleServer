@@ -1,6 +1,6 @@
 package ru.falseteam.schedule.server.sql;
 
-import ru.falseteam.schedule.serializable.Pair;
+import ru.falseteam.schedule.serializable.Lesson;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,24 +19,24 @@ public class PairInfo {
     /**
      * getPairs load table to variable
      *
-     * @return {@link List<Pair>}, null if SQLException
+     * @return {@link List< Lesson >}, null if SQLException
      */
-    public static List<Pair> getPairs() {
+    public static List<Lesson> getPairs() {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `lessons` ORDER BY `name`;");
-            List<Pair> pairs = new ArrayList<>();
-            if (!rs.first()) return pairs;
+            List<Lesson> lessons = new ArrayList<>();
+            if (!rs.first()) return lessons;
             do {
-                Pair pair = Pair.Factory.getDefault();
-                pair.exists = true;
-                pair.id = rs.getInt("lesson_id");
-                pair.name = rs.getString("lesson_name");
-                pair.audience = rs.getString("lesson_audience");
-                pair.teacher = rs.getString("lesson_teacher");
-                pair.lastTask = rs.getString("lesson_last_task");
-                pairs.add(pair);
+                Lesson lesson = Lesson.Factory.getDefault();
+                lesson.exists = true;
+                lesson.id = rs.getInt("lesson_id");
+                lesson.name = rs.getString("lesson_name");
+                lesson.audience = rs.getString("lesson_audience");
+                lesson.teacher = rs.getString("lesson_teacher");
+                lesson.lastTask = rs.getString("lesson_last_task");
+                lessons.add(lesson);
             } while (rs.next());
-            return pairs;
+            return lessons;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -47,34 +47,34 @@ public class PairInfo {
      * getPair load lesson from table `lessons` using `lesson_id` field
      *
      * @param lesson_id - lesson_id in base
-     * @return {@link Pair} if exists in base, {null} if not exists or SQLException
+     * @return {@link Lesson} if exists in base, {null} if not exists or SQLException
      */
-    public static Pair getPair(final int lesson_id) {
+    public static Lesson getPair(final int lesson_id) {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `lessons` WHERE `lesson_id` LIKE '" + lesson_id + "';");
             if (!rs.first()) return null;
-            Pair pair = Pair.Factory.getDefault();
-            pair.exists = true;
-            pair.id = rs.getInt("lesson_id");
-            pair.name = rs.getString("lesson_name");
-            pair.audience = rs.getString("lesson_audience");
-            pair.teacher = rs.getString("lesson_teacher");
-            pair.lastTask = rs.getString("lesson_last_task");
-            return pair;
+            Lesson lesson = Lesson.Factory.getDefault();
+            lesson.exists = true;
+            lesson.id = rs.getInt("lesson_id");
+            lesson.name = rs.getString("lesson_name");
+            lesson.audience = rs.getString("lesson_audience");
+            lesson.teacher = rs.getString("lesson_teacher");
+            lesson.lastTask = rs.getString("lesson_last_task");
+            return lesson;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static boolean updatePair(final Pair pair) {
+    public static boolean updatePair(final Lesson lesson) {
         try {
             executeUpdate("UPDATE `lessons` SET" +
-                    " `lesson_name`='" + pair.name + "'," +
-                    " `lesson_audience`='" + pair.audience + "'," +
-                    " `lesson_teacher`='" + pair.teacher + "'," +
-                    " `lesson_last_task`='" + pair.lastTask + "'" +
-                    " WHERE `lesson_id` LIKE '" + pair.id + "';");
+                    " `lesson_name`='" + lesson.name + "'," +
+                    " `lesson_audience`='" + lesson.audience + "'," +
+                    " `lesson_teacher`='" + lesson.teacher + "'," +
+                    " `lesson_last_task`='" + lesson.lastTask + "'" +
+                    " WHERE `lesson_id` LIKE '" + lesson.id + "';");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,9 +82,9 @@ public class PairInfo {
         }
     }
 
-    public static boolean deletePair(final Pair pair) {
+    public static boolean deletePair(final Lesson lesson) {
         try {
-            executeUpdate("DELETE FROM `lessons` WHERE `lesson_id` LIKE '" + pair.id + "';");
+            executeUpdate("DELETE FROM `lessons` WHERE `lesson_id` LIKE '" + lesson.id + "';");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -92,14 +92,14 @@ public class PairInfo {
         }
     }
 
-    public static boolean addPair(final Pair pair) {
+    public static boolean addPair(final Lesson lesson) {
         try {
             executeUpdate("INSERT INTO `lessons` (`lesson_name`, `lesson_audience`, `lesson_teacher`," +
                     " `lesson_last_task`) VALUES ('" +
-                    pair.name + "', '" +
-                    pair.audience + "', '" +
-                    pair.teacher + "', '" +
-                    pair.lastTask + "');");
+                    lesson.name + "', '" +
+                    lesson.audience + "', '" +
+                    lesson.teacher + "', '" +
+                    lesson.lastTask + "');");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
