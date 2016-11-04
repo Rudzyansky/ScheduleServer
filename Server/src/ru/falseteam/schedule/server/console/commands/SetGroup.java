@@ -60,7 +60,6 @@ public class SetGroup extends CommandAbstract {
             }
         }
 
-        assert user != null;
         user.group = group;
         UserInfo.updateUser(user);
         Console.print("Set group " + group.name() + " for user " + user.vkId + " " + user.name);
