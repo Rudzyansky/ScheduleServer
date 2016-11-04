@@ -27,7 +27,8 @@ public class SQLConnection {
 
             // Create tables
             UserInfo.createTable();
-            PairInfo.createTable();
+            LessonInfo.createTable();
+            TemplateInfo.createTable();
         } catch (Exception e) {
             Console.err(e.getMessage());
             e.printStackTrace();

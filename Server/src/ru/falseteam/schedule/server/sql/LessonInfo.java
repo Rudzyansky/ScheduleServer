@@ -14,7 +14,7 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  * @author Evgeny Rudzyansky
  * @version 1.0
  */
-public class PairInfo {
+public class LessonInfo {
 
     /**
      * getPairs load table to variable
@@ -23,7 +23,7 @@ public class PairInfo {
      */
     public static List<Lesson> getPairs() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `lessons` ORDER BY `name`;");
+            ResultSet rs = executeQuery("SELECT * FROM `lessons` ORDER BY `lesson_name`;");
             List<Lesson> lessons = new ArrayList<>();
             if (!rs.first()) return lessons;
             do {
@@ -65,6 +65,22 @@ public class PairInfo {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * @param rs - {@link ResultSet}, из которого вытаскиваем инфу
+     * @return {@link Lesson}, or throws SQLException
+     */
+    static Lesson getLesson(ResultSet rs) throws SQLException {
+        if (!rs.first()) return null;
+        Lesson lesson = Lesson.Factory.getDefault();
+        lesson.exists = true;
+        lesson.id = rs.getInt("lesson_id");
+        lesson.name = rs.getString("lesson_name");
+        lesson.audience = rs.getString("lesson_audience");
+        lesson.teacher = rs.getString("lesson_teacher");
+        lesson.lastTask = rs.getString("lesson_last_task");
+        return lesson;
     }
 
     public static boolean updatePair(final Lesson lesson) {
