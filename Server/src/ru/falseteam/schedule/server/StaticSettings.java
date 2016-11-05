@@ -20,6 +20,8 @@ public class StaticSettings {
     // Main
     private static int port;
     private static int updatePort;
+    private static String publicPass;
+    private static String privatePass;
     private static String lastClientVersion;
     private static String lastClientPath;
 
@@ -125,6 +127,14 @@ public class StaticSettings {
 
     public static int getUpdatePort() {
         return updatePort;
+    }
+
+    public static String getPublicPass() {
+        return publicPass;
+    }
+
+    public static String getPrivatePass() {
+        return privatePass;
     }
 
     public static String getLastClientVersion() {
