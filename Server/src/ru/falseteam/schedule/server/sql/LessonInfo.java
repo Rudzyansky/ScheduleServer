@@ -117,7 +117,7 @@ public class LessonInfo {
                     " `lesson_last_task` TEXT," +
                     " PRIMARY KEY (`lesson_id`)," +
                     " INDEX (`lesson_id`)," +
-                    " UNIQUE KEY (`lesson_id`)" +
+                    " UNIQUE (`lesson_id`)" +
                     ") ENGINE=InnoDB;");
             return true;
         } catch (SQLException ignore) {
