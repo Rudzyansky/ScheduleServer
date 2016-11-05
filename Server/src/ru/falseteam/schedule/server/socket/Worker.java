@@ -56,16 +56,15 @@ public class Worker implements Runnable {
 
     private void initSSL() {
         try {
-            String password = "public_pass";
-            String passwordSigned = "private_pass";
             String algorithm = KeyManagerFactory.getDefaultAlgorithm();
 
             KeyStore ks = KeyStore.getInstance("JKS");
-            ks.load(new FileInputStream(StaticSettings.CONFIG_FOLDER + "/keystore.jks"), password.toCharArray());
+            ks.load(new FileInputStream(StaticSettings.CONFIG_FOLDER + "/keystore.jks"),
+                    StaticSettings.getPublicPass().toCharArray());
             Console.print("KeyStore has been loaded");
 
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(algorithm);
-            kmf.init(ks, passwordSigned.toCharArray());
+            kmf.init(ks, StaticSettings.getPrivatePass().toCharArray());
             Console.print("KeyManagerFactory has been initialized");
 
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
