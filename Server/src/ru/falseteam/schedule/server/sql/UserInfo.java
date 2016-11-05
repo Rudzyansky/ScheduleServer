@@ -157,8 +157,8 @@ public class UserInfo {
                     " `user_permissions` TEXT NOT NULL," +
                     " PRIMARY KEY (`user_id`)," +
                     " INDEX (`user_id`)," +
-                    " UNIQUE KEY (`user_id`)," +
-                    " UNIQUE KEY (`user_vk_id`)" +
+                    " UNIQUE (`user_id`)," +
+                    " UNIQUE (`user_vk_id`)" +
                     ") ENGINE=InnoDB;");
             return true;
         } catch (Exception ignore) {
