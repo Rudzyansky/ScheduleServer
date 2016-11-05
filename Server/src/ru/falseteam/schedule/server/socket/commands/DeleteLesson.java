@@ -9,12 +9,12 @@ import java.util.Map;
 
 public class DeleteLesson extends CommandAbstract {
     public DeleteLesson() {
-        super("delete_pair");
+        super("delete_lesson");
     }
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        boolean b = LessonInfo.deleteLesson((Lesson) map.get("pair"));
+        boolean b = LessonInfo.deleteLesson((Lesson) map.get("lesson"));
         map.clear();
         map.put("command", "toast_short");
         map.put("message", b ? "Предмет удален" : "Произошла ошибка при удалении предмета");
