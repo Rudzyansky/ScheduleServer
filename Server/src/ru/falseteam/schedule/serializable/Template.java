@@ -28,7 +28,7 @@ public class Template implements Serializable {
     public WeekDay weekDay;
     public LessonNumber lessonNumber;
     public Lesson lesson;
-    public int weekEvence;
+    public int weekEvenness;
 
     // Empty private constructor.
     private Template() {
