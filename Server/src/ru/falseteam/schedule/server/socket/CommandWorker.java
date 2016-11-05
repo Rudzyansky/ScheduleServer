@@ -22,7 +22,7 @@ class CommandWorker {
         addCommand(new AccessDenied(), Groups.values());
         addCommand(new Ping(), Groups.values());
         addCommand(new Auth(), Groups.guest);
-        addCommand(new GetPairs(), Groups.developer, Groups.admin, Groups.user);
+        addCommand(new GetLessons(), Groups.developer, Groups.admin, Groups.user);
         addCommand(new UpdateLesson(), Groups.developer, Groups.admin);
         addCommand(new DeleteLesson(), Groups.developer, Groups.admin);
         addCommand(new GetUsers(), Groups.developer, Groups.admin, Groups.user);
