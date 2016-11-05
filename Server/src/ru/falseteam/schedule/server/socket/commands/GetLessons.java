@@ -6,14 +6,14 @@ import ru.falseteam.schedule.server.sql.LessonInfo;
 
 import java.util.Map;
 
-public class GetPairs extends CommandAbstract {
-    public GetPairs() {
-        super("get_pairs");
+public class GetLessons extends CommandAbstract {
+    public GetLessons() {
+        super("get_lessons");
     }
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        map.put("pairs", LessonInfo.getPairs());
+        map.put("lessons", LessonInfo.getLessons());
         connection.send(map);
     }
 }

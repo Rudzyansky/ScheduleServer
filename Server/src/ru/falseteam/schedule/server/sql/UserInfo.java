@@ -24,8 +24,8 @@ public class UserInfo {
      */
     public static List<User> getUsers() {
         try {
-            List<User> users = new ArrayList<>();
             ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `name`;");
+            List<User> users = new ArrayList<>();
             if (!rs.first()) return users; // если таблица пустая.
             do {
                 User user = User.Factory.getDefault();

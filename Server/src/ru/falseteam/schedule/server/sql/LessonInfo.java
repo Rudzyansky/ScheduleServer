@@ -17,11 +17,11 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
 public class LessonInfo {
 
     /**
-     * getPairs load table to variable
+     * getLessons load table to variable
      *
      * @return {@link List< Lesson >}, null if SQLException
      */
-    public static List<Lesson> getPairs() {
+    public static List<Lesson> getLessons() {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `lessons` ORDER BY `lesson_name`;");
             List<Lesson> lessons = new ArrayList<>();
@@ -44,23 +44,15 @@ public class LessonInfo {
     }
 
     /**
-     * getPair load lesson from table `lessons` using `lesson_id` field
+     * getLesson load lesson from table `lessons` using `lesson_id` field
      *
      * @param lesson_id - lesson_id in base
      * @return {@link Lesson} if exists in base, {null} if not exists or SQLException
      */
-    public static Lesson getPair(final int lesson_id) {
+    public static Lesson getLesson(final int lesson_id) {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `lessons` WHERE `lesson_id` LIKE '" + lesson_id + "';");
-            if (!rs.first()) return null;
-            Lesson lesson = Lesson.Factory.getDefault();
-            lesson.exists = true;
-            lesson.id = rs.getInt("lesson_id");
-            lesson.name = rs.getString("lesson_name");
-            lesson.audience = rs.getString("lesson_audience");
-            lesson.teacher = rs.getString("lesson_teacher");
-            lesson.lastTask = rs.getString("lesson_last_task");
-            return lesson;
+            return getLesson(rs);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
