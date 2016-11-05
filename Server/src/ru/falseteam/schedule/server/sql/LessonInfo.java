@@ -26,16 +26,8 @@ public class LessonInfo {
             ResultSet rs = executeQuery("SELECT * FROM `lessons` ORDER BY `lesson_name`;");
             List<Lesson> lessons = new ArrayList<>();
             if (!rs.first()) return lessons;
-            do {
-                Lesson lesson = Lesson.Factory.getDefault();
-                lesson.exists = true;
-                lesson.id = rs.getInt("lesson_id");
-                lesson.name = rs.getString("lesson_name");
-                lesson.audience = rs.getString("lesson_audience");
-                lesson.teacher = rs.getString("lesson_teacher");
-                lesson.lastTask = rs.getString("lesson_last_task");
-                lessons.add(lesson);
-            } while (rs.next());
+            do lessons.add(getLesson(rs));
+            while (rs.next());
             return lessons;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,7 +44,7 @@ public class LessonInfo {
     public static Lesson getLesson(final int lesson_id) {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `lessons` WHERE `lesson_id` LIKE '" + lesson_id + "';");
-            return getLesson(rs);
+            return rs.first() ? getLesson(rs) : null;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -64,7 +56,6 @@ public class LessonInfo {
      * @return {@link Lesson}, or throws SQLException
      */
     static Lesson getLesson(ResultSet rs) throws SQLException {
-        if (!rs.first()) return null;
         Lesson lesson = Lesson.Factory.getDefault();
         lesson.exists = true;
         lesson.id = rs.getInt("lesson_id");
@@ -119,12 +110,14 @@ public class LessonInfo {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `lessons` (" +
-                    " `lesson_id` INT UNSIGNED NOT NULL AUTO_INCREMENT," +
+                    " `lesson_id` INT NOT NULL AUTO_INCREMENT," +
                     " `lesson_name` TEXT NOT NULL," +
                     " `lesson_audience` TEXT," +
                     " `lesson_teacher` TEXT," +
                     " `lesson_last_task` TEXT," +
-                    " PRIMARY KEY (`lesson_id`)" +
+                    " PRIMARY KEY (`lesson_id`)," +
+                    " INDEX (`lesson_id`)," +
+                    " UNIQUE KEY (`lesson_id`)" +
                     ") ENGINE=InnoDB;");
             return true;
         } catch (SQLException ignore) {
