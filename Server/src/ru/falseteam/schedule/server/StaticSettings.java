@@ -104,6 +104,14 @@ public class StaticSettings {
             properties.setProperty("update_port", "7102");
             save = true;
         }
+        if (!names.contains("publicPass")) {
+            properties.setProperty("publicPass", "publicPass");
+            save = true;
+        }
+        if (!names.contains("privatePass")) {
+            properties.setProperty("privatePass", "privatePass");
+            save = true;
+        }
         if (!names.contains("lastClientVersion")) {
             properties.setProperty("lastClientVersion", "0");
             save = true;
@@ -117,6 +125,8 @@ public class StaticSettings {
 
         port = Integer.parseInt(properties.getProperty("port"));
         updatePort = Integer.parseInt(properties.getProperty("update_port"));
+        publicPass = properties.getProperty("publicPass");
+        privatePass = properties.getProperty("privatePass");
         lastClientVersion = properties.getProperty("lastClientVersion");
         lastClientPath = properties.getProperty("lastClientPath");
     }
