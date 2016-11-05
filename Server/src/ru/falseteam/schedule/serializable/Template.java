@@ -12,12 +12,12 @@ import java.sql.Time;
 public class Template implements Serializable {
 
     // эти 2 подкласса должны быть публичными, иначе к ним нет доступа. потом сделаю лучше (мб перенесу в serializable)
-    public class WeekDay {
+    public class WeekDay implements Serializable {
         public int id;
         public String name;
     }
 
-    public class LessonNumber {
+    public class LessonNumber implements Serializable {
         public int id;
         public Time begin;
         public Time end;
