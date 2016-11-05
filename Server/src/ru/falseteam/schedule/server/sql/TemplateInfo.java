@@ -123,9 +123,9 @@ public class TemplateInfo {
                     " `week_evenness` INT NOT NULL," +
 
                     " PRIMARY KEY (`id`)," +
-                    " KEY `pair` (`lesson_id`)," +
                     " KEY `week_day_id` (`week_day_id`)," +
-                    " KEY `lesson_number` (`lesson_number_id`)," +
+                    " KEY `lesson_number_id` (`lesson_number_id`)," +
+                    " KEY `lesson_id` (`lesson_id`)," +
 
                     " FOREIGN KEY (`week_day_id`) REFERENCES `week_days`(`week_day_id`) ON DELETE RESTRICT ON UPDATE RESTRICT," +
                     " FOREIGN KEY (`lesson_number_id`) REFERENCES `lesson_numbers`(`lesson_number_id`) ON DELETE RESTRICT ON UPDATE CASCADE," +
@@ -146,7 +146,7 @@ public class TemplateInfo {
                     " `lesson_number_end` TIME NOT NULL," +
                     " PRIMARY KEY (`lesson_number_id`)," +
                     " INDEX (`lesson_number_id`)," +
-                    " UNIQUE KEY (`lesson_number_id`)" +
+                    " UNIQUE (`lesson_number_id`)" +
                     ") ENGINE=InnoDB;");
             executeUpdate("INSERT INTO `lesson_numbers` (`lesson_number_id`," +
                     " `lesson_number_begin`, `lesson_number_end`) VALUES" +
@@ -171,7 +171,7 @@ public class TemplateInfo {
                     " `week_day_name` TEXT NOT NULL," +
                     " PRIMARY KEY (`week_day_id`)," +
                     " INDEX (`week_day_id`)," +
-                    " UNIQUE KEY (`week_day_id`)" +
+                    " UNIQUE (`week_day_id`)" +
                     ") ENGINE=InnoDB;");
             executeUpdate("INSERT INTO `week_days` (`week_day_id`, `week_day_name`) VALUES" +
                     "(1, 'Понедельник')," +
