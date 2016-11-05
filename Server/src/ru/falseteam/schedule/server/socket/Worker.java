@@ -5,14 +5,15 @@ import ru.falseteam.schedule.server.Schedule;
 import ru.falseteam.schedule.server.StaticSettings;
 import ru.falseteam.schedule.server.socket.commands.Ping;
 
-import javax.net.ServerSocketFactory;
+import javax.net.ssl.*;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
+import java.security.KeyStore;
 import java.util.*;
 
 public class Worker implements Runnable {
 
-    private static ServerSocket ss;
+    private static SSLServerSocket ss;
     private static final List<Connection> clients = new LinkedList<>();
     private static int connectionsFromAllTime = 0;
 
@@ -53,15 +54,44 @@ public class Worker implements Runnable {
         clients.remove(c);
     }
 
+    private void initSSL() {
+        try {
+            String password = "public_pass";
+            String passwordSigned = "private_pass";
+            String algorithm = KeyManagerFactory.getDefaultAlgorithm();
+
+            KeyStore ks = KeyStore.getInstance("JKS");
+            ks.load(new FileInputStream(StaticSettings.CONFIG_FOLDER + "/keystore.jks"), password.toCharArray());
+            Console.print("KeyStore has been loaded");
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(algorithm);
+            kmf.init(ks, passwordSigned.toCharArray());
+            Console.print("KeyManagerFactory has been initialized");
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
+            tmf.init(ks);
+            Console.print("TrustManagerFactory has been initialized");
+
+            SSLContext sc = SSLContext.getInstance("TLS");
+            TrustManager[] trustManagers = tmf.getTrustManagers();
+            sc.init(kmf.getKeyManagers(), trustManagers, null);
+            Console.print("SSLContext has been initialized");
+
+            SSLServerSocketFactory ssf = sc.getServerSocketFactory();
+            ss = (SSLServerSocket) ssf.createServerSocket(StaticSettings.getPort());
+            Console.print("Port " + StaticSettings.getPort() + " has been binded");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
         try {
-            ServerSocketFactory ssf = ServerSocketFactory.getDefault();
-            ss = ssf.createServerSocket(StaticSettings.getPort());
-            Console.print("Port " + StaticSettings.getPort() + " has been binded");
+            initSSL();
             while (true) {
-                clients.add(new Connection(ss.accept()));
+                clients.add(new Connection((SSLSocket) ss.accept()));
                 ++connectionsFromAllTime;
             }
         } catch (IOException ignore) {

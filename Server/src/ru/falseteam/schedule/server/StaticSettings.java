@@ -1,7 +1,10 @@
 package ru.falseteam.schedule.server;
 
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 
@@ -9,7 +12,7 @@ import java.util.Set;
  * @author Sumin Vladislav
  */
 public class StaticSettings {
-    private static final String CONFIG_FOLDER = "config";
+    public static final String CONFIG_FOLDER = "config";
 
     private static final String CONFIG_MAIN = "main.xml";
     private static final String CONFIG_DATABASE = "database.xml";
