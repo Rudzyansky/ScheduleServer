@@ -13,6 +13,7 @@ import ru.falseteam.schedule.serializable.User;
 import java.util.List;
 import java.util.Map;
 
+import static ru.falseteam.schedule.serializable.Groups.user;
 import static ru.falseteam.schedule.server.Main.vk;
 import static ru.falseteam.schedule.server.StaticSettings.getLastClientVersion;
 import static ru.falseteam.schedule.serializable.Groups.*;
@@ -36,6 +37,7 @@ public class Auth extends CommandAbstract {
             if (user == null) {
                 user = User.Factory.getDefault();
                 user.name = vk_user.getLastName() + " " + vk_user.getFirstName();
+                user.vkId = vk_user.getId();
                 user.vkToken = token;
                 user.group = unconfirmed;
                 if (!UserInfo.addUser(user)) Console.err("Can't add user with vk_id " + user.vkId);
@@ -44,8 +46,8 @@ public class Auth extends CommandAbstract {
                     user.vkToken = token;
                     UserInfo.updateToken(user);
                 }
-                permissions = user.group.name();
             }
+            permissions = user.group.name();
             connection.setUser(user);
         } catch (Exception ignore) {
             ignore.printStackTrace();
