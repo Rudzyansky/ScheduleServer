@@ -71,7 +71,7 @@ public class UserInfo {
     public static User getUser(final String name) {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `user_name` LIKE '" + name + "';");
-            return (!rs.first() || rs.next()) ? null : getUser(rs);
+            return (!rs.first() || !rs.isLast()) ? null : getUser(rs);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
