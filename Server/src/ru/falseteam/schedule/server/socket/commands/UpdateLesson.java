@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class UpdateLesson extends CommandAbstract {
     public UpdateLesson() {
-        super("update_pair");
+        super("update_lesson");
     }
 
     @Override
