@@ -5,7 +5,6 @@ import ru.falseteam.schedule.server.Main;
 import ru.falseteam.schedule.server.StaticSettings;
 
 import java.sql.*;
-import java.sql.Connection;
 
 /**
  * Create connection to database.
@@ -24,7 +23,8 @@ public class SQLConnection {
             connection = DriverManager
                     .getConnection(StaticSettings.getUrl(), StaticSettings.getUser(), StaticSettings.getPassword());
             statement = connection.createStatement();
-
+            // Create database
+            createDB();
             // Create tables
             UserInfo.createTable();
             LessonInfo.createTable();
@@ -52,5 +52,14 @@ public class SQLConnection {
 
     static int executeUpdate(String request) throws SQLException {
         return statement.executeUpdate(request);
+    }
+
+    private static boolean createDB() {
+        try {
+            executeUpdate("CREATE DATABASE `schedule`;");
+            return true;
+        } catch (SQLException ignore) {
+            return false;
+        }
     }
 }
