@@ -25,37 +25,45 @@ public class Auth extends CommandAbstract {
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        String permissions = Groups.guest.name();
+        User user;
         try {
+            //Проверяем токен на валидность.
             String token = (String) map.get("token");
             UserActor actor = new UserActor(0, token);
             List<UserXtrCounters> users = vk.users().get(actor).fields(UserField.PHOTO_50).execute();
-            if (users.isEmpty()) throw new Exception("response is empty");
-            UserXtrCounters vk_user = users.get(0);
+            if (users.isEmpty()) throw new Exception("Vk response is empty");
+            UserXtrCounters vkUser = users.get(0);
 
-            User user = UserInfo.getUser(vk_user.getId());
+            // Получаем юзера из бд если он существует.
+            user = UserInfo.getUser(vkUser.getId());
             if (user == null) {
+                // Если юзер не существует.
                 user = User.Factory.getDefault();
-                user.name = vk_user.getLastName() + " " + vk_user.getFirstName();
-                user.vkId = vk_user.getId();
+                user.vkId = vkUser.getId();
+                user.name = vkUser.getLastName() + " " + vkUser.getFirstName();
                 user.vkToken = token;
                 user.group = unconfirmed;
-                if (!UserInfo.addUser(user)) Console.err("Can't add user with vk_id " + user.vkId);
+                if (!UserInfo.addUser(user)) throw new Exception("Can't add user with vk_id " + user.vkId);
+                user.exists = true; // Вот тут хз мб это нужно в методе бд делать.
             } else {
+                // Если юзер существует.
                 if (!user.vkToken.equals(token)) {
+                    // Обновляем токен если он поменялся.
                     user.vkToken = token;
                     UserInfo.updateToken(user);
                 }
             }
-            permissions = user.group.name();
             connection.setUser(user);
         } catch (Exception ignore) {
             ignore.printStackTrace();
+            return;
         }
+
+        // Формируем ответ пользователю.
         map.clear();
         map.put("command", "auth");
         map.put("version", getLastClientVersion());
-        map.put("group", permissions);
+        map.put("group", user.group.name());
         connection.send(map);
     }
 }
