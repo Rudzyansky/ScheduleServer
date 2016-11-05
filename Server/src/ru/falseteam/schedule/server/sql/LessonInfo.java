@@ -19,7 +19,7 @@ public class LessonInfo {
     /**
      * getLessons load table to variable
      *
-     * @return {@link List< Lesson >}, null if SQLException
+     * @return {@link List<Lesson>}, null if SQLException
      */
     public static List<Lesson> getLessons() {
         try {
