@@ -66,7 +66,7 @@ public class TemplateInfo {
         template.lessonNumber.begin = rs.getTime("lesson_number_begin");
         template.lessonNumber.end = rs.getTime("lesson_number_end");
         template.lesson = LessonInfo.getLesson(rs);
-        template.weekEvence = rs.getInt("week_evence");
+        template.weekEvenness = rs.getInt("week_evenness");
         return template;
     }
 
@@ -76,7 +76,7 @@ public class TemplateInfo {
                     " `week_day_id`='" + template.weekDay.id + "'," +
                     " `lesson_number_id`='" + template.lessonNumber.id + "'," +
                     " `lesson_id`='" + template.lesson.id + "'," +
-                    " `week_evence`='" + template.weekEvence + "'" +
+                    " `week_evenness`='" + template.weekEvenness + "'" +
                     " WHERE `id` LIKE '" + template.id + "';");
             return true;
         } catch (SQLException e) {
@@ -98,11 +98,11 @@ public class TemplateInfo {
     public static boolean addTemplate(final Template template) {
         try {
             executeUpdate("INSERT INTO `templates` (`week_day_id`, `lesson_number_id`, `lesson_id`," +
-                    " `week_evence`) VALUES ('" +
+                    " `week_evenness`) VALUES ('" +
                     template.weekDay.id + "', '" +
                     template.lessonNumber.id + "', '" +
                     template.lesson.id + "', '" +
-                    template.weekEvence + "');");
+                    template.weekEvenness + "');");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -120,7 +120,7 @@ public class TemplateInfo {
                     " `week_day_id` INT NOT NULL," +
                     " `lesson_number_id` INT NOT NULL," +
                     " `lesson_id` INT NOT NULL," +
-                    " `week_evence` INT NOT NULL," +
+                    " `week_evenness` INT NOT NULL," +
 
                     " PRIMARY KEY (`id`)," +
                     " KEY `pair` (`lesson_id`)," +
