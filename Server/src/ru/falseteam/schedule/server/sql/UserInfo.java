@@ -24,7 +24,7 @@ public class UserInfo {
      */
     public static List<User> getUsers() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `name`;");
+            ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `user_name`;");
             List<User> users = new ArrayList<>();
             if (!rs.first()) return users; // если таблица пустая.
             do users.add(getUser(rs));
@@ -71,7 +71,7 @@ public class UserInfo {
     public static User getUser(final String name) {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `user_name` LIKE '" + name + "';");
-            return (!rs.first() || rs.next()) ? null : getUser(rs);
+            return (!rs.first() || !rs.isLast()) ? null : getUser(rs);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
