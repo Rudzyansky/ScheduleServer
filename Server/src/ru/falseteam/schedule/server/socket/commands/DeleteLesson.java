@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class DeleteLesson extends CommandAbstract {
     public DeleteLesson() {
-        super("delete_pair");
+        super("delete_lesson");
     }
 
     @Override
