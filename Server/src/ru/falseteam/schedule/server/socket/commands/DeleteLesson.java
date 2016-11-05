@@ -14,7 +14,7 @@ public class DeleteLesson extends CommandAbstract {
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        boolean b = LessonInfo.deletePair((Lesson) map.get("pair"));
+        boolean b = LessonInfo.deleteLesson((Lesson) map.get("pair"));
         map.clear();
         map.put("command", "toast_short");
         map.put("message", b ? "Предмет удален" : "Произошла ошибка при удалении предмета");

@@ -75,7 +75,7 @@ public class LessonInfo {
         return lesson;
     }
 
-    public static boolean updatePair(final Lesson lesson) {
+    public static boolean updateLesson(final Lesson lesson) {
         try {
             executeUpdate("UPDATE `lessons` SET" +
                     " `lesson_name`='" + lesson.name + "'," +
@@ -90,7 +90,7 @@ public class LessonInfo {
         }
     }
 
-    public static boolean deletePair(final Lesson lesson) {
+    public static boolean deleteLesson(final Lesson lesson) {
         try {
             executeUpdate("DELETE FROM `lessons` WHERE `lesson_id` LIKE '" + lesson.id + "';");
             return true;
@@ -100,7 +100,7 @@ public class LessonInfo {
         }
     }
 
-    public static boolean addPair(final Lesson lesson) {
+    public static boolean addLesson(final Lesson lesson) {
         try {
             executeUpdate("INSERT INTO `lessons` (`lesson_name`, `lesson_audience`, `lesson_teacher`," +
                     " `lesson_last_task`) VALUES ('" +

@@ -17,7 +17,7 @@ public class UpdateLesson extends CommandAbstract {
         Lesson lesson = (Lesson) map.get("lesson");
         map.clear();
         map.put("command", "toast_short");
-        boolean b = lesson.exists ? LessonInfo.updatePair(lesson) : LessonInfo.addPair(lesson);
+        boolean b = lesson.exists ? LessonInfo.updateLesson(lesson) : LessonInfo.addLesson(lesson);
         map.put("message", b ? "Предмет изменен" : "Произошла ошибка при изменении предмета");
         connection.send(map);
     }
