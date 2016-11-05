@@ -30,6 +30,9 @@ class CommandWorker {
         addCommand(new UpdateUser(), Groups.developer, Groups.admin);
         addCommand(new DeleteUser(), Groups.developer, Groups.admin);
         // ------------
+        addCommand(new GetTemplates(), Groups.developer, Groups.admin, Groups.user);
+        addCommand(new UpdateTemplate(), Groups.developer, Groups.admin);
+        addCommand(new DeleteTemplate(), Groups.developer, Groups.admin);
     }
 
     private static void addCommand(CommandInterface c, Groups... groupies) {
