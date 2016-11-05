@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.sql.Time;
 
 /**
- * Structure contains all information about user.
+ * Structure contains all information about template.
  *
  * @author Evgeny Rudzyansky
  * @version 1.0
