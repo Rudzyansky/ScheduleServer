@@ -1,9 +1,12 @@
 package ru.falseteam.schedule.server.sql;
 
+import ru.falseteam.schedule.serializable.LessonNumber;
 import ru.falseteam.schedule.serializable.Template;
+import ru.falseteam.schedule.serializable.WeekDay;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,6 +110,45 @@ public class TemplateInfo {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static List<WeekDay> getWeekDays() {
+        try {
+            ResultSet rs = executeQuery("SELECT * FROM `week_days`");
+            List<WeekDay> weekDays = new ArrayList<>();
+            if (!rs.first()) return weekDays;
+            do {
+                WeekDay day = new WeekDay();
+                day.id = rs.getInt("week_day_id");
+                day.name = rs.getString("week_day_name");
+                weekDays.add(day);
+            }
+            while (rs.next());
+            return weekDays;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<LessonNumber> getLessonNumbers() {
+        try {
+            ResultSet rs = executeQuery("SELECT * FROM `lesson_numbers`");
+            List<LessonNumber> lessonNumbers = new ArrayList<>();
+            if (!rs.first()) return lessonNumbers;
+            do {
+                LessonNumber lesson = new LessonNumber();
+                lesson.id = rs.getInt("lesson_number_id");
+                lesson.begin = rs.getTime("lesson_number_begin");
+                lesson.end = rs.getTime("lesson_number_end");
+                lessonNumbers.add(lesson);
+            }
+            while (rs.next());
+            return lessonNumbers;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
