@@ -31,6 +31,9 @@ class CommandWorker {
         addCommand(new DeleteUser(), Groups.developer, Groups.admin);
         // ------------
         addCommand(new GetTemplates(), Groups.developer, Groups.admin, Groups.user);
+        addCommand(new GetWeekDays(), Groups.developer, Groups.admin, Groups.user);
+        addCommand(new GetLessonNumbers(), Groups.developer, Groups.admin, Groups.user);
+
         addCommand(new UpdateTemplate(), Groups.developer, Groups.admin);
         addCommand(new DeleteTemplate(), Groups.developer, Groups.admin);
     }
