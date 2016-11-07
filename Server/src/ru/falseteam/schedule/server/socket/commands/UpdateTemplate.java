@@ -14,7 +14,7 @@ public class UpdateTemplate extends CommandAbstract {
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        Template template = (Template) map.get("lesson");
+        Template template = (Template) map.get("template");
         map.clear();
         map.put("command", "toast_short");
         boolean b = template.exists ? TemplateInfo.updateTemplate(template) : TemplateInfo.addTemplate(template);

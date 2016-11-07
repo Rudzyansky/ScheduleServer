@@ -1,7 +1,10 @@
 package ru.falseteam.schedule.server;
 
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 
@@ -9,7 +12,7 @@ import java.util.Set;
  * @author Sumin Vladislav
  */
 public class StaticSettings {
-    private static final String CONFIG_FOLDER = "config";
+    public static final String CONFIG_FOLDER = "config";
 
     private static final String CONFIG_MAIN = "main.xml";
     private static final String CONFIG_DATABASE = "database.xml";
@@ -17,6 +20,8 @@ public class StaticSettings {
     // Main
     private static int port;
     private static int updatePort;
+    private static String publicPass;
+    private static String privatePass;
     private static String lastClientVersion;
     private static String lastClientPath;
 
@@ -99,6 +104,14 @@ public class StaticSettings {
             properties.setProperty("update_port", "7102");
             save = true;
         }
+        if (!names.contains("publicPass")) {
+            properties.setProperty("publicPass", "publicPass");
+            save = true;
+        }
+        if (!names.contains("privatePass")) {
+            properties.setProperty("privatePass", "privatePass");
+            save = true;
+        }
         if (!names.contains("lastClientVersion")) {
             properties.setProperty("lastClientVersion", "0");
             save = true;
@@ -112,6 +125,8 @@ public class StaticSettings {
 
         port = Integer.parseInt(properties.getProperty("port"));
         updatePort = Integer.parseInt(properties.getProperty("update_port"));
+        publicPass = properties.getProperty("publicPass");
+        privatePass = properties.getProperty("privatePass");
         lastClientVersion = properties.getProperty("lastClientVersion");
         lastClientPath = properties.getProperty("lastClientPath");
     }
@@ -122,6 +137,14 @@ public class StaticSettings {
 
     public static int getUpdatePort() {
         return updatePort;
+    }
+
+    public static String getPublicPass() {
+        return publicPass;
+    }
+
+    public static String getPrivatePass() {
+        return privatePass;
     }
 
     public static String getLastClientVersion() {
