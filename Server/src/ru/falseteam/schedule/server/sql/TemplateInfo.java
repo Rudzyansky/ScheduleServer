@@ -134,7 +134,7 @@ public class TemplateInfo {
 
     public static List<LessonNumber> getLessonNumbers() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `lesson_numbers`");
+            ResultSet rs = executeQuery("SELECT * FROM `lesson_numbers`;");
             List<LessonNumber> lessonNumbers = new ArrayList<>();
             if (!rs.first()) return lessonNumbers;
             do {
