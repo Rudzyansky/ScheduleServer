@@ -26,7 +26,9 @@ public class TemplateInfo {
      */
     public static List<Template> getTemplates() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `templates` NATURAL JOIN (`week_days`, `lessons`)");
+            ResultSet rs = executeQuery("SELECT * FROM `templates`" +
+                    " NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)" +
+                    " ORDER BY `week_day_id`, `lesson_number_id`, `week_evenness`;");
             List<Template> templates = new ArrayList<>();
             if (!rs.first()) return templates;
             do templates.add(getTemplate(rs));

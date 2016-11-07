@@ -3,21 +3,21 @@ package ru.falseteam.schedule.server.socket;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.Console;
 
+import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.Map;
 
 public class Connection implements Runnable {
-    private final Socket socket;
+    private final SSLSocket socket;
     private ObjectOutputStream out;
 
     private User user = User.Factory.getDefault();
     private long uptime = System.currentTimeMillis();
     private long lastPing = System.currentTimeMillis();
 
-    Connection(Socket socket) {
+    Connection(SSLSocket socket) {
         this.socket = socket;
         new Thread(this).start();
     }
