@@ -1,26 +1,25 @@
 package ru.falseteam.schedule.server.updater;
 
 import ru.falseteam.schedule.server.Console;
-import ru.falseteam.schedule.server.StaticSettings;
 
+import javax.net.ssl.SSLSocket;
 import java.io.*;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 
 import static ru.falseteam.schedule.server.StaticSettings.getLastClientPath;
 
 class Connection implements Runnable {
 
-    private Socket socket;
+    private SSLSocket socket;
 
-    Connection(Socket socket) {
+    Connection(SSLSocket socket) {
         this.socket = socket;
         new Thread(this).start();
     }
 
     private void disconnect() {
         try {
-            Console.print("[Update] Client " + socket.getInetAddress().getHostAddress() + " disconnected");
+            Console.print("[updater] Client " + socket.getInetAddress().getHostAddress() + " disconnected");
             socket.close();
         } catch (IOException ignore) {
         }
