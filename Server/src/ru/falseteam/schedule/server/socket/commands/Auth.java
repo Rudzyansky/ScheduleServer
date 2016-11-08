@@ -3,20 +3,19 @@ package ru.falseteam.schedule.server.socket.commands;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.objects.users.UserXtrCounters;
 import com.vk.api.sdk.queries.users.UserField;
-import ru.falseteam.schedule.serializable.Groups;
-import ru.falseteam.schedule.server.Console;
+import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.UserInfo;
-import ru.falseteam.schedule.serializable.User;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static ru.falseteam.schedule.serializable.Groups.user;
+import static ru.falseteam.schedule.serializable.Groups.unconfirmed;
 import static ru.falseteam.schedule.server.Main.vk;
 import static ru.falseteam.schedule.server.StaticSettings.getLastClientVersion;
-import static ru.falseteam.schedule.serializable.Groups.*;
 
 public class Auth extends CommandAbstract {
     public Auth() {
@@ -34,6 +33,10 @@ public class Auth extends CommandAbstract {
             if (users.isEmpty()) throw new Exception("Vk response is empty");
             UserXtrCounters vkUser = users.get(0);
 
+            int sdkVersion = (int) map.get("sdk_version");
+            String appVersion = (String) map.get("app_version");
+            Timestamp currentTime = new Timestamp(new Date().getTime());
+
             // Получаем юзера из бд если он существует.
             user = UserInfo.getUser(vkUser.getId());
             if (user == null) {
@@ -43,15 +46,20 @@ public class Auth extends CommandAbstract {
                 user.name = vkUser.getLastName() + " " + vkUser.getFirstName();
                 user.vkToken = token;
                 user.group = unconfirmed;
+                user.register = currentTime;
+                user.lastAuth = currentTime;
+                user.sdkVersion = sdkVersion;
+                user.appVersion = appVersion;
                 if (!UserInfo.addUser(user)) throw new Exception("Can't add user with vk_id " + user.vkId);
                 user.exists = true; // Вот тут хз мб это нужно в методе бд делать.
             } else {
                 // Если юзер существует.
-                if (!user.vkToken.equals(token)) {
-                    // Обновляем токен если он поменялся.
-                    user.vkToken = token;
-                    UserInfo.updateToken(user);
-                }
+                // Обновляем стату
+                user.vkToken = token;
+                user.lastAuth = currentTime;
+                user.sdkVersion = sdkVersion;
+                user.appVersion = appVersion;
+                UserInfo.updateStat(user);
             }
             connection.setUser(user);
         } catch (Exception ignore) {
