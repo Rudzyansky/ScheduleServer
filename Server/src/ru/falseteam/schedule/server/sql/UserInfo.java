@@ -90,6 +90,10 @@ public class UserInfo {
         user.group = Groups.valueOf(rs.getString("user_permissions"));
         user.vkId = rs.getInt("user_vk_id");
         user.vkToken = rs.getString("user_vk_token");
+        user.register = rs.getTimestamp("user_register");
+        user.lastAuth = rs.getTimestamp("user_last_auth");
+        user.sdkVersion = rs.getInt("user_sdk_version");
+        user.appVersion = rs.getString("user_app_version");
         return user;
     }
 
@@ -100,7 +104,10 @@ public class UserInfo {
                     " `user_name`='" + user.name + "'," +
                     " `user_permissions`='" + user.group.name() + "'," +
                     " `user_vk_id`='" + user.vkId + "'," +
-                    " `user_vk_token`='" + user.vkToken + "'" +
+                    " `user_vk_token`='" + user.vkToken + "'," +
+                    " `user_last_auth`='" + user.lastAuth + "'," +
+                    " `user_sdk_version`='" + user.sdkVersion + "'," +
+                    " `user_app_version`='" + user.appVersion + "'" +
                     " WHERE `user_id` LIKE '" + user.id + "';");
             return true;
         } catch (Exception e) {
@@ -109,11 +116,15 @@ public class UserInfo {
         }
     }
 
-    public static boolean updateToken(final User user) {
+    public static boolean updateStat(final User user) {
+        if (!user.exists) throw new RuntimeException();
         try {
             executeUpdate("UPDATE `users` SET" +
-                    " `user_vk_token`='" + user.vkToken + "'" +
-                    " WHERE `user_vk_id` LIKE '" + user.vkId + "';");
+                    " `user_vk_token`='" + user.vkToken + "'," +
+                    " `user_last_auth`='" + user.lastAuth + "'," +
+                    " `user_sdk_version`='" + user.sdkVersion + "'," +
+                    " `user_app_version`='" + user.appVersion + "'" +
+                    " WHERE `user_id` LIKE '" + user.id + "';");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,12 +144,16 @@ public class UserInfo {
 
     public static boolean addUser(final User user) {
         try {
-            executeUpdate("INSERT INTO `users` (`user_name`, `user_vk_id`, `user_vk_token`, `user_permissions`)" +
+            executeUpdate("INSERT INTO `users` (`user_name`, `user_vk_id`, `user_vk_token`, `user_permissions`," +
+                    " `user_register, `user_last_auth`, `user_sdk_version`, `user_app_version`)" +
                     " VALUES ('" +
                     user.name + "', '" +
                     user.vkId + "', '" +
                     user.vkToken + "', '" +
-                    user.group + "');");
+                    user.register + "', '" +
+                    user.lastAuth + "', '" +
+                    user.sdkVersion + "', '" +
+                    user.appVersion + "');");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,6 +170,10 @@ public class UserInfo {
                     " `user_vk_id` INT NULL DEFAULT NULL," +
                     " `user_vk_token` TEXT," +
                     " `user_permissions` TEXT NOT NULL," +
+                    " `user_register` DATETIME," +
+                    " `user_last_auth` DATETIME," +
+                    " `user_sdk_version` INT," +
+                    " `user_app_version` TEXT," +
                     " PRIMARY KEY (`user_id`)," +
                     " INDEX (`user_id`)," +
                     " UNIQUE (`user_id`)," +
