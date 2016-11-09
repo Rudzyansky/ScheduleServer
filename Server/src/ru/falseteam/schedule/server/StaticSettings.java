@@ -12,6 +12,7 @@ import java.util.Set;
  * @author Sumin Vladislav
  */
 public class StaticSettings {
+    public static final String VERSION = "2.0b";
     public static final String CONFIG_FOLDER = "config";
 
     private static final String CONFIG_MAIN = "main.xml";
