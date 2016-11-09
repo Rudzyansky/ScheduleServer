@@ -34,7 +34,7 @@ class Connection implements Runnable {
         }
         try {
             OutputStream sout = new BufferedOutputStream(socket.getOutputStream());
-            Console.print("[Update] Client " + socket.getInetAddress().getHostAddress() + " connected");
+            Console.print("[updater] Client " + socket.getInetAddress().getHostAddress() + " connected");
             String path = getLastClientPath();
             File file = new File(path);
             if (!file.exists()) throw new MyException("File not found " + path);
@@ -52,7 +52,7 @@ class Connection implements Runnable {
             sout.close();
             fin.close();
         } catch (MyException e) {
-            Console.err("[Update] Client " + socket.getInetAddress().getHostAddress()
+            Console.err("[updater] Client " + socket.getInetAddress().getHostAddress()
                     + " disconnected // Reason: " + e.getMessage());
         } catch (Exception ignore) {
         }
