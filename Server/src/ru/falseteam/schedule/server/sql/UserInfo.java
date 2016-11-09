@@ -145,11 +145,12 @@ public class UserInfo {
     public static boolean addUser(final User user) {
         try {
             executeUpdate("INSERT INTO `users` (`user_name`, `user_vk_id`, `user_vk_token`, `user_permissions`," +
-                    " `user_register, `user_last_auth`, `user_sdk_version`, `user_app_version`)" +
+                    " `user_register`, `user_last_auth`, `user_sdk_version`, `user_app_version`)" +
                     " VALUES ('" +
                     user.name + "', '" +
                     user.vkId + "', '" +
                     user.vkToken + "', '" +
+                    user.group.name() + "', '" +
                     user.register + "', '" +
                     user.lastAuth + "', '" +
                     user.sdkVersion + "', '" +
