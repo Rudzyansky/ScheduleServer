@@ -47,6 +47,7 @@ public class Worker implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        clients.forEach(Connection::disconnect);
         Console.print("Port " + StaticSettings.getPort() + " closed");
     }
 

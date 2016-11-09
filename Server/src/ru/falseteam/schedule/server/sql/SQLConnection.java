@@ -25,6 +25,8 @@ public class SQLConnection {
             statement = connection.createStatement();
             // Create database
             createDB();
+            connection.setCatalog("schedule");
+            statement = connection.createStatement();
             // Create tables
             UserInfo.createTable();
             LessonInfo.createTable();
