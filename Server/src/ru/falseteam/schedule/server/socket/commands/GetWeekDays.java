@@ -2,20 +2,18 @@ package ru.falseteam.schedule.server.socket.commands;
 
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
+import ru.falseteam.schedule.server.sql.TemplateInfo;
 
 import java.util.Map;
 
-public class AccessDenied extends CommandAbstract {
-    public AccessDenied() {
-        super("forbidden");
+public class GetWeekDays extends CommandAbstract {
+    public GetWeekDays() {
+        super("get_week_days");
     }
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        String command = (String) map.get("command");
-        map.clear();
-        map.put("command", "forbidden");
-        map.put("forbidden", command);
+        map.put("week_days", TemplateInfo.getWeekDays());
         connection.send(map);
     }
 }

@@ -1,5 +1,6 @@
 package ru.falseteam.schedule.server.console.commands;
 
+import org.apache.commons.cli.CommandLine;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.console.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
@@ -7,25 +8,26 @@ import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.utils.StringUtils;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import static ru.falseteam.schedule.server.Console.DEFAULT_MARGIN_LENGTH;
 import static ru.falseteam.schedule.server.Console.SHORT_DEFAULT_MARGIN_LENGTH;
 
-public class Connections extends CommandAbstract {
-    public Connections() {
-        super("connections");
+public class Online extends CommandAbstract {
+    public Online() {
+        super("online");
     }
 
 
     @Override
-    public void exec(String params) {
+    public void exec(CommandLine commandLine) {
         StringBuilder sb = new StringBuilder();
 
         synchronized (Worker.getClients()) {
-            final LinkedList<Connection> clients = Worker.getClients();
-            sb.append("Current connection: ").append(clients.size()).append('\n');
+            final List<Connection> clients = Worker.getClients();
+            sb.append("Online: ").append(clients.size()).append('\n');
             StringBuilder sb1 = new StringBuilder();
-            sb1.append("Connections from all time: ")
+            sb1.append("Online at all time: ")
                     .append(Worker.getConnectionsFromAllTime()).append('\n');
 
             if (clients.size() > 0) {
@@ -38,6 +40,9 @@ public class Connections extends CommandAbstract {
                     StringBuilder sb3 = new StringBuilder();
                     sb3.append("Uptime: ").append(StringUtils.getUptime(connection.getUptime())).append('\n');
                     sb3.append("Group: ").append(connection.getUser().group.name()).append('\n');
+                    if (connection.getUser().exists) {
+                        sb3.append("Name: ").append(connection.getUser().name).append('\n');
+                    }
                     sb2.append(StringUtils.addMargin(sb3.toString(), SHORT_DEFAULT_MARGIN_LENGTH));
                 });
                 sb1.append(StringUtils.addMargin(sb2.toString(), SHORT_DEFAULT_MARGIN_LENGTH));

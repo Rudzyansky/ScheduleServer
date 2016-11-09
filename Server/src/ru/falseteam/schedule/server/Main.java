@@ -16,12 +16,14 @@ public class Main {
 
     private static void start() {
         Console.print("Server has been started");
-
+        Console.print("Server version " + StaticSettings.VERSION);
+        // Инициализация клиента вк.
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
 
         ConsoleWorker.init();
         StaticSettings.init();
+        Schedule.init();
         SQLConnection.init();
         Worker.init(); // Сервер сокет
         ru.falseteam.schedule.server.updater.Worker.init();
@@ -29,6 +31,7 @@ public class Main {
 
     public static void stop() {
         Console.print("Server stopping...");
+        Schedule.stop();
         ru.falseteam.schedule.server.updater.Worker.stop();
         Worker.stop(); // Сервер сокет
         SQLConnection.stop();

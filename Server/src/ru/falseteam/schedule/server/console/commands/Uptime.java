@@ -1,5 +1,6 @@
 package ru.falseteam.schedule.server.console.commands;
 
+import org.apache.commons.cli.CommandLine;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.console.CommandAbstract;
 import ru.falseteam.schedule.server.utils.StringUtils;
@@ -13,10 +14,8 @@ public class Uptime extends CommandAbstract {
     }
 
     @Override
-    public void exec(String params) {
+    public void exec(CommandLine commandLine) {
         // Выводим uptime;
-        long uptime = System.currentTimeMillis() - Uptime.uptime;
-        long tmp = 0;
         StringBuilder sb = new StringBuilder();
         sb.append("Uptime: ").append(StringUtils.getUptime(uptime)).append('\n');
 

@@ -2,20 +2,18 @@ package ru.falseteam.schedule.server.socket.commands;
 
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
-import ru.falseteam.schedule.serializable.Pair;
-import ru.falseteam.schedule.server.sql.PairInfo;
+import ru.falseteam.schedule.server.sql.TemplateInfo;
 
 import java.util.Map;
 
-public class GetPairs extends CommandAbstract {
-    public GetPairs() {
-        super("get_pairs");
+public class GetTemplates extends CommandAbstract {
+    public GetTemplates() {
+        super("get_templates");
     }
 
     @Override
     public void exec(Connection connection, Map<String, Object> map) {
-        PairInfo.loadFromBase();
-        map.put("pairs", PairInfo.getPairs());
+        map.put("templates", TemplateInfo.getTemplates());
         connection.send(map);
     }
 }
