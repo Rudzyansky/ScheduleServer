@@ -16,7 +16,7 @@ public class Main {
 
     private static void start() {
         Console.print("Server has been started");
-
+        Console.print("Server version " + StaticSettings.VERSION);
         // Инициализация клиента вк.
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
