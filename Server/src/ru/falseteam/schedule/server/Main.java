@@ -3,50 +3,55 @@ package ru.falseteam.schedule.server;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.server.console.ConsoleWorker;
 import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.SQLConnection;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-
+/**
+ * Основная точка входа.
+ *
+ * @author Vladislav Sumin
+ * @author Evgeny Rudzyansky
+ * @version 2.0
+ */
 public class Main {
+    private static Logger log = LogManager.getLogger(Main.class.getName());
     public static VkApiClient vk;
 
     public static void main(String[] args) {
-        LocalDateTime now = LocalDateTime.now();
-        int begin = new Calendar.Builder().setDate(now.getYear(), 9, 1).build().get(Calendar.WEEK_OF_YEAR);
-        Calendar cal = new Calendar.Builder().setDate(now.getYear(), now.getMonthValue(), now.getDayOfMonth()).build();
-        int current = cal.get(Calendar.WEEK_OF_YEAR);
-        System.out.println(begin);
-        System.out.println(current);
-        System.out.println(current - begin);
-//        start();
+        start();
     }
 
     private static void start() {
-        Console.print("Server has been started");
-        Console.print("Server version " + StaticSettings.VERSION);
+        log.info("Server version {} has been started", StaticSettings.VERSION);
+
         // Инициализация клиента вк.
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
 
-        ConsoleWorker.init();
+        // Инициализация служебных модулей.
         StaticSettings.init();
+        ConsoleWorker.init();
         Schedule.init();
+
+        // Инициализация основных модулей.
         SQLConnection.init();
         Worker.init(); // Сервер сокет
         ru.falseteam.schedule.server.updater.Worker.init();
     }
 
     public static void stop() {
-        Console.print("Server stopping...");
+        log.info("Server stopping...");
+
+        // Остановка ссновных модулей.
         Schedule.stop();
         ru.falseteam.schedule.server.updater.Worker.stop();
         Worker.stop(); // Сервер сокет
         SQLConnection.stop();
+
+        // Остановка служебных модулей.
         ConsoleWorker.stop();
     }
 

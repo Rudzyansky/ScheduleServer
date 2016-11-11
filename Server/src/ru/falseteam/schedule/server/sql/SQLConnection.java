@@ -1,12 +1,11 @@
 package ru.falseteam.schedule.server.sql;
 
-import ru.falseteam.schedule.server.Console;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.server.Main;
-import ru.falseteam.schedule.server.Schedule;
 import ru.falseteam.schedule.server.StaticSettings;
 
 import java.sql.*;
-import java.util.TimerTask;
 
 /**
  * Create connection to database.
@@ -16,25 +15,15 @@ import java.util.TimerTask;
  * @version 1.0
  */
 public class SQLConnection {
+    private static Logger log = LogManager.getLogger(SQLConnection.class.getName());
 
     private static Connection connection;
     private static Statement statement;
 
-    private static TimerTask ping = new TimerTask() {
-        @Override
-        public void run() {
-            try {
-                executeQuery("SELECT `lesson_number_id` FROM `lesson_numbers` WHERE `lesson_number_id` LIKE '1';");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
     public static void init() {
         try {
             connection = DriverManager
-                    .getConnection(StaticSettings.getUrl(), StaticSettings.getUser(), StaticSettings.getPassword());
+                    .getConnection(StaticSettings.getDbUrl(), StaticSettings.getDbUser(), StaticSettings.getDbPassword());
             statement = connection.createStatement();
             // Create database
             createDB();
@@ -45,12 +34,10 @@ public class SQLConnection {
             LessonInfo.createTable();
             TemplateInfo.createTable();
         } catch (Exception e) {
-            Console.err(e.getMessage());
-            e.printStackTrace();
+            log.fatal("Can not load database, server will be stop", e);
             Main.stop();
         }
-        Console.print("DB connected");
-        Schedule.addPeriodicalTask(ping, 60 * 60 * 1000);
+        log.trace("Database connected");
     }
 
     public static void stop() {
@@ -58,7 +45,7 @@ public class SQLConnection {
             statement.close();
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.fatal("Can not close database connection", e);
         }
     }
 
@@ -75,6 +62,7 @@ public class SQLConnection {
             executeUpdate("CREATE DATABASE `schedule`;");
             return true;
         } catch (SQLException ignore) {
+            // if database already exist.
             return false;
         }
     }
