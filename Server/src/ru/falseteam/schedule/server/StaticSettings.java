@@ -1,6 +1,9 @@
 package ru.falseteam.schedule.server;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,12 +12,16 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
+ * Содержит все статические поля, загружаемые из конфигов.
+ *
  * @author Sumin Vladislav
+ * @version 1.0
  */
 public class StaticSettings {
-    public static final String VERSION = "2.0b";
+    static final String VERSION = "2.0b";
     public static final String CONFIG_FOLDER = "config";
 
+    //Файлы конфигурации.
     private static final String CONFIG_MAIN = "main.xml";
     private static final String CONFIG_DATABASE = "database.xml";
 
@@ -27,37 +34,40 @@ public class StaticSettings {
     private static String lastClientPath;
 
     // Database
-    private static String url;
-    private static String user;
-    private static String password;
+    private static String dbUrl;
+    private static String dbUser;
+    private static String dbPassword;
+
+    private static Logger log = LogManager.getLogger(StaticSettings.class.getName());
 
     static void init() {
-        Console.print("Loading settings from config files");
+        log.trace("Loading settings from config files");
         final String separator = File.separator;
 
         File config = new File(CONFIG_FOLDER);
         if (!config.exists() && !config.mkdir()) {
-            Console.err("Can not create config folder.");
+            log.fatal("Can not create config folder. Server will be stop");
             Main.stop();
         }
 
         File main = new File(CONFIG_FOLDER + separator + CONFIG_MAIN);
         File database = new File(CONFIG_FOLDER + separator + CONFIG_DATABASE);
+
         try {
             if (!main.exists() && main.createNewFile()) {
-                Console.print("Initialize config " + CONFIG_MAIN);
+                log.trace("Initialize config {}", CONFIG_MAIN);
                 new Properties().storeToXML(new FileOutputStream(main), "");
             }
             loadMainConfigFile(main);
 
             if (!database.exists() && database.createNewFile()) {
-                Console.print("Initialize config " + CONFIG_DATABASE);
+                log.trace("Initialize config {}", CONFIG_DATABASE);
                 new Properties().storeToXML(new FileOutputStream(database), "");
             }
             loadDatabaseConfigFile(database);
 
         } catch (IOException e) {
-            Console.err("Can not create/write/read config file: " + CONFIG_FOLDER);
+            log.fatal("Can not access to folder " + CONFIG_FOLDER, e);
             Main.stop();
         }
     }
@@ -82,13 +92,13 @@ public class StaticSettings {
         if (save)
             properties.storeToXML(new FileOutputStream(file), "");
 
-        url = properties.getProperty("url");
-        user = properties.getProperty("user");
-        password = properties.getProperty("password");
+        dbUrl = properties.getProperty("url");
+        dbUser = properties.getProperty("user");
+        dbPassword = properties.getProperty("password");
 
-        if (user.equals("user") && password.equals("password"))
-            Console.err("WARNING uses default database config, please edit "
-                    + CONFIG_FOLDER + File.separator + CONFIG_DATABASE + " file.");
+        if (dbUser.equals("user") && dbPassword.equals("password"))
+            log.error("WARNING uses default database config, please edit {}{}{} file",
+                    CONFIG_FOLDER, File.separator, CONFIG_DATABASE);
     }
 
     private static void loadMainConfigFile(File file) throws IOException {
@@ -156,15 +166,15 @@ public class StaticSettings {
         return lastClientPath;
     }
 
-    public static String getUrl() {
-        return url;
+    public static String getDbUrl() {
+        return dbUrl;
     }
 
-    public static String getUser() {
-        return user;
+    public static String getDbUser() {
+        return dbUser;
     }
 
-    public static String getPassword() {
-        return password;
+    public static String getDbPassword() {
+        return dbPassword;
     }
 }

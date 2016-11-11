@@ -34,7 +34,7 @@ public class SQLConnection {
     public static void init() {
         try {
             connection = DriverManager
-                    .getConnection(StaticSettings.getUrl(), StaticSettings.getUser(), StaticSettings.getPassword());
+                    .getConnection(StaticSettings.getDbUrl(), StaticSettings.getDbUser(), StaticSettings.getDbPassword());
             statement = connection.createStatement();
             // Create database
             createDB();
