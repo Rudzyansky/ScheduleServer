@@ -1,5 +1,7 @@
 package ru.falseteam.schedule.server.sql;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
 
@@ -18,6 +20,7 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  * @version 1.0
  */
 public class UserInfo {
+    private static Logger log = LogManager.getLogger();
 
     /**
      * @return all user from database or null if throws internal exceptions.
@@ -31,7 +34,7 @@ public class UserInfo {
             while (rs.next());
             return users;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Database error", e);
         }
         return null;
     }
@@ -44,8 +47,8 @@ public class UserInfo {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `user_id` LIKE '" + id + "';");
             return rs.first() ? getUser(rs) : null;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Database error", e);
             return null;
         }
     }
@@ -58,8 +61,8 @@ public class UserInfo {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `user_vk_id` LIKE '" + vkId + "';");
             return rs.first() ? getUser(rs) : null;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Database error", e);
             return null;
         }
     }
@@ -72,8 +75,8 @@ public class UserInfo {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `users` WHERE `user_name` LIKE '" + name + "';");
             return (!rs.first() || !rs.isLast()) ? null : getUser(rs);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Database error", e);
             return null;
         }
     }
@@ -110,8 +113,8 @@ public class UserInfo {
                     " `user_app_version`='" + user.appVersion + "'" +
                     " WHERE `user_id` LIKE '" + user.id + "';");
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Database error", e);
             return false;
         }
     }
@@ -126,8 +129,8 @@ public class UserInfo {
                     " `user_app_version`='" + user.appVersion + "'" +
                     " WHERE `user_id` LIKE '" + user.id + "';");
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Database error", e);
             return false;
         }
     }
@@ -136,8 +139,8 @@ public class UserInfo {
         try {
             executeUpdate("DELETE FROM `users` WHERE `user_id` LIKE '" + user.id + "';");
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Database error", e);
             return false;
         }
     }
@@ -156,8 +159,8 @@ public class UserInfo {
                     user.sdkVersion + "', '" +
                     user.appVersion + "');");
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Database error", e);
             return false;
         }
     }
@@ -181,7 +184,8 @@ public class UserInfo {
                     " UNIQUE (`user_vk_id`)" +
                     ") ENGINE=InnoDB;");
             return true;
-        } catch (Exception ignore) {
+        } catch (SQLException ignore) {
+            // throw this if table already created
             return false;
         }
     }
