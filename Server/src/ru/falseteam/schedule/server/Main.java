@@ -17,7 +17,7 @@ import ru.falseteam.schedule.server.sql.SQLConnection;
  * @version 2.0
  */
 public class Main {
-    private static Logger log = LogManager.getLogger(Main.class.getName());
+    private static Logger log = LogManager.getLogger();
     public static VkApiClient vk;
 
     public static void main(String[] args) {
