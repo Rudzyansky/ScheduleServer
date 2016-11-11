@@ -9,6 +9,13 @@ import ru.falseteam.schedule.server.console.ConsoleWorker;
 import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.SQLConnection;
 
+/**
+ * Основная точка входа.
+ *
+ * @author Vladislav Sumin
+ * @author Evgeny Rudzyansky
+ * @version 2.0
+ */
 public class Main {
     private static Logger log = LogManager.getLogger(Main.class.getName());
     public static VkApiClient vk;
@@ -18,27 +25,33 @@ public class Main {
     }
 
     private static void start() {
-        log.info("Server has been started");
-        Console.print("Server has been started");
-        Console.print("Server version " + StaticSettings.VERSION);
+        log.info("Server version {} has been started", StaticSettings.VERSION);
+
         // Инициализация клиента вк.
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
 
-        ConsoleWorker.init();
+        // Инициализация служебных модулей.
         StaticSettings.init();
+        ConsoleWorker.init();
         Schedule.init();
+
+        // Инициализация основных модулей.
         SQLConnection.init();
         Worker.init(); // Сервер сокет
         ru.falseteam.schedule.server.updater.Worker.init();
     }
 
     public static void stop() {
-        Console.print("Server stopping...");
+        log.info("Server stopping...");
+
+        // Остановка ссновных модулей.
         Schedule.stop();
         ru.falseteam.schedule.server.updater.Worker.stop();
         Worker.stop(); // Сервер сокет
         SQLConnection.stop();
+
+        // Остановка служебных модулей.
         ConsoleWorker.stop();
     }
 
