@@ -6,7 +6,6 @@ import ru.falseteam.schedule.serializable.WeekDay;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
