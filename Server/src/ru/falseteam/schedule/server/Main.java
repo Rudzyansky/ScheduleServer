@@ -3,11 +3,14 @@ package ru.falseteam.schedule.server;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.server.console.ConsoleWorker;
 import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.SQLConnection;
 
 public class Main {
+    private static Logger log = LogManager.getLogger(Main.class.getName());
     public static VkApiClient vk;
 
     public static void main(String[] args) {
@@ -15,6 +18,7 @@ public class Main {
     }
 
     private static void start() {
+        log.info("Server has been started");
         Console.print("Server has been started");
         Console.print("Server version " + StaticSettings.VERSION);
         // Инициализация клиента вк.
