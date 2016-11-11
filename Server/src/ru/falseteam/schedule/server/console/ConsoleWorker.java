@@ -49,6 +49,7 @@ public class ConsoleWorker implements Runnable {
     @Override
     public void run() {
         Scanner scanner = new Scanner(System.in);
+        log.trace("ConsoleWorker initialized.");
         while (true) {
             try {
                 //Отделяем команду от параметров.

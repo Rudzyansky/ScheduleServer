@@ -41,7 +41,6 @@ public class StaticSettings {
     private static Logger log = LogManager.getLogger(StaticSettings.class.getName());
 
     static void init() {
-        log.trace("Loading settings from config files");
         final String separator = File.separator;
 
         File config = new File(CONFIG_FOLDER);
@@ -70,6 +69,7 @@ public class StaticSettings {
             log.fatal("Can not access to folder " + CONFIG_FOLDER, e);
             Main.stop();
         }
+        log.trace("Configuration data loaded from config");
     }
 
     private static void loadDatabaseConfigFile(File file) throws IOException {
@@ -78,6 +78,7 @@ public class StaticSettings {
         Set<String> names = properties.stringPropertyNames();
         boolean save = false;
         if (!names.contains("url")) {
+            //noinspection SpellCheckingInspection
             properties.setProperty("url", "jdbc:mysql://localhost:3306/schedule");
             save = true;
         }
