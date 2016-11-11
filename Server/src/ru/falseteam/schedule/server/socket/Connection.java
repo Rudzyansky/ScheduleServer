@@ -1,7 +1,8 @@
 package ru.falseteam.schedule.server.socket;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.serializable.User;
-import ru.falseteam.schedule.server.Console;
 
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
@@ -10,31 +11,23 @@ import java.io.ObjectOutputStream;
 import java.util.Map;
 
 public class Connection implements Runnable {
+    private final Logger log = LogManager.getLogger();
+
     private final SSLSocket socket;
     private ObjectOutputStream out;
 
     private User user = User.Factory.getDefault();
-    private long uptime = System.currentTimeMillis();
+    private final long uptime = System.currentTimeMillis();
     private long lastPing = System.currentTimeMillis();
 
     Connection(SSLSocket socket) {
         this.socket = socket;
-        new Thread(this).start();
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+        new Thread(this, "Connection with " + socket.getInetAddress().getHostAddress()).start();
     }
 
     public void send(Map<String, Object> map) {
         try {
-            // Эта строчка появилась здесь после двух часов мучений
             out.reset();
-            // ----------------------------------------------------
             out.writeObject(map);
             out.flush();
         } catch (IOException ignore) {
@@ -45,7 +38,7 @@ public class Connection implements Runnable {
     public void disconnect() {
         try {
             Worker.removeFromList(this);
-            Console.print("Client " + socket.getInetAddress().getHostAddress() + " disconnected");
+            log.trace("Client {} disconnected", socket.getInetAddress().getHostAddress());
             socket.close();
         } catch (IOException ignore) {
         }
@@ -62,7 +55,7 @@ public class Connection implements Runnable {
         try {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
-            Console.print("Client " + socket.getInetAddress().getHostAddress() + " connected");
+            log.trace("Client {} connected", socket.getInetAddress().getHostAddress());
 
             while (true) {
                 Object o = in.readObject();
@@ -72,8 +65,8 @@ public class Connection implements Runnable {
                 CommandWorker.exec(this, map);
             }
         } catch (MyException | ClassNotFoundException e) {
-            Console.err("Client " + socket.getInetAddress().getHostAddress()
-                    + " disconnected // Reason: " + e.getMessage());
+            log.error("Client {} disconnected // Reason: {}",
+                    socket.getInetAddress().getHostAddress(), e.getMessage());
             e.printStackTrace();
         } catch (IOException ignore) {
         }
@@ -88,11 +81,19 @@ public class Connection implements Runnable {
         return socket.getInetAddress().getHostAddress();
     }
 
-    public long getLastPing() {
+    long getLastPing() {
         return lastPing;
     }
 
     public void setLastPing(long lastPing) {
         this.lastPing = lastPing;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
