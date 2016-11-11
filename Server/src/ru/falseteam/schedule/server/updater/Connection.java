@@ -14,7 +14,7 @@ class Connection implements Runnable {
 
     Connection(SSLSocket socket) {
         this.socket = socket;
-        new Thread(this).start();
+        new Thread(this, "Update loader " + socket.getInetAddress().getHostAddress()).start();
     }
 
     private void disconnect() {
