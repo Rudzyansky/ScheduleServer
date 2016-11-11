@@ -1,5 +1,7 @@
 package ru.falseteam.schedule.server.console;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.console.commands.Online;
 import ru.falseteam.schedule.server.console.commands.SetGroup;
@@ -13,10 +15,15 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
+ * Берет на себя работу с консольным вводом.
+ * Обрабатывает команды пользователя.
+ *
  * @author Vladislav Sumin
+ * @version 1.0
  */
 public class ConsoleWorker implements Runnable {
-    private static Scanner scanner;
+    private static Logger log = LogManager.getLogger(ConsoleWorker.class.getName());
+
     private static Map<String, CommandInterface> commands = new HashMap<>();
 
     static {
@@ -31,24 +38,28 @@ public class ConsoleWorker implements Runnable {
     }
 
     public static void init() {
-        new Thread(new ConsoleWorker()).start();
+        new Thread(new ConsoleWorker(), "ConsoleWorker").start();
     }
 
     public static void stop() {
         try {
             System.in.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("System.in close error", e);
         }
     }
 
     @Override
     public void run() {
-        scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+        log.trace("ConsoleWorker initialized.");
         while (true) {
             try {
+                //Отделяем команду от параметров.
                 String[] command = scanner.nextLine().split(" ", 2);
+                //Отсеиваем пустые команды.
                 if (command[0].equals("")) continue;
+
                 if (commands.containsKey(command[0]))
                     if (command.length > 1)
                         commands.get(command[0]).exec(command[1]);
