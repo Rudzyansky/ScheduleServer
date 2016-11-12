@@ -2,14 +2,11 @@ package ru.falseteam.schedule.server.sql;
 
 import ru.falseteam.schedule.serializable.JournalRecord;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.nio.ByteBuffer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.Base64;
 import java.util.List;
 
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
@@ -36,7 +33,7 @@ public class JournalInfo {
             do records.add(getRecord(rs));
             while (rs.next());
             return records;
-        } catch (SQLException | IOException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -53,7 +50,7 @@ public class JournalInfo {
             do records.add(getRecord(rs));
             while (rs.next());
             return records;
-        } catch (SQLException | IOException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -72,7 +69,7 @@ public class JournalInfo {
                     " WHERE `date` LIKE '" + date + "'" +
                     " AND `lesson_number_id` LIKE '" + lessonNumber + "';");
             return rs.first() ? getRecord(rs) : null;
-        } catch (SQLException | IOException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -90,7 +87,7 @@ public class JournalInfo {
                     " NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)" +
                     " WHERE `id` LIKE '" + id + "';");
             return rs.first() ? getRecord(rs) : null;
-        } catch (SQLException | IOException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -100,24 +97,30 @@ public class JournalInfo {
      * @param rs - {@link ResultSet}, из которого вытаскиваем инфу
      * @return {@link JournalRecord} if exists in base, {null} if not exists SQLException
      */
-    private static JournalRecord getRecord(final ResultSet rs) throws SQLException, IOException, ClassNotFoundException {
+    private static JournalRecord getRecord(final ResultSet rs) throws SQLException {
         JournalRecord record = JournalRecord.Factory.getDefault();
         record.id = rs.getInt("id");
         record.weekDay = WeekDayInfo.getWeekDay(rs);
         record.lessonNumber = LessonNumberInfo.getLessonNumber(rs);
         record.lesson = LessonInfo.getLesson(rs);
-//        record.was.toArray((Integer[]) new ObjectInputStream(rs.getBinaryStream("was")).readObject());
-        Collections.addAll(record.was, (Integer[]) new ObjectInputStream(rs.getBinaryStream("was")).readObject());
+
+        byte[] bytes = Base64.getDecoder().decode(rs.getString("was"));
+        ByteBuffer bb = ByteBuffer.allocate(bytes.length).put(bytes);
+        record.was = bb.asIntBuffer().array();
+
+        record.task = rs.getString("task");
         return record;
     }
 
     public static boolean updateWas(final JournalRecord record) {
         try {
+            ByteBuffer bb = ByteBuffer.allocate(4 * record.was.length);
+            bb.asIntBuffer().put(record.was);
             executeUpdate("UPDATE `templates` SET" +
-                    " `was` = '" + new ObjectInputStream((InputStream) Arrays.stream(record.was.toArray())).readObject() + "'" +
+                    " `was` = '" + Base64.getEncoder().encodeToString(bb.array()) + "'" +
                     " WHERE `id` LIKE '" + record.id + "';");
             return true;
-        } catch (SQLException | IOException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -125,11 +128,13 @@ public class JournalInfo {
 
     public static boolean addRecord(final JournalRecord record) {
         try {
-            executeUpdate("INSERT INTO `journal` (`date`, `week_day_id`, `lesson_number_id`, `lesson_id`) VALUES ('" +
+            executeUpdate("INSERT INTO `journal` (`date`, `week_day_id`, `lesson_number_id`, `lesson_id`, `task`)" +
+                    " VALUES ('" +
                     record.date + "', '" +
                     record.weekDay.id + "', '" +
                     record.lessonNumber.id + "', '" +
-                    record.lesson.id + "');");
+                    record.lesson.id + "', '" +
+                    record.lesson.lastTask + "');");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -146,6 +151,7 @@ public class JournalInfo {
                     " `week_day_id` INT NOT NULL," +
                     " `lesson_number_id` INT NOT NULL," +
                     " `lesson_id` INT NOT NULL," +
+                    " `task` TEXT," +
                     " `was` VARBINARY(400) NOT NULL," +
 
                     " PRIMARY KEY (`id`)," +
