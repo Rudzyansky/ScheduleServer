@@ -69,10 +69,10 @@ public class LessonInfo {
     public static boolean updateLesson(final Lesson lesson) {
         try {
             executeUpdate("UPDATE `lessons` SET" +
-                    " `lesson_name`='" + lesson.name + "'," +
-                    " `lesson_audience`='" + lesson.audience + "'," +
-                    " `lesson_teacher`='" + lesson.teacher + "'," +
-                    " `lesson_last_task`='" + lesson.lastTask + "'" +
+                    " `lesson_name` = '" + lesson.name + "'," +
+                    " `lesson_audience` = '" + lesson.audience + "'," +
+                    " `lesson_teacher` = '" + lesson.teacher + "'," +
+                    " `lesson_last_task` = '" + lesson.lastTask + "'" +
                     " WHERE `lesson_id` LIKE '" + lesson.id + "';");
             return true;
         } catch (SQLException e) {

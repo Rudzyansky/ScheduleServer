@@ -1,6 +1,8 @@
 package ru.falseteam.schedule.server.sql;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
 
@@ -8,8 +10,8 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  * @author Evgeny Rudzyansky
  * @version 1.0
  */
-public class WeekNumberInfo {
-    private static boolean createTableWeekNumbers() {
+class WeekNumberInfo {
+    static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `week_numbers` (" +
@@ -20,10 +22,11 @@ public class WeekNumberInfo {
                     " INDEX (`week_number_id`)," +
                     " UNIQUE (`week_number_id`)" +
                     ") ENGINE=InnoDB;");
+            int year = LocalDateTime.now().getYear();
             executeUpdate("INSERT INTO `week_numbers`" +
                     " (`week_number_id`, `week_number_name`, `week_number`) VALUES" +
-                    "(1, '1 февраля', 10)," +
-                    "(2, '1 сентября', 40);");
+                    "(1, '8 февраля', " + new Calendar.Builder().setDate(year, 2, 8).build().get(Calendar.WEEK_OF_YEAR) + ")," +
+                    "(2, '1 сентября', " + new Calendar.Builder().setDate(year, 9, 1).build().get(Calendar.WEEK_OF_YEAR) + ");");
             return true;
         } catch (SQLException ignore) {
             return false;

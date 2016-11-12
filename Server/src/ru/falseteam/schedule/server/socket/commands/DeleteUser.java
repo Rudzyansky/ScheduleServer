@@ -4,6 +4,7 @@ import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
+import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.UserInfo;
 
 import java.util.Map;
@@ -20,9 +21,10 @@ public class DeleteUser extends CommandAbstract {
         map.clear();
         map.put("command", "toast_short");
         boolean b = inBase != null
-                && !user.group.equals(Groups.developer)
-                && !inBase.group.equals(Groups.developer)
+                && !user.permissions.equals(Groups.developer)
+                && !inBase.permissions.equals(Groups.developer)
                 && UserInfo.deleteUser(user);
+        if (b) Worker.getClients().stream().filter(c -> c.getUser().id == user.id).forEach(Connection::disconnect);
         map.put("message", b ? "Пользователь удален" : "Произошла ошибка при удалении пользователя");
         connection.send(map);
     }

@@ -27,9 +27,9 @@ public class UpdateUser extends CommandAbstract {
         map.clear();
         map.put("command", "toast_short");
         boolean b = inBase != null
-                && groups.indexOf(inBase.group) > -1
-                && groups.indexOf(user.group) > -1
-                && !user.group.equals(Groups.developer)
+                && groups.indexOf(inBase.permissions) > -1
+                && groups.indexOf(user.permissions) > -1
+                && !user.permissions.equals(Groups.developer)
                 && (user.exists ? UserInfo.updateUser(user) : UserInfo.addUser(user));
         if (b) Worker.getClients().stream().filter(c -> c.getUser().id == user.id).forEach(Connection::disconnect);
         map.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
