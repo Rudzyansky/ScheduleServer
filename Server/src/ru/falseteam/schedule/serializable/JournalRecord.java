@@ -1,6 +1,7 @@
 package ru.falseteam.schedule.serializable;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Structure contains all information about JournalRecord.
@@ -14,7 +15,7 @@ public class JournalRecord implements Serializable {
     public WeekDay weekDay;
     public LessonNumber lessonNumber;
     public Lesson lesson;
-    public boolean[] was;
+    public List<Integer> was;
 
     // Empty private constructor.
     private JournalRecord() {
@@ -27,7 +28,6 @@ public class JournalRecord implements Serializable {
             record.weekDay = new WeekDay();
             record.lessonNumber = new LessonNumber();
             record.lesson = Lesson.Factory.getDefault();
-            record.was = new boolean[30];
             return record;
         }
     }
