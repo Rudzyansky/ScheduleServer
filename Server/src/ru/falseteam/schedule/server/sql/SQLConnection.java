@@ -31,8 +31,14 @@ public class SQLConnection {
             statement = connection.createStatement();
             // Create tables
             UserInfo.createTable();
+
+            WeekDayInfo.createTable();
+            LessonNumberInfo.createTable();
             LessonInfo.createTable();
             TemplateInfo.createTable();
+
+            WeekNumberInfo.createTable();
+            JournalInfo.createTable();
         } catch (Exception e) {
             log.fatal("Can not load database, server will be stop", e);
             Main.stop();

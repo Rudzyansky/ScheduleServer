@@ -9,7 +9,10 @@ import ru.falseteam.schedule.server.console.commands.Stop;
 import ru.falseteam.schedule.server.console.commands.Uptime;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 /**
  * Берет на себя работу с консольным вводом.

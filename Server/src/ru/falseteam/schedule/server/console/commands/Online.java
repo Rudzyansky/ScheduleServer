@@ -7,7 +7,6 @@ import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.utils.StringUtils;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import static ru.falseteam.schedule.server.Console.DEFAULT_MARGIN_LENGTH;
@@ -39,7 +38,7 @@ public class Online extends CommandAbstract {
                     sb2.append(count[0]).append(") ").append(connection.getName()).append('\n');
                     StringBuilder sb3 = new StringBuilder();
                     sb3.append("Uptime: ").append(StringUtils.getUptime(connection.getUptime())).append('\n');
-                    sb3.append("Group: ").append(connection.getUser().group.name()).append('\n');
+                    sb3.append("Group: ").append(connection.getUser().permissions.name()).append('\n');
                     if (connection.getUser().exists) {
                         sb3.append("Name: ").append(connection.getUser().name).append('\n');
                     }

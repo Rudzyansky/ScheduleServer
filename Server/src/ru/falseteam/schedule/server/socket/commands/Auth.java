@@ -45,7 +45,7 @@ public class Auth extends CommandAbstract {
                 user.vkId = vkUser.getId();
                 user.name = vkUser.getLastName() + " " + vkUser.getFirstName();
                 user.vkToken = token;
-                user.group = unconfirmed;
+                user.permissions = unconfirmed;
                 user.register = currentTime;
                 user.lastAuth = currentTime;
                 user.sdkVersion = sdkVersion;
@@ -71,7 +71,7 @@ public class Auth extends CommandAbstract {
         map.clear();
         map.put("command", "auth");
         map.put("version", getLastClientVersion());
-        map.put("group", user.group.name());
+        map.put("permissions", user.permissions.name());
         connection.send(map);
     }
 }

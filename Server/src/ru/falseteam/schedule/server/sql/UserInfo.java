@@ -90,7 +90,8 @@ public class UserInfo {
         user.exists = true;
         user.id = rs.getInt("user_id");
         user.name = rs.getString("user_name");
-        user.group = Groups.valueOf(rs.getString("user_permissions"));
+        user.numberOfGroup = rs.getInt("user_number_of_group");
+        user.permissions = Groups.valueOf(rs.getString("user_permissions"));
         user.vkId = rs.getInt("user_vk_id");
         user.vkToken = rs.getString("user_vk_token");
         user.register = rs.getTimestamp("user_register");
@@ -104,13 +105,14 @@ public class UserInfo {
         if (!user.exists) throw new RuntimeException();
         try {
             executeUpdate("UPDATE `users` SET" +
-                    " `user_name`='" + user.name + "'," +
-                    " `user_permissions`='" + user.group.name() + "'," +
-                    " `user_vk_id`='" + user.vkId + "'," +
-                    " `user_vk_token`='" + user.vkToken + "'," +
-                    " `user_last_auth`='" + user.lastAuth + "'," +
-                    " `user_sdk_version`='" + user.sdkVersion + "'," +
-                    " `user_app_version`='" + user.appVersion + "'" +
+                    " `user_name` = '" + user.name + "'," +
+                    " `user_number_of_group` = '" + user.numberOfGroup + "'," +
+                    " `user_permissions` = '" + user.permissions.name() + "'," +
+                    " `user_vk_id` = '" + user.vkId + "'," +
+                    " `user_vk_token` = '" + user.vkToken + "'," +
+                    " `user_last_auth` = '" + user.lastAuth + "'," +
+                    " `user_sdk_version` = '" + user.sdkVersion + "'," +
+                    " `user_app_version` = '" + user.appVersion + "'" +
                     " WHERE `user_id` LIKE '" + user.id + "';");
             return true;
         } catch (SQLException e) {
@@ -123,10 +125,10 @@ public class UserInfo {
         if (!user.exists) throw new RuntimeException();
         try {
             executeUpdate("UPDATE `users` SET" +
-                    " `user_vk_token`='" + user.vkToken + "'," +
-                    " `user_last_auth`='" + user.lastAuth + "'," +
-                    " `user_sdk_version`='" + user.sdkVersion + "'," +
-                    " `user_app_version`='" + user.appVersion + "'" +
+                    " `user_vk_token` = '" + user.vkToken + "'," +
+                    " `user_last_auth` = '" + user.lastAuth + "'," +
+                    " `user_sdk_version` = '" + user.sdkVersion + "'," +
+                    " `user_app_version` = '" + user.appVersion + "'" +
                     " WHERE `user_id` LIKE '" + user.id + "';");
             return true;
         } catch (SQLException e) {
@@ -147,13 +149,14 @@ public class UserInfo {
 
     public static boolean addUser(final User user) {
         try {
-            executeUpdate("INSERT INTO `users` (`user_name`, `user_vk_id`, `user_vk_token`, `user_permissions`," +
-                    " `user_register`, `user_last_auth`, `user_sdk_version`, `user_app_version`)" +
+            executeUpdate("INSERT INTO `users` (`user_name`, `user_number_of_group`, `user_vk_id`, `user_vk_token`," +
+                    " `user_permissions`, `user_register`, `user_last_auth`, `user_sdk_version`, `user_app_version`)" +
                     " VALUES ('" +
                     user.name + "', '" +
+                    user.numberOfGroup + "', '" +
                     user.vkId + "', '" +
                     user.vkToken + "', '" +
-                    user.group.name() + "', '" +
+                    user.permissions.name() + "', '" +
                     user.register + "', '" +
                     user.lastAuth + "', '" +
                     user.sdkVersion + "', '" +
@@ -171,6 +174,7 @@ public class UserInfo {
             executeUpdate("CREATE TABLE `users` (" +
                     " `user_id` INT NOT NULL AUTO_INCREMENT," +
                     " `user_name` TEXT NOT NULL," +
+                    " `user_number_of_group` INT NULL DEFAULT NULL," +
                     " `user_vk_id` INT NULL DEFAULT NULL," +
                     " `user_vk_token` TEXT," +
                     " `user_permissions` TEXT NOT NULL," +
