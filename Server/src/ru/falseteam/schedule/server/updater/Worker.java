@@ -2,7 +2,6 @@ package ru.falseteam.schedule.server.updater;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.falseteam.schedule.server.Console;
 import ru.falseteam.schedule.server.StaticSettings;
 import ru.falseteam.schedule.server.utils.SSLServerSocketFactory;
 
