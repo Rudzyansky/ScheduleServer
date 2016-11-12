@@ -81,6 +81,18 @@ public class LessonInfo {
         }
     }
 
+    public static boolean clearTask(final Lesson lesson) {
+        try {
+            executeUpdate("UPDATE `lessons` SET" +
+                    " `lesson_last_task` = ''" +
+                    " WHERE `lesson_id` LIKE '" + lesson.id + "';");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean deleteLesson(final Lesson lesson) {
         try {
             executeUpdate("DELETE FROM `lessons` WHERE `lesson_id` LIKE '" + lesson.id + "';");
