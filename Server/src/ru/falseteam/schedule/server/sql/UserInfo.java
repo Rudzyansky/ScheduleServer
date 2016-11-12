@@ -90,7 +90,6 @@ public class UserInfo {
         user.exists = true;
         user.id = rs.getInt("user_id");
         user.name = rs.getString("user_name");
-        user.numberOfGroup = rs.getInt("user_number_of_group");
         user.permissions = Groups.valueOf(rs.getString("user_permissions"));
         user.vkId = rs.getInt("user_vk_id");
         user.vkToken = rs.getString("user_vk_token");
@@ -106,7 +105,6 @@ public class UserInfo {
         try {
             executeUpdate("UPDATE `users` SET" +
                     " `user_name` = '" + user.name + "'," +
-                    " `user_number_of_group` = '" + user.numberOfGroup + "'," +
                     " `user_permissions` = '" + user.permissions.name() + "'," +
                     " `user_vk_id` = '" + user.vkId + "'," +
                     " `user_vk_token` = '" + user.vkToken + "'," +
@@ -149,11 +147,10 @@ public class UserInfo {
 
     public static boolean addUser(final User user) {
         try {
-            executeUpdate("INSERT INTO `users` (`user_name`, `user_number_of_group`, `user_vk_id`, `user_vk_token`," +
-                    " `user_permissions`, `user_register`, `user_last_auth`, `user_sdk_version`, `user_app_version`)" +
+            executeUpdate("INSERT INTO `users` (`user_name`, `user_vk_id`, `user_vk_token`, `user_permissions`," +
+                    " `user_register`, `user_last_auth`, `user_sdk_version`, `user_app_version`)" +
                     " VALUES ('" +
                     user.name + "', '" +
-                    user.numberOfGroup + "', '" +
                     user.vkId + "', '" +
                     user.vkToken + "', '" +
                     user.permissions.name() + "', '" +
@@ -174,7 +171,6 @@ public class UserInfo {
             executeUpdate("CREATE TABLE `users` (" +
                     " `user_id` INT NOT NULL AUTO_INCREMENT," +
                     " `user_name` TEXT NOT NULL," +
-                    " `user_number_of_group` INT NULL DEFAULT NULL," +
                     " `user_vk_id` INT NULL DEFAULT NULL," +
                     " `user_vk_token` TEXT," +
                     " `user_permissions` TEXT NOT NULL," +

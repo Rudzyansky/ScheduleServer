@@ -7,7 +7,6 @@ public class User implements Serializable {
     public boolean exists;
     public int id;
     public String name;
-    public int numberOfGroup;
     public int vkId;
     public String vkToken;
     public Groups permissions;
@@ -25,7 +24,6 @@ public class User implements Serializable {
 
         if (exists != user.exists) return false;
         if (id != user.id) return false;
-        if (numberOfGroup != user.numberOfGroup) return false;
         if (vkId != user.vkId) return false;
         if (sdkVersion != user.sdkVersion) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
@@ -42,7 +40,6 @@ public class User implements Serializable {
         int result = (exists ? 1 : 0);
         result = 31 * result + id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + numberOfGroup;
         result = 31 * result + vkId;
         result = 31 * result + (vkToken != null ? vkToken.hashCode() : 0);
         result = 31 * result + permissions.hashCode();
