@@ -36,6 +36,9 @@ class CommandWorker {
 
         addCommand(new UpdateTemplate(), Groups.developer, Groups.admin);
         addCommand(new DeleteTemplate(), Groups.developer, Groups.admin);
+
+        addCommand(new GetJournal(), Groups.developer, Groups.admin);
+        addCommand(new UpdateJournalRecord(), Groups.developer, Groups.admin);
     }
 
     private static void addCommand(CommandInterface c, Groups... groupies) {
@@ -44,7 +47,7 @@ class CommandWorker {
 
     @SuppressWarnings("SuspiciousMethodCalls")
     public static void exec(Connection c, Map<String, Object> map) {
-        Map<String, CommandInterface> currentPermissions = permissions.get(c.getUser().group);
+        Map<String, CommandInterface> currentPermissions = permissions.get(c.getUser().permissions);
         if (!currentPermissions.containsKey(map.get("command")))
             currentPermissions.get("forbidden").exec(c, map);
         else

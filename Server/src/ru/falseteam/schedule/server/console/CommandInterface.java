@@ -7,6 +7,7 @@ import org.apache.commons.cli.CommandLine;
  */
 interface CommandInterface {
     void exec(String params);
+
     void exec(CommandLine commandLine);
 
     String getName();

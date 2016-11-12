@@ -13,7 +13,7 @@ public class SetGroup extends CommandAbstract {
         //noinspection SpellCheckingInspection
         super("setgroup");
 
-        addOptions("g", "group", 1, true, "new group from user");
+        addOptions("g", "permissions", 1, true, "new permissions from user");
         addOptions("i", "id", 1, false, "user vk id");
         addOptions("n", "name", 2, false, "user family and name");
     }
@@ -23,10 +23,10 @@ public class SetGroup extends CommandAbstract {
         //Проверяем группу.
         Groups group;
         try {
-            group = Groups.valueOf(commandLine.getOptionValue("group"));
+            group = Groups.valueOf(commandLine.getOptionValue("permissions"));
             if (group.equals(Groups.guest)) throw new IllegalArgumentException();
         } catch (IllegalArgumentException e) {
-            Console.err("Group " + commandLine.getOptionValue("group") + " not found");
+            Console.err("Group " + commandLine.getOptionValue("permissions") + " not found");
             return;
         }
 
@@ -60,9 +60,9 @@ public class SetGroup extends CommandAbstract {
             }
         }
 
-        user.group = group;
+        user.permissions = group;
         UserInfo.updateUser(user);
-        Console.print("Set group " + group.name() + " for user " + user.vkId + " " + user.name);
+        Console.print("Set permissions " + group.name() + " for user " + user.vkId + " " + user.name);
 
     }
 }
