@@ -1,6 +1,7 @@
 package ru.falseteam.schedule.server.updater;
 
 import ru.falseteam.schedule.server.Console;
+import ru.falseteam.schedule.server.socket2.ConnectionsAbstract;
 
 import javax.net.ssl.SSLSocket;
 import java.io.*;
@@ -8,16 +9,15 @@ import java.nio.ByteBuffer;
 
 import static ru.falseteam.schedule.server.StaticSettings.getLastClientPath;
 
-class Connection implements Runnable {
+class Connection extends ConnectionsAbstract {
 
-    private SSLSocket socket;
 
     Connection(SSLSocket socket) {
-        this.socket = socket;
-        new Thread(this, "Update loader " + socket.getInetAddress().getHostAddress()).start();
+        super(socket);
     }
 
-    private void disconnect() {
+    @Override
+    public void disconnect() {
         try {
             Console.print("[updater] Client " + socket.getInetAddress().getHostAddress() + " disconnected");
             socket.close();

@@ -3,6 +3,7 @@ package ru.falseteam.schedule.server.socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.serializable.User;
+import ru.falseteam.schedule.server.socket2.ConnectionsAbstract;
 
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
@@ -10,10 +11,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
-public class Connection implements Runnable {
+public class Connection extends ConnectionsAbstract {
     private final Logger log = LogManager.getLogger();
 
-    private final SSLSocket socket;
     private ObjectOutputStream out;
 
     private User user = User.Factory.getDefault();
@@ -21,8 +21,7 @@ public class Connection implements Runnable {
     private long lastPing = System.currentTimeMillis();
 
     Connection(SSLSocket socket) {
-        this.socket = socket;
-        new Thread(this, "Connection with " + socket.getInetAddress().getHostAddress()).start();
+        super(socket);
     }
 
     public void send(Map<String, Object> map) {
@@ -35,6 +34,7 @@ public class Connection implements Runnable {
         }
     }
 
+    @Override
     public void disconnect() {
         try {
             Worker.removeFromList(this);
