@@ -3,9 +3,12 @@ package ru.falseteam.schedule.server.sql;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.server.Main;
+import ru.falseteam.schedule.server.Schedule;
 import ru.falseteam.schedule.server.StaticSettings;
 
 import java.sql.*;
+import java.util.*;
+import java.util.Date;
 
 /**
  * Create connection to database.
@@ -39,6 +42,8 @@ public class SQLConnection {
 
             WeekNumberInfo.createTable();
             JournalInfo.createTable();
+
+            Schedule.addPeriodicalTask(JournalInfo.addRec, new Date(), 24 * 60 * 60 * 1000);
         } catch (Exception e) {
             log.fatal("Can not load database, server will be stop", e);
             Main.stop();
