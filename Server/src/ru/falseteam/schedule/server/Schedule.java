@@ -3,6 +3,7 @@ package ru.falseteam.schedule.server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,5 +26,10 @@ public class Schedule {
     public static void addPeriodicalTask(TimerTask tt, long period) {
         log.trace("Adding periodical task to schedule.");
         timer.schedule(tt, 0, period);
+    }
+
+    public static void addPeriodicalTask(TimerTask tt, Date time, long period) {
+        log.trace("Adding periodical task to schedule.");
+        timer.schedule(tt, time, period);
     }
 }

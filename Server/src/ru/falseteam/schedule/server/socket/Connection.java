@@ -20,6 +20,8 @@ public class Connection implements Runnable {
     private final long uptime = System.currentTimeMillis();
     private long lastPing = System.currentTimeMillis();
 
+    private boolean connected = true;
+
     Connection(SSLSocket socket) {
         this.socket = socket;
         new Thread(this, "Connection with " + socket.getInetAddress().getHostAddress()).start();
@@ -35,7 +37,9 @@ public class Connection implements Runnable {
         }
     }
 
-    public void disconnect() {
+    public synchronized void disconnect() {
+        if (!connected) return;
+        connected = false;
         try {
             Worker.removeFromList(this);
             log.trace("Client {} disconnected", socket.getInetAddress().getHostAddress());

@@ -5,9 +5,7 @@ import ru.falseteam.schedule.serializable.JournalRecord;
 import java.nio.ByteBuffer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
@@ -104,9 +102,12 @@ public class JournalInfo {
         record.lessonNumber = LessonNumberInfo.getLessonNumber(rs);
         record.lesson = LessonInfo.getLesson(rs);
 
-        byte[] bytes = Base64.getDecoder().decode(rs.getString("was"));
-        ByteBuffer bb = ByteBuffer.allocate(bytes.length).put(bytes);
-        record.was = bb.asIntBuffer().array();
+        String was = rs.getString("was");
+        if (was != null) {
+            byte[] bytes = Base64.getDecoder().decode(was);
+            ByteBuffer bb = ByteBuffer.allocate(bytes.length).put(bytes);
+            record.was = bb.asIntBuffer().array();
+        }
 
         record.task = rs.getString("task");
         return record;
@@ -142,6 +143,28 @@ public class JournalInfo {
         }
     }
 
+    static TimerTask addRec = new TimerTask() {
+        @Override
+        public void run() {
+            try {
+                ResultSet rs = executeQuery("SELECT * FROM `journal`" +
+                        " WHERE `date` LIKE '" + new java.sql.Date(new Date().getTime()) + "';");
+                if (rs.first()) return;
+                Calendar c = Calendar.getInstance();
+                int evenness = (c.get(Calendar.WEEK_OF_YEAR) - 1) % 2;
+                int dayOfWeek = (c.get(Calendar.DAY_OF_WEEK) - 1);
+                if (dayOfWeek == 0) dayOfWeek = 7;
+                int finalDayOfWeek = dayOfWeek;
+                TemplateInfo.getTemplates().stream()
+                        .filter(t -> t.weekDay.id == finalDayOfWeek && (t.weekEvenness == 0 || t.weekEvenness - 1 == evenness))
+                        .forEach(t -> addRecord(JournalRecord.Factory.getFromTemplate(t)))
+                ;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
@@ -152,7 +175,7 @@ public class JournalInfo {
                     " `lesson_number_id` INT NOT NULL," +
                     " `lesson_id` INT NOT NULL," +
                     " `task` TEXT," +
-                    " `was` VARBINARY(400) NOT NULL," +
+                    " `was` TEXT," +
 
                     " PRIMARY KEY (`id`)," +
                     " KEY `week_day_id` (`week_day_id`)," +
