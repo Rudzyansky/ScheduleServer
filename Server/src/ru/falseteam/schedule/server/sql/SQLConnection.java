@@ -43,7 +43,8 @@ public class SQLConnection {
             WeekNumberInfo.createTable();
             JournalInfo.createTable();
 
-            Schedule.addPeriodicalTask(JournalInfo.addRec, new Date(), 24 * 60 * 60 * 1000);
+//            Schedule.addPeriodicalTask(JournalInfo.addRec, new Date(), 24 * 60 * 60 * 1000);
+            Schedule.addPeriodicalTask(JournalInfo.addRec, 24 * 60 * 60 * 1000);
         } catch (Exception e) {
             log.fatal("Can not load database, server will be stop", e);
             Main.stop();
