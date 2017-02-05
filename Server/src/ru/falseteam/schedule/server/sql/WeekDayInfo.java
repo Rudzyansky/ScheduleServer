@@ -15,6 +15,7 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  * @version 1.0
  */
 public class WeekDayInfo {
+    public static final String table = "week_days";
     public static List<WeekDay> getWeekDays() {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `week_days`");
