@@ -2,9 +2,15 @@ package ru.falseteam.schedule.server.sql;
 
 import ru.falseteam.schedule.serializable.Template;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 
 import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
@@ -16,6 +22,8 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  */
 public class TemplateInfo {
 
+    static final String table = "templates";
+
     /**
      * getTemplates load table to variable
      *
@@ -25,7 +33,7 @@ public class TemplateInfo {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `templates`" +
                     " NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)" +
-                    " ORDER BY `week_day_id`, `lesson_number_id`, `week_evenness`;");
+                    " ORDER BY `week_day_id`, `lesson_number_id`, `weeks`;");
             List<Template> templates = new ArrayList<>();
             if (!rs.first()) return templates;
             do templates.add(getTemplate(rs));
@@ -45,7 +53,7 @@ public class TemplateInfo {
      */
     public static Template getTemplate(final int id) {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `templates`" +
+            ResultSet rs = executeQuery("SELECT * FROM `" + table + "`" +
                     " NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)" +
                     " WHERE `id` LIKE '" + id + "';");
             return rs.first() ? getTemplate(rs) : null;
@@ -66,18 +74,20 @@ public class TemplateInfo {
         template.weekDay = WeekDayInfo.getWeekDay(rs);
         template.lessonNumber = LessonNumberInfo.getLessonNumber(rs);
         template.lesson = LessonInfo.getLesson(rs);
-        template.weekEvenness = rs.getInt("week_evenness");
+        template.weeks = BitSet.valueOf(rs.getBytes("weeks"));
         return template;
     }
 
     public static boolean updateTemplate(final Template template) {
         try {
-            executeUpdate("UPDATE `templates` SET" +
-                    " `week_day_id` = '" + template.weekDay.id + "'," +
-                    " `lesson_number_id` = '" + template.lessonNumber.id + "'," +
-                    " `lesson_id` = '" + template.lesson.id + "'," +
-                    " `week_evenness` = '" + template.weekEvenness + "'" +
-                    " WHERE `id` LIKE '" + template.id + "';");
+            String condition = "WHERE `id` LIKE '" + template.id + "'";
+            PreparedStatement s = SQLConnection.update(table, condition,
+                    "week_day_id", "lesson_number_id", "lesson_id", "weeks");
+            s.setInt(1, template.weekDay.id);
+            s.setInt(2, template.lessonNumber.id);
+            s.setInt(3, template.lesson.id);
+            s.setBytes(4, template.weeks.toByteArray());
+            s.execute();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,12 +107,13 @@ public class TemplateInfo {
 
     public static boolean addTemplate(final Template template) {
         try {
-            executeUpdate("INSERT INTO `templates` (`week_day_id`, `lesson_number_id`, `lesson_id`," +
-                    " `week_evenness`) VALUES ('" +
-                    template.weekDay.id + "', '" +
-                    template.lessonNumber.id + "', '" +
-                    template.lesson.id + "', '" +
-                    template.weekEvenness + "');");
+            PreparedStatement s = SQLConnection.insert(table,
+                    "week_day_id", "lesson_number_id", "lesson_id", "weeks");
+            s.setInt(1, template.weekDay.id);
+            s.setInt(2, template.lessonNumber.id);
+            s.setInt(3, template.lesson.id);
+            s.setBytes(4, template.weeks.toByteArray());
+            s.execute();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -118,7 +129,7 @@ public class TemplateInfo {
                     " `week_day_id` INT NOT NULL," +
                     " `lesson_number_id` INT NOT NULL," +
                     " `lesson_id` INT NOT NULL," +
-                    " `week_evenness` INT NOT NULL," +
+                    " `weeks` BINARY 4 NOT NULL," +
 
                     " PRIMARY KEY (`id`)," +
                     " KEY `week_day_id` (`week_day_id`)," +
