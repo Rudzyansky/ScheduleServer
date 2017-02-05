@@ -23,7 +23,8 @@ public class LessonInfo {
      */
     public static List<Lesson> getLessons() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `lessons` ORDER BY `lesson_name`;");
+//            ResultSet rs = executeQuery("SELECT * FROM `lessons` ORDER BY `lesson_name`;");
+            ResultSet rs = executeQuery("SELECT * FROM `lessons`;");
             List<Lesson> lessons = new ArrayList<>();
             if (!rs.first()) return lessons;
             do lessons.add(getLesson(rs));

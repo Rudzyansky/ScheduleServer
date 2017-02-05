@@ -25,7 +25,7 @@ class WeekNumberInfo {
             int year = LocalDateTime.now().getYear();
             executeUpdate("INSERT INTO `week_numbers`" +
                     " (`week_number_id`, `week_number_name`, `week_number`) VALUES" +
-                    "(1, '8 февраля', " + new Calendar.Builder().setDate(year, 2, 8).build().get(Calendar.WEEK_OF_YEAR) + ")," +
+                    "(1, '6 февраля', " + new Calendar.Builder().setDate(year, 2, 6).build().get(Calendar.WEEK_OF_YEAR) + ")," +
                     "(2, '1 сентября', " + new Calendar.Builder().setDate(year, 9, 1).build().get(Calendar.WEEK_OF_YEAR) + ");");
             return true;
         } catch (SQLException ignore) {
