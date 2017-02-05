@@ -78,4 +78,22 @@ public class SQLConnection {
             return false;
         }
     }
+
+    static PreparedStatement update(String table, String condition, String... columns) throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE `").append(table).append("` SET `").append(columns[0]).append("` = ?");
+        for (int i = 1; i < columns.length; ++i) sb.append(", `").append(columns[i]).append("` = ?");
+        sb.append(' ').append(condition).append(" ;");
+        return connection.prepareStatement(sb.toString());
+    }
+
+    static PreparedStatement insert(String table, String... columns) throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO `").append(table).append("` (").append('`').append(columns[0]).append('`');
+        for (int i = 1; i < columns.length; ++i) sb.append(", `").append(columns[i]).append('`');
+        sb.append(") VALUES ( ?");
+        for (int i = 1; i < columns.length; ++i) sb.append(", ?");
+        sb.append(");");
+        return connection.prepareStatement(sb.toString());
+    }
 }

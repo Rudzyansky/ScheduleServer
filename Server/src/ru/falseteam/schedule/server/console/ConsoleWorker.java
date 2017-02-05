@@ -3,10 +3,7 @@ package ru.falseteam.schedule.server.console;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.server.Console;
-import ru.falseteam.schedule.server.console.commands.Online;
-import ru.falseteam.schedule.server.console.commands.SetGroup;
-import ru.falseteam.schedule.server.console.commands.Stop;
-import ru.falseteam.schedule.server.console.commands.Uptime;
+import ru.falseteam.schedule.server.console.commands.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,6 +28,7 @@ public class ConsoleWorker implements Runnable {
         addNewCommand(new Uptime());
         addNewCommand(new Online());
         addNewCommand(new SetGroup());
+        addNewCommand(new Test());
     }
 
     private static void addNewCommand(CommandInterface command) {

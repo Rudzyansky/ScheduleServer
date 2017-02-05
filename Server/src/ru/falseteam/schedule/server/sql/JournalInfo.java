@@ -155,10 +155,10 @@ public class JournalInfo {
                 int dayOfWeek = (c.get(Calendar.DAY_OF_WEEK) - 1);
                 if (dayOfWeek == 0) dayOfWeek = 7;
                 int finalDayOfWeek = dayOfWeek;
-                TemplateInfo.getTemplates().stream()
-                        .filter(t -> t.weekDay.id == finalDayOfWeek && (t.weekEvenness == 0 || t.weekEvenness - 1 == evenness))
-                        .forEach(t -> addRecord(JournalRecord.Factory.getFromTemplate(t)))
-                ;
+//                TemplateInfo.getTemplates().stream()
+//                        .filter(t -> t.weekDay.id == finalDayOfWeek && (t.weekEvenness == 0 || t.weekEvenness - 1 == evenness))
+//                        .forEach(t -> addRecord(JournalRecord.Factory.getFromTemplate(t)))
+//                ;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
