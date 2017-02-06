@@ -4,9 +4,11 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.objects.users.UserXtrCounters;
 import com.vk.api.sdk.queries.users.UserField;
 import ru.falseteam.schedule.serializable.User;
-import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.UserInfo;
+import ru.falseteam.vframe.socket.Container;
+import ru.falseteam.vframe.socket.ServerConnectionAbstract;
+import ru.falseteam.vframe.socket.ServerProtocolAbstract;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -17,13 +19,9 @@ import static ru.falseteam.schedule.serializable.Groups.unconfirmed;
 import static ru.falseteam.schedule.server.Main.vk;
 import static ru.falseteam.schedule.server.StaticSettings.getLastClientVersion;
 
-public class Auth extends CommandAbstract {
-    public Auth() {
-        super("auth");
-    }
-
+public class Auth extends ServerProtocolAbstract {
     @Override
-    public void exec(Connection connection, Map<String, Object> map) {
+    public void exec(Map<String, Object> map, ServerConnectionAbstract connection) {
         User user;
         try {
             //Проверяем токен на валидность.
@@ -61,7 +59,7 @@ public class Auth extends CommandAbstract {
                 user.appVersion = appVersion;
                 UserInfo.updateStat(user);
             }
-            connection.setUser(user);
+            ((Connection) connection).setUser(user);
         } catch (Exception ignore) {
             ignore.printStackTrace();
             return;
@@ -72,6 +70,6 @@ public class Auth extends CommandAbstract {
         map.put("command", "auth");
         map.put("version", getLastClientVersion());
         map.put("permissions", user.permissions.name());
-        connection.send(map);
+        connection.send(new Container(getName(), map));
     }
 }

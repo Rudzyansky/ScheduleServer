@@ -2,15 +2,14 @@ package ru.falseteam.schedule.server.socket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.falseteam.schedule.server.Schedule;
 import ru.falseteam.schedule.server.StaticSettings;
-import ru.falseteam.schedule.server.socket.commands.Ping;
-import ru.falseteam.schedule.server.utils.SSLServerSocketFactory;
+import ru.falseteam.vframe.VFrameRuntimeException;
+import ru.falseteam.vframe.config.ConfigLoader;
+import ru.falseteam.vframe.config.LoadFromConfig;
+import ru.falseteam.vframe.socket.ServerSocketWorker;
+import ru.falseteam.vframe.socket.VFKeystore;
 
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLSocket;
-import java.io.IOException;
-import java.util.*;
+import java.io.FileNotFoundException;
 
 /**
  * Управляет сервернум сокетом, создает соединения с пользователями.
@@ -19,79 +18,36 @@ import java.util.*;
  * @author Evgeny Rudzyansky
  * @version 1.0
  */
-public class Worker implements Runnable {
-    private static Logger log = LogManager.getLogger(Worker.class.getName());
+public class Worker {
+    private static final Logger log = LogManager.getLogger();
 
-    private static SSLServerSocket ss;
-    private static final List<Connection> clients = new LinkedList<>();
-    private static int connectionsFromAllTime = 0;
+    @LoadFromConfig(filename = "keystore", defaultValue = "publicPassword")
+    private static String keystorePublicPassword;
+    @LoadFromConfig(filename = "keystore", defaultValue = "privatePassword")
+    private static String keystorePrivatePassword;
+    @LoadFromConfig(filename = "keystore", defaultValue = "config/keystore.jks")
+    private static String keystorePath;
+    @LoadFromConfig(filename = "keystore", defaultValue = "7101")
+    private static int port;
 
-    private static TimerTask ping = new TimerTask() {
-        @Override
-        public void run() {
-            Map<String, Object> request = Ping.getRequest();
-            synchronized (clients) {
-                Iterator<Connection> iterator = clients.iterator();
-                while (iterator.hasNext()) {
-                    Connection c = iterator.next();
-                    if (System.currentTimeMillis() - c.getLastPing() > 95 * 1000) {
-                        iterator.remove();
-                        c.disconnect();
-                    } else {
-                        c.send(request);
-                    }
-                }
-            }
-        }
-    };
+
+    private static ServerSocketWorker ssw;
 
     public static void init() {
-        new Thread(new Worker(), "ServerSocketWorker").start();
-        Schedule.addPeriodicalTask(ping, 30 * 1000);
+        ConfigLoader.load(Worker.class);
+
+        VFKeystore keystore;
+        try {
+            keystore = new VFKeystore(keystorePath, keystorePublicPassword, keystorePrivatePassword);
+        } catch (FileNotFoundException e) {
+            log.fatal("VFrame: keystore file not found");
+            throw new VFrameRuntimeException(e);
+        }
+        ssw = new ServerSocketWorker(Connection::new, keystore, port);
     }
 
     public static void stop() {
-        try {
-            ss.close();
-            log.trace("Port {} closed", StaticSettings.getPort());
-        } catch (Exception e) {
-            log.error("Can not close server socket", e);
-        }
-
-        synchronized (clients) {
-            Iterator<Connection> iterator = clients.iterator();
-            while (iterator.hasNext()) {
-                Connection connection = iterator.next();
-                iterator.remove();
-                connection.disconnect();
-            }
-        }
-    }
-
-    static void removeFromList(Connection c) {
-        clients.remove(c);
-    }
-
-    @SuppressWarnings("InfiniteLoopStatement")
-    @Override
-    public void run() {
-        ss = SSLServerSocketFactory.createServerSocket(StaticSettings.getPort());
-        if (ss == null) return;
-        try {
-            while (true) {
-                clients.add(new Connection((SSLSocket) ss.accept()));
-                ++connectionsFromAllTime;
-            }
-        } catch (IOException ignore) {
-            // Normal situations throw while server socket closing.
-        }
-    }
-
-    public static List<Connection> getClients() {
-        return clients;
-    }
-
-    public static int getConnectionsFromAllTime() {
-        return connectionsFromAllTime;
+        if (ssw != null) ssw.stop();
+        ssw = null;
     }
 }

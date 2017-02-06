@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.server.console.ConsoleWorker;
 import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.SQLConnection;
+import ru.falseteam.vframe.VFrame;
 
 /**
  * Основная точка входа.
@@ -27,6 +28,7 @@ public class Main {
     private static void start() {
         log.info("Server version {} has been started", StaticSettings.VERSION);
 
+        VFrame.init();
         // Инициализация клиента вк.
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
@@ -53,6 +55,7 @@ public class Main {
 
         // Остановка служебных модулей.
         ConsoleWorker.stop();
+        VFrame.stop();
     }
 
 }

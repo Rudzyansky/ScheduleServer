@@ -2,20 +2,16 @@ package ru.falseteam.schedule.server.socket.commands;
 
 import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
-import ru.falseteam.schedule.server.socket.CommandAbstract;
-import ru.falseteam.schedule.server.socket.Connection;
-import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.UserInfo;
+import ru.falseteam.vframe.socket.Container;
+import ru.falseteam.vframe.socket.ServerConnectionAbstract;
+import ru.falseteam.vframe.socket.ServerProtocolAbstract;
 
 import java.util.Map;
 
-public class DeleteUser extends CommandAbstract {
-    public DeleteUser() {
-        super("delete_user");
-    }
-
+public class DeleteUser extends ServerProtocolAbstract {
     @Override
-    public void exec(Connection connection, Map<String, Object> map) {
+    public void exec(Map<String, Object> map, ServerConnectionAbstract connection) {
         User user = (User) map.get("user");
         User inBase = UserInfo.getUserFromID(user.id);
         map.clear();
@@ -24,8 +20,9 @@ public class DeleteUser extends CommandAbstract {
                 && !user.permissions.equals(Groups.developer)
                 && !inBase.permissions.equals(Groups.developer)
                 && UserInfo.deleteUser(user);
-        if (b) Worker.getClients().stream().filter(c -> c.getUser().id == user.id).forEach(Connection::disconnect);
+        // TODO: 05.02.17 fix it l
+//        if (b) Worker.getClients().stream().filter(c -> c.getUser().id == user.id).forEach(Connection::disconnect);
         map.put("message", b ? "Пользователь удален" : "Произошла ошибка при удалении пользователя");
-        connection.send(map);
+        connection.send(new Container(getName(), map));
     }
 }
