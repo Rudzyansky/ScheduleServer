@@ -6,6 +6,8 @@ import com.vk.api.sdk.queries.users.UserField;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.UserInfo;
+import ru.falseteam.vframe.config.ConfigLoader;
+import ru.falseteam.vframe.config.LoadFromConfig;
 import ru.falseteam.vframe.socket.ConnectionAbstract;
 import ru.falseteam.vframe.socket.Container;
 import ru.falseteam.vframe.socket.ProtocolAbstract;
@@ -17,9 +19,15 @@ import java.util.Map;
 
 import static ru.falseteam.schedule.serializable.Groups.unconfirmed;
 import static ru.falseteam.schedule.server.Main.vk;
-import static ru.falseteam.schedule.server.StaticSettings.getLastClientVersion;
 
 public class Auth extends ProtocolAbstract {
+    @LoadFromConfig(defaultValue = "")
+    private String clientVersion;
+
+    public Auth() {
+        ConfigLoader.load(this);
+    }
+
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         User user;
@@ -68,7 +76,7 @@ public class Auth extends ProtocolAbstract {
         // Формируем ответ пользователю.
         map.clear();
         map.put("command", "auth");
-        map.put("version", getLastClientVersion());
+        map.put("version", clientVersion);
         map.put("permissions", user.permissions.name());
         connection.send(new Container(getName(), map));
     }

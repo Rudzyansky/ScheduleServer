@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.server.console.ConsoleWorker;
 import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.vframe.VFrame;
+import ru.falseteam.vframe.config.ConfigLoader;
+import ru.falseteam.vframe.config.LoadFromConfig;
 import ru.falseteam.vframe.sql.SQLConnection;
 
 /**
@@ -18,6 +20,9 @@ import ru.falseteam.vframe.sql.SQLConnection;
  * @version 2.0
  */
 public class Main {
+    @LoadFromConfig(defaultValue = "")
+    private static String version;
+
     private static Logger log = LogManager.getLogger();
     public static VkApiClient vk;
 
@@ -26,7 +31,8 @@ public class Main {
     }
 
     private static void start() {
-        log.info("Server version {} has been started", StaticSettings.VERSION);
+        ConfigLoader.load(Main.class);
+        log.info("Server version {} has been started", version);
 
         VFrame.init();
         // Инициализация клиента вк.
@@ -34,7 +40,6 @@ public class Main {
         vk = new VkApiClient(transportClient);
 
         // Инициализация служебных модулей.
-        StaticSettings.init();
         ConsoleWorker.init();
         Schedule.init();
 
