@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
+import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
 /**
  * @author Evgeny Rudzyansky

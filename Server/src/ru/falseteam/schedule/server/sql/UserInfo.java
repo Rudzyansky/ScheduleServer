@@ -10,8 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
+import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
+import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
 /**
  * translator {@link User} to database using {@link SQLConnection}

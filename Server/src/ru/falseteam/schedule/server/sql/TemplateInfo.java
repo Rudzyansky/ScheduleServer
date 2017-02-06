@@ -1,6 +1,7 @@
 package ru.falseteam.schedule.server.sql;
 
 import ru.falseteam.schedule.serializable.Template;
+import ru.falseteam.vframe.sql.SQLConnection;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,8 +14,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
+import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
+import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
 /**
  * @author Evgeny Rudzyansky
