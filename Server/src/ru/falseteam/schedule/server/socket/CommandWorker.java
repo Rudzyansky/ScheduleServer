@@ -3,14 +3,13 @@ package ru.falseteam.schedule.server.socket;
 
 import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.server.socket.commands.*;
-import ru.falseteam.vframe.socket.ServerProtocolAbstract;
+import ru.falseteam.vframe.socket.ProtocolAbstract;
 
-import java.security.acl.Group;
 import java.util.HashMap;
 import java.util.Map;
 
 class CommandWorker {
-    private static Map<Groups, Map<String, ServerProtocolAbstract>> permissions;
+    private static Map<Groups, Map<String, ProtocolAbstract>> permissions;
 
     static {
         permissions = new HashMap<>();
@@ -42,12 +41,12 @@ class CommandWorker {
         addCommand(new UpdateJournalRecord(), Groups.developer, Groups.admin);
     }
 
-    private static void addCommand(ServerProtocolAbstract c, Groups... groupies) {
+    private static void addCommand(ProtocolAbstract c, Groups... groupies) {
         for (Groups g : groupies) permissions.get(g).put(c.getName(), c);
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
-    static Map<String, ServerProtocolAbstract> get(Groups g) {
+    static Map<String, ProtocolAbstract> get(Groups g) {
         return permissions.get(g);
     }
 }

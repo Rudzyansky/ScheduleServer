@@ -1,14 +1,14 @@
 package ru.falseteam.schedule.server.socket.commands;
 
+import ru.falseteam.vframe.socket.ConnectionAbstract;
 import ru.falseteam.vframe.socket.Container;
-import ru.falseteam.vframe.socket.ServerConnectionAbstract;
-import ru.falseteam.vframe.socket.ServerProtocolAbstract;
+import ru.falseteam.vframe.socket.ProtocolAbstract;
 
 import java.util.Map;
 
-public class AccessDenied extends ServerProtocolAbstract {
+public class AccessDenied extends ProtocolAbstract {
     @Override
-    public void exec(Map<String, Object> map, ServerConnectionAbstract connection) {
+    public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         String command = (String) map.get("command");
         map.clear();
         map.put("command", "forbidden");
