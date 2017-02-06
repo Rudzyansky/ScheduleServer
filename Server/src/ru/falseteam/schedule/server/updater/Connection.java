@@ -1,14 +1,16 @@
 package ru.falseteam.schedule.server.updater;
 
 import ru.falseteam.schedule.server.Console;
+import ru.falseteam.vframe.config.LoadFromConfig;
 
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.nio.ByteBuffer;
 
-import static ru.falseteam.schedule.server.StaticSettings.getLastClientPath;
-
 class Connection implements Runnable {
+
+    @LoadFromConfig(defaultValue = "")
+    private String clientPath;
 
     private SSLSocket socket;
 
@@ -35,9 +37,8 @@ class Connection implements Runnable {
         try {
             OutputStream sout = new BufferedOutputStream(socket.getOutputStream());
             Console.print("[updater] Client " + socket.getInetAddress().getHostAddress() + " connected");
-            String path = getLastClientPath();
-            File file = new File(path);
-            if (!file.exists()) throw new MyException("File not found " + path);
+            File file = new File(clientPath);
+            if (!file.exists()) throw new MyException("File not found " + clientPath);
             InputStream fin = new FileInputStream(file);
             long length = file.length();
             byte[] length2bytes = ByteBuffer.allocate(8).putLong(length).array();

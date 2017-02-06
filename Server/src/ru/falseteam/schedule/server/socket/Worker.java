@@ -26,7 +26,7 @@ public class Worker {
     private static String keystorePrivatePassword;
     @LoadFromConfig(filename = "keystore", defaultValue = "config/keystore.jks")
     private static String keystorePath;
-    @LoadFromConfig(filename = "keystore", defaultValue = "7101")
+    @LoadFromConfig(defaultValue = "7101")
     private static int port;
 
     private static SocketWorker ssw;
