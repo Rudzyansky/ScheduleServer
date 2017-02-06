@@ -7,8 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.server.console.ConsoleWorker;
 import ru.falseteam.schedule.server.socket.Worker;
-import ru.falseteam.schedule.server.sql.SQLConnection;
 import ru.falseteam.vframe.VFrame;
+import ru.falseteam.vframe.sql.SQLConnection;
 
 /**
  * Основная точка входа.
