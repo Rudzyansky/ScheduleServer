@@ -3,14 +3,14 @@ package ru.falseteam.schedule.server.socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.serializable.User;
-import ru.falseteam.vframe.socket.ServerConnectionAbstract;
-import ru.falseteam.vframe.socket.ServerProtocolAbstract;
-import ru.falseteam.vframe.socket.ServerSocketWorker;
+import ru.falseteam.vframe.socket.ConnectionAbstract;
+import ru.falseteam.vframe.socket.ProtocolAbstract;
+import ru.falseteam.vframe.socket.SocketWorker;
 
 import java.net.Socket;
 import java.util.Map;
 
-public class Connection extends ServerConnectionAbstract {
+public class Connection extends ConnectionAbstract {
     private final Logger log = LogManager.getLogger();
 
 
@@ -18,7 +18,7 @@ public class Connection extends ServerConnectionAbstract {
     private final long uptime = System.currentTimeMillis();
     private long lastPing = System.currentTimeMillis();
 
-    public Connection(Socket socket, ServerSocketWorker worker) {
+    public Connection(Socket socket, SocketWorker worker) {
         super(socket, worker);
     }
 
@@ -44,7 +44,7 @@ public class Connection extends ServerConnectionAbstract {
     }
 
     @Override
-    protected Map<String, ServerProtocolAbstract> getProtocols() {
+    protected Map<String, ProtocolAbstract> getProtocols() {
         return CommandWorker.get(user.permissions);
     }
 }

@@ -6,9 +6,9 @@ import com.vk.api.sdk.queries.users.UserField;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.UserInfo;
+import ru.falseteam.vframe.socket.ConnectionAbstract;
 import ru.falseteam.vframe.socket.Container;
-import ru.falseteam.vframe.socket.ServerConnectionAbstract;
-import ru.falseteam.vframe.socket.ServerProtocolAbstract;
+import ru.falseteam.vframe.socket.ProtocolAbstract;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -19,9 +19,9 @@ import static ru.falseteam.schedule.serializable.Groups.unconfirmed;
 import static ru.falseteam.schedule.server.Main.vk;
 import static ru.falseteam.schedule.server.StaticSettings.getLastClientVersion;
 
-public class Auth extends ServerProtocolAbstract {
+public class Auth extends ProtocolAbstract {
     @Override
-    public void exec(Map<String, Object> map, ServerConnectionAbstract connection) {
+    public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         User user;
         try {
             //Проверяем токен на валидность.

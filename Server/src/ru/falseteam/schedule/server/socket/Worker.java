@@ -2,11 +2,10 @@ package ru.falseteam.schedule.server.socket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.falseteam.schedule.server.StaticSettings;
 import ru.falseteam.vframe.VFrameRuntimeException;
 import ru.falseteam.vframe.config.ConfigLoader;
 import ru.falseteam.vframe.config.LoadFromConfig;
-import ru.falseteam.vframe.socket.ServerSocketWorker;
+import ru.falseteam.vframe.socket.SocketWorker;
 import ru.falseteam.vframe.socket.VFKeystore;
 
 import java.io.FileNotFoundException;
@@ -30,8 +29,7 @@ public class Worker {
     @LoadFromConfig(filename = "keystore", defaultValue = "7101")
     private static int port;
 
-
-    private static ServerSocketWorker ssw;
+    private static SocketWorker ssw;
 
     public static void init() {
         ConfigLoader.load(Worker.class);
@@ -43,7 +41,7 @@ public class Worker {
             log.fatal("VFrame: keystore file not found");
             throw new VFrameRuntimeException(e);
         }
-        ssw = new ServerSocketWorker(Connection::new, keystore, port);
+        ssw = new SocketWorker(Connection::new, keystore, port);
     }
 
     public static void stop() {
