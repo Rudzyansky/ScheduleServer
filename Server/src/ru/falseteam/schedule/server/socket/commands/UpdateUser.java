@@ -2,22 +2,18 @@ package ru.falseteam.schedule.server.socket.commands;
 
 import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
-import ru.falseteam.schedule.server.socket.CommandAbstract;
-import ru.falseteam.schedule.server.socket.Connection;
-import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.UserInfo;
+import ru.falseteam.vframe.socket.Container;
+import ru.falseteam.vframe.socket.ServerConnectionAbstract;
+import ru.falseteam.vframe.socket.ServerProtocolAbstract;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class UpdateUser extends CommandAbstract {
-    public UpdateUser() {
-        super("update_user");
-    }
-
+public class UpdateUser extends ServerProtocolAbstract {
     @Override
-    public void exec(Connection connection, Map<String, Object> map) {
+    public void exec(Map<String, Object> map, ServerConnectionAbstract connection) {
         List<Groups> groups = new ArrayList<>();
         groups.add(Groups.unconfirmed);
         groups.add(Groups.user);
@@ -31,8 +27,9 @@ public class UpdateUser extends CommandAbstract {
                 && groups.indexOf(user.permissions) > -1
                 && !user.permissions.equals(Groups.developer)
                 && (user.exists ? UserInfo.updateUser(user) : UserInfo.addUser(user));
-        if (b) Worker.getClients().stream().filter(c -> c.getUser().id == user.id).forEach(Connection::disconnect);
+        // TODO: 05.02.17 потом пофиксить ..
+//        if (b) Worker.getClients().stream().filter(c -> c.getUser().id == user.id).forEach(Connection::disconnect);
         map.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
-        connection.send(map);
+        connection.send(new Container(getName(), map));
     }
 }
