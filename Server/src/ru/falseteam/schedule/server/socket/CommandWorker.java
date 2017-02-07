@@ -20,7 +20,7 @@ class CommandWorker {
         permissions.put(Groups.admin, new HashMap<>());
         permissions.put(Groups.developer, new HashMap<>());
 
-        addCommand(new Auth(), Groups.developer, Groups.admin, Groups.user, Groups.unconfirmed, Groups.guest);
+        addCommand(new Auth(), Groups.guest);
         addCommand(new GetLessons(), Groups.developer, Groups.admin, Groups.user, Groups.unconfirmed);
         addCommand(new UpdateLesson(), Groups.developer, Groups.admin);
         addCommand(new DeleteLesson(), Groups.developer, Groups.admin);
