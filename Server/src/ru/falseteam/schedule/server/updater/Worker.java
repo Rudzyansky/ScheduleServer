@@ -2,6 +2,7 @@ package ru.falseteam.schedule.server.updater;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.falseteam.vframe.VFrame;
 import ru.falseteam.vframe.config.ConfigLoader;
 import ru.falseteam.vframe.config.LoadFromConfig;
 import ru.falseteam.vframe.socket.VFKeystore;
@@ -44,6 +45,7 @@ public class Worker implements Runnable {
         try {
             VFKeystore k = new VFKeystore(keystorePath, keystorePublicPassword, keystorePrivatePassword);
             ss = (SSLServerSocket) k.getSSLContext().getServerSocketFactory().createServerSocket(updatePort);
+            VFrame.print("VFrame: port " + ss.getLocalPort() + " open and listening");
             if (ss == null) return;
             while (true) new Connection((SSLSocket) ss.accept());
         } catch (IOException ignore) {

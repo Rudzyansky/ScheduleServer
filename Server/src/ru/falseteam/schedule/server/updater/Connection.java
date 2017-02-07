@@ -1,6 +1,7 @@
 package ru.falseteam.schedule.server.updater;
 
 import ru.falseteam.schedule.server.Console;
+import ru.falseteam.vframe.config.ConfigLoader;
 import ru.falseteam.vframe.config.LoadFromConfig;
 
 import javax.net.ssl.SSLSocket;
@@ -15,6 +16,7 @@ class Connection implements Runnable {
     private SSLSocket socket;
 
     Connection(SSLSocket socket) {
+        ConfigLoader.load(this);
         this.socket = socket;
         new Thread(this, "Update loader " + socket.getInetAddress().getHostAddress()).start();
     }
