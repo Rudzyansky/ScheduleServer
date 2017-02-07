@@ -2,6 +2,8 @@ package ru.falseteam.schedule.server.socket.commands;
 
 import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
+import ru.falseteam.schedule.server.socket.Connection;
+import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.UserInfo;
 import ru.falseteam.vframe.socket.ConnectionAbstract;
 import ru.falseteam.vframe.socket.Container;
@@ -27,8 +29,9 @@ public class UpdateUser extends ProtocolAbstract {
                 && groups.indexOf(user.permissions) > -1
                 && !user.permissions.equals(Groups.developer)
                 && (user.exists ? UserInfo.updateUser(user) : UserInfo.addUser(user));
-        // TODO: 05.02.17 потом пофиксить ..
-//        if (b) Worker.getClients().stream().filter(c -> c.getUser().id == user.id).forEach(Connection::disconnect);
+        if (b) Worker.getClients().stream()
+                .filter(c -> ((Connection) c).getUser().id == user.id)
+                .forEach(c -> c.send(Auth.getSetPermission(user.permissions)));
         map.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
         connection.send(new Container(getName(), map));
     }

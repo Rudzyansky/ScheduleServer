@@ -5,10 +5,12 @@ import org.apache.logging.log4j.Logger;
 import ru.falseteam.vframe.VFrameRuntimeException;
 import ru.falseteam.vframe.config.ConfigLoader;
 import ru.falseteam.vframe.config.LoadFromConfig;
+import ru.falseteam.vframe.socket.ConnectionAbstract;
 import ru.falseteam.vframe.socket.SocketWorker;
 import ru.falseteam.vframe.socket.VFKeystore;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
 /**
  * Управляет сервернум сокетом, создает соединения с пользователями.
@@ -33,7 +35,6 @@ public class Worker {
 
     public static void init() {
         ConfigLoader.load(Worker.class);
-
         VFKeystore keystore;
         try {
             keystore = new VFKeystore(keystorePath, keystorePublicPassword, keystorePrivatePassword);
@@ -42,6 +43,10 @@ public class Worker {
             throw new VFrameRuntimeException(e);
         }
         ssw = new SocketWorker(Connection::new, keystore, port);
+    }
+
+    public static List<ConnectionAbstract> getClients() {
+        return ssw.getConnections();
     }
 
     public static void stop() {

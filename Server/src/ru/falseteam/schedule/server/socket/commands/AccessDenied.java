@@ -7,12 +7,9 @@ import ru.falseteam.vframe.socket.ProtocolAbstract;
 import java.util.Map;
 
 public class AccessDenied extends ProtocolAbstract {
+
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
-        String command = (String) map.get("command");
-        map.clear();
-        map.put("command", "forbidden");
-        map.put("forbidden", command);
         connection.send(new Container(getName(), map));
     }
 }
