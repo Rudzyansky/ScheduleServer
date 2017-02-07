@@ -30,7 +30,14 @@ public class Main {
         start();
     }
 
+    static void func1(String str) {
+        str += "/ works?";
+    }
+
     private static void start() {
+        String smth = "тестим";
+        func1(smth);
+        if (true) return;
         ConfigLoader.load(Main.class);
         log.info("Server version {} has been started", version);
 
@@ -62,5 +69,4 @@ public class Main {
         ConsoleWorker.stop();
         VFrame.stop();
     }
-
 }

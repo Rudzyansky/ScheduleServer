@@ -3,7 +3,9 @@ package ru.falseteam.schedule.server.socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.serializable.User;
+import ru.falseteam.schedule.server.socket.commands.AccessDenied;
 import ru.falseteam.vframe.socket.ConnectionAbstract;
+import ru.falseteam.vframe.socket.Container;
 import ru.falseteam.vframe.socket.ProtocolAbstract;
 import ru.falseteam.vframe.socket.SocketWorker;
 
@@ -15,24 +17,9 @@ public class Connection extends ConnectionAbstract {
 
 
     private User user = User.Factory.getDefault();
-    private final long uptime = System.currentTimeMillis();
-    private long lastPing = System.currentTimeMillis();
 
     public Connection(Socket socket, SocketWorker worker) {
         super(socket, worker);
-    }
-
-
-    public long getUptime() {
-        return uptime;
-    }
-
-    long getLastPing() {
-        return lastPing;
-    }
-
-    public void setLastPing(long lastPing) {
-        this.lastPing = lastPing;
     }
 
     public User getUser() {
@@ -46,5 +33,11 @@ public class Connection extends ConnectionAbstract {
     @Override
     protected Map<String, ProtocolAbstract> getProtocols() {
         return CommandWorker.get(user.permissions);
+    }
+
+    @Override
+    protected ProtocolAbstract getDefaultProtocol(Container container) {
+        container.data.put("command", container.protocol);
+        return CommandWorker.getAccesDenied();
     }
 }

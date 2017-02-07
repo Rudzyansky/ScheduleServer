@@ -20,7 +20,6 @@ class CommandWorker {
         permissions.put(Groups.admin, new HashMap<>());
         permissions.put(Groups.developer, new HashMap<>());
 
-        addCommand(new AccessDenied(), Groups.values());
         addCommand(new Auth(), Groups.guest);
         addCommand(new GetLessons(), Groups.developer, Groups.admin, Groups.user);
         addCommand(new UpdateLesson(), Groups.developer, Groups.admin);
@@ -43,6 +42,12 @@ class CommandWorker {
 
     private static void addCommand(ProtocolAbstract c, Groups... groupies) {
         for (Groups g : groupies) permissions.get(g).put(c.getName(), c);
+    }
+
+    private final static ProtocolAbstract accessDenied = new AccessDenied();
+
+    public static ProtocolAbstract getAccesDenied() {
+        return accessDenied;
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")

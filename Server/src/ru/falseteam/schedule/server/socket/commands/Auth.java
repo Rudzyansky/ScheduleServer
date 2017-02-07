@@ -3,6 +3,7 @@ package ru.falseteam.schedule.server.socket.commands;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.objects.users.UserXtrCounters;
 import com.vk.api.sdk.queries.users.UserField;
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.UserInfo;
@@ -22,10 +23,10 @@ import static ru.falseteam.schedule.server.Main.vk;
 
 public class Auth extends ProtocolAbstract {
     @LoadFromConfig(defaultValue = "")
-    private String clientVersion;
+    private static String clientVersion;
 
-    public Auth() {
-        ConfigLoader.load(this);
+    static {
+        ConfigLoader.load(Auth.class);
     }
 
     @Override
@@ -79,5 +80,13 @@ public class Auth extends ProtocolAbstract {
         map.put("version", clientVersion);
         map.put("permissions", user.permissions.name());
         connection.send(new Container(getName(), map));
+    }
+
+    public static Container getSetPermission(Groups group) {
+        Container c = new Container(Auth.class.getSimpleName(), true);
+        c.data.put("command", "auth");
+        c.data.put("version", clientVersion);
+        c.data.put("permissions", group.name());
+        return c;
     }
 }
