@@ -10,7 +10,8 @@ import java.util.Map;
 public class GetLessons extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
-        map.put("lessons", LessonInfo.getLessons());
-        connection.send(new Container(getName(), map));
+        Container c = new Container(getName(), true);
+        c.data.put("lessons", LessonInfo.getLessons());
+        connection.send(c);
     }
 }

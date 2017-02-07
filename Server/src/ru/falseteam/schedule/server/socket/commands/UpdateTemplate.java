@@ -12,10 +12,9 @@ public class UpdateTemplate extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         Template template = (Template) map.get("template");
-        map.clear();
-        map.put("command", "toast_short");
         boolean b = template.exists ? TemplateInfo.updateTemplate(template) : TemplateInfo.addTemplate(template);
-        map.put("message", b ? "Шаблон изменен" : "Произошла ошибка при изменении шаблона");
-        connection.send(new Container(getName(), map));
+        Container c = new Container("ToastShort", true);
+        c.data.put("message", b ? "Шаблон изменен" : "Произошла ошибка при изменении шаблона");
+        connection.send(c);
     }
 }

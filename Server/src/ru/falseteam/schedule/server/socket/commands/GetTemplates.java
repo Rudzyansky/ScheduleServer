@@ -10,7 +10,8 @@ import java.util.Map;
 public class GetTemplates extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
-        map.put("templates", TemplateInfo.getTemplates());
-        connection.send(new Container(getName(), map));
+        Container c = new Container(getName(), true);
+        c.data.put("templates", TemplateInfo.getTemplates());
+        connection.send(c);
     }
 }

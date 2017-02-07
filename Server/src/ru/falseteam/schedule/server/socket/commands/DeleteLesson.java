@@ -12,9 +12,8 @@ public class DeleteLesson extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         boolean b = LessonInfo.deleteLesson((Lesson) map.get("lesson"));
-        map.clear();
-        map.put("command", "toast_short");
-        map.put("message", b ? "Предмет удален" : "Произошла ошибка при удалении предмета");
-        connection.send(new Container(getName(), map));
+        Container c = new Container("ToastShort", true);
+        c.data.put("message", b ? "Предмет удален" : "Произошла ошибка при удалении предмета");
+        connection.send(c);
     }
 }

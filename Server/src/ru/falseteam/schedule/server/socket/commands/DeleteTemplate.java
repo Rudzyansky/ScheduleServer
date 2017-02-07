@@ -12,9 +12,8 @@ public class DeleteTemplate extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         boolean b = TemplateInfo.deleteTemplate((Template) map.get("template"));
-        map.clear();
-        map.put("command", "toast_short");
-        map.put("message", b ? "Шаблон удален" : "Произошла ошибка при удалении шаблона");
-        connection.send(new Container(getName(), map));
+        Container c = new Container("ToastShort", true);
+        c.data.put("message", b ? "Шаблон удален" : "Произошла ошибка при удалении шаблона");
+        connection.send(c);
     }
 }

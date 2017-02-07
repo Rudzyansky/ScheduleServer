@@ -10,7 +10,8 @@ import java.util.Map;
 public class GetWeekDays extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
-        map.put("week_days", WeekDayInfo.getWeekDays());
-        connection.send(new Container(getName(), map));
+        Container c = new Container(getName(), true);
+        c.data.put("week_days", WeekDayInfo.getWeekDays());
+        connection.send(c);
     }
 }
