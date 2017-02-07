@@ -75,16 +75,14 @@ public class Auth extends ProtocolAbstract {
         }
 
         // Формируем ответ пользователю.
-        map.clear();
-        map.put("command", "auth");
-        map.put("version", clientVersion);
-        map.put("permissions", user.permissions.name());
-        connection.send(new Container(getName(), map));
+        Container c = new Container(getName(), true);
+        c.data.put("version", clientVersion);
+        c.data.put("permissions", user.permissions.name());
+        connection.send(c);
     }
 
-    public static Container getSetPermission(Groups group) {
+    static Container getSetPermission(Groups group) {
         Container c = new Container(Auth.class.getSimpleName(), true);
-        c.data.put("command", "auth");
         c.data.put("version", clientVersion);
         c.data.put("permissions", group.name());
         return c;

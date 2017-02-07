@@ -22,8 +22,6 @@ public class UpdateUser extends ProtocolAbstract {
         groups.add(Groups.admin);
         User user = (User) map.get("user");
         User inBase = user.exists ? UserInfo.getUserFromID(user.id) : user;
-        map.clear();
-        map.put("command", "toast_short");
         boolean b = inBase != null
                 && groups.indexOf(inBase.permissions) > -1
                 && groups.indexOf(user.permissions) > -1
@@ -32,7 +30,8 @@ public class UpdateUser extends ProtocolAbstract {
         if (b) Worker.getClients().stream()
                 .filter(c -> ((Connection) c).getUser().id == user.id)
                 .forEach(c -> c.send(Auth.getSetPermission(user.permissions)));
-        map.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
-        connection.send(new Container(getName(), map));
+        Container c = new Container("ToastShort", true);
+        c.data.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
+        connection.send(c);
     }
 }

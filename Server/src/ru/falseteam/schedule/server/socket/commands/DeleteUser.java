@@ -16,8 +16,6 @@ public class DeleteUser extends ProtocolAbstract {
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         User user = (User) map.get("user");
         User inBase = UserInfo.getUserFromID(user.id);
-        map.clear();
-        map.put("command", "toast_short");
         boolean b = inBase != null
                 && !user.permissions.equals(Groups.developer)
                 && !inBase.permissions.equals(Groups.developer)
@@ -25,7 +23,8 @@ public class DeleteUser extends ProtocolAbstract {
         if (b) Worker.getClients().stream()
                 .filter(c -> ((Connection) c).getUser().id == user.id)
                 .forEach(c -> c.disconnect("user has been deleted"));
-        map.put("message", b ? "Пользователь удален" : "Произошла ошибка при удалении пользователя");
-        connection.send(new Container(getName(), map));
+        Container c = new Container("ToastShort", true);
+        c.data.put("message", b ? "Пользователь удален" : "Произошла ошибка при удалении пользователя");
+        connection.send(c);
     }
 }

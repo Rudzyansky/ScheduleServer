@@ -10,7 +10,8 @@ import java.util.Map;
 public class GetJournal extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
-        map.put("journal", JournalInfo.getJournal());
-        connection.send(new Container(getName(), map));
+        Container c = new Container(getName(), true);
+        c.data.put("journal", JournalInfo.getJournal());
+        connection.send(c);
     }
 }
