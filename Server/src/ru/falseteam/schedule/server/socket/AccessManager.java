@@ -3,23 +3,13 @@ package ru.falseteam.schedule.server.socket;
 
 import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.server.socket.commands.*;
-import ru.falseteam.vframe.socket.ProtocolAbstract;
+import ru.falseteam.vframe.socket.Container;
+import ru.falseteam.vframe.socket.PermissionManager;
+import ru.falseteam.vframe.socket.SubscriptionProtocol;
 
-import java.util.HashMap;
-import java.util.Map;
-
-class CommandWorker {
-    private static Map<Groups, Map<String, ProtocolAbstract>> permissions;
-
-    static {
-        permissions = new HashMap<>();
-
-        permissions.put(Groups.guest, new HashMap<>());
-        permissions.put(Groups.unconfirmed, new HashMap<>());
-        permissions.put(Groups.user, new HashMap<>());
-        permissions.put(Groups.admin, new HashMap<>());
-        permissions.put(Groups.developer, new HashMap<>());
-
+class AccessManager extends PermissionManager<Groups> {
+    public AccessManager() {
+        super(Groups.class, Groups.guest);
         addCommand(new Auth(), Groups.guest);
         addCommand(new GetLessons(), Groups.developer, Groups.admin, Groups.user, Groups.unconfirmed);
         addCommand(new UpdateLesson(), Groups.developer, Groups.admin);
@@ -38,20 +28,13 @@ class CommandWorker {
 
         addCommand(new GetJournal(), Groups.developer, Groups.admin);
         addCommand(new UpdateJournalRecord(), Groups.developer, Groups.admin);
-    }
 
-    private static void addCommand(ProtocolAbstract c, Groups... groupies) {
-        for (Groups g : groupies) permissions.get(g).put(c.getName(), c);
-    }
+        addCommand(new SubscriptionProtocol(), Groups.values());
 
-    private final static ProtocolAbstract accessDenied = new AccessDenied();
-
-    public static ProtocolAbstract getAccesDenied() {
-        return accessDenied;
-    }
-
-    @SuppressWarnings("SuspiciousMethodCalls")
-    static Map<String, ProtocolAbstract> get(Groups g) {
-        return permissions.get(g);
+        setDefaultProtocol((container, connection) -> {
+            Container c = new Container("AccessDenied", true);
+            c.data.put("command", container.protocol);
+            connection.send(c);
+        });
     }
 }
