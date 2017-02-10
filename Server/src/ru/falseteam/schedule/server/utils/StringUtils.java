@@ -12,20 +12,21 @@ public class StringUtils {
 
     public static String getUptime(long uptime) {
         uptime = System.currentTimeMillis() - uptime;
-        long tmp = 0;
+        long tmp;
         StringBuilder sb = new StringBuilder();
         tmp = uptime / 1000 / 60 / 60 / 24;
-        if (tmp != 0)
-            sb.append(tmp).append("day "); //TODO пофиксить тут.
+        if (tmp != 0) sb.append(tmp).append("days "); //TODO пофиксить тут.
         tmp = uptime / 1000 / 60 / 60 % 24;
-        sb.append(tmp).append('h');
+        if (tmp < 10) sb.append('0');
+        sb.append(tmp).append(':');
         tmp = uptime / 1000 / 60 % 60;
         if (tmp < 10) sb.append('0');
-        sb.append(tmp).append('m');
+        sb.append(tmp).append(':');
         tmp = uptime / 1000 % 60;
         if (tmp < 10) sb.append('0');
         sb.append(tmp);
-        sb.append('s');
+        sb.append('.');
+        sb.append(uptime % 1000);
         return sb.toString();
     }
 }
