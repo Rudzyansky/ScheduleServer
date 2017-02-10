@@ -16,6 +16,7 @@ import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
  */
 public class WeekDayInfo {
     public static final String table = "week_days";
+
     public static List<WeekDay> getWeekDays() {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `week_days`");
