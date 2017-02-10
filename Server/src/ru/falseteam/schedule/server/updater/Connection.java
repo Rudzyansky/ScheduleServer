@@ -1,6 +1,7 @@
 package ru.falseteam.schedule.server.updater;
 
 import ru.falseteam.schedule.server.Console;
+import ru.falseteam.vframe.VFrame;
 import ru.falseteam.vframe.config.ConfigLoader;
 import ru.falseteam.vframe.config.LoadFromConfig;
 
@@ -23,7 +24,7 @@ class Connection implements Runnable {
 
     private void disconnect() {
         try {
-            Console.print("[updater] Client " + socket.getInetAddress().getHostAddress() + " disconnected");
+            VFrame.print("[updater] Client " + socket.getInetAddress().getHostAddress() + " disconnected");
             socket.close();
         } catch (IOException ignore) {
         }
@@ -38,7 +39,7 @@ class Connection implements Runnable {
         }
         try {
             OutputStream sout = new BufferedOutputStream(socket.getOutputStream());
-            Console.print("[updater] Client " + socket.getInetAddress().getHostAddress() + " connected");
+            VFrame.print("[updater] Client " + socket.getInetAddress().getHostAddress() + " connected");
             File file = new File(clientPath);
             if (!file.exists()) throw new MyException("File not found " + clientPath);
             InputStream fin = new FileInputStream(file);

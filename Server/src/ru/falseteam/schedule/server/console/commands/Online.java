@@ -1,23 +1,9 @@
 package ru.falseteam.schedule.server.console.commands;
 
 import org.apache.commons.cli.CommandLine;
-import ru.falseteam.schedule.server.Console;
-import ru.falseteam.schedule.server.console.CommandAbstract;
-import ru.falseteam.schedule.server.socket.Connection;
-import ru.falseteam.schedule.server.socket.Worker;
-import ru.falseteam.schedule.server.utils.StringUtils;
-
-import java.util.List;
-
-import static ru.falseteam.schedule.server.Console.DEFAULT_MARGIN_LENGTH;
-import static ru.falseteam.schedule.server.Console.SHORT_DEFAULT_MARGIN_LENGTH;
+import ru.falseteam.vframe.console.CommandAbstract;
 
 public class Online extends CommandAbstract {
-    public Online() {
-        super("online");
-    }
-
-
     @Override
     public void exec(CommandLine commandLine) {
         // TODO: 05.02.17 oops i did it again

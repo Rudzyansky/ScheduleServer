@@ -2,16 +2,12 @@ package ru.falseteam.schedule.server.console.commands;
 
 import org.apache.commons.cli.CommandLine;
 import ru.falseteam.schedule.server.Console;
-import ru.falseteam.schedule.server.console.CommandAbstract;
 import ru.falseteam.schedule.server.utils.StringUtils;
+import ru.falseteam.vframe.VFrame;
+import ru.falseteam.vframe.console.CommandAbstract;
 
 public class Uptime extends CommandAbstract {
     private static long uptime = System.currentTimeMillis();
-
-
-    public Uptime() {
-        super("uptime");
-    }
 
     @Override
     public void exec(CommandLine commandLine) {
@@ -29,6 +25,6 @@ public class Uptime extends CommandAbstract {
         sb.append("Memory used: ").append(usedMemoryMB).append("MB / ")
                 .append(totalMemoryMB).append("MB (").append(percent).append("%)");
 
-        Console.print(sb.toString());
+        VFrame.print(sb.toString());
     }
 }
