@@ -11,18 +11,7 @@ public class Console {
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_RED = "\u001B[31m";
 
-    @Deprecated
-    public static void print(String str) {
-        System.out.println(timeTag() + str);
-    }
-
-    @Deprecated
     public static void err(String str) {
-
-        System.out.println(timeTag() + ANSI_RED + str + ANSI_RESET);
-    }
-
-    private static String timeTag() {
-        return new SimpleDateFormat("[HH:mm:ss] ").format(new Date());
+        System.out.println(new SimpleDateFormat("[HH:mm:ss] ").format(new Date()) + ANSI_RED + str + ANSI_RESET);
     }
 }
