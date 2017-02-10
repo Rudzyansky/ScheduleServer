@@ -1,20 +1,15 @@
 package ru.falseteam.schedule.server.socket;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
-import ru.falseteam.schedule.server.socket.commands.AccessDenied;
 import ru.falseteam.vframe.socket.ConnectionAbstract;
-import ru.falseteam.vframe.socket.Container;
-import ru.falseteam.vframe.socket.ProtocolAbstract;
+import ru.falseteam.vframe.socket.PermissionManager;
 import ru.falseteam.vframe.socket.SocketWorker;
 
 import java.net.Socket;
-import java.util.Map;
 
-public class Connection extends ConnectionAbstract {
-    private final Logger log = LogManager.getLogger();
-
+public class Connection extends ConnectionAbstract<Groups> {
+    private static final AccessManager ACCESS_MANAGER = new AccessManager();
 
     private User user = User.Factory.getDefault();
 
@@ -22,22 +17,17 @@ public class Connection extends ConnectionAbstract {
         super(socket, worker);
     }
 
+    @Override
+    protected PermissionManager<Groups> getPermissionManager() {
+        return ACCESS_MANAGER;
+    }
+
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
+        permission = user.permissions;
         this.user = user;
-    }
-
-    @Override
-    protected Map<String, ProtocolAbstract> getProtocols() {
-        return CommandWorker.get(user.permissions);
-    }
-
-    @Override
-    protected ProtocolAbstract getDefaultProtocol(Container container) {
-        container.data.put("command", container.protocol);
-        return CommandWorker.getAccesDenied();
     }
 }
