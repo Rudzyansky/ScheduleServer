@@ -4,14 +4,14 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
+import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
 /**
  * @author Evgeny Rudzyansky
  * @version 1.0
  */
-class WeekNumberInfo {
-    static boolean createTable() {
+public class WeekNumberInfo {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `week_numbers` (" +

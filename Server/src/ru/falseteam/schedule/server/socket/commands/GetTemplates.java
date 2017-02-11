@@ -1,19 +1,17 @@
 package ru.falseteam.schedule.server.socket.commands;
 
-import ru.falseteam.schedule.server.socket.CommandAbstract;
-import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.TemplateInfo;
+import ru.falseteam.vframe.socket.ConnectionAbstract;
+import ru.falseteam.vframe.socket.Container;
+import ru.falseteam.vframe.socket.ProtocolAbstract;
 
 import java.util.Map;
 
-public class GetTemplates extends CommandAbstract {
-    public GetTemplates() {
-        super("get_templates");
-    }
-
+public class GetTemplates extends ProtocolAbstract {
     @Override
-    public void exec(Connection connection, Map<String, Object> map) {
-        map.put("templates", TemplateInfo.getTemplates());
-        connection.send(map);
+    public void exec(Map<String, Object> map, ConnectionAbstract connection) {
+        Container c = new Container(getName(), true);
+        c.data.put("templates", TemplateInfo.getTemplates());
+        connection.send(c);
     }
 }

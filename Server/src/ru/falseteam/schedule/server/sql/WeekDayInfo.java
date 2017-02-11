@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
+import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
+import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
 /**
  * @author Evgeny Rudzyansky
@@ -16,6 +16,7 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  */
 public class WeekDayInfo {
     public static final String table = "week_days";
+
     public static List<WeekDay> getWeekDays() {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `week_days`");
@@ -37,7 +38,7 @@ public class WeekDayInfo {
         return weekDay;
     }
 
-    static boolean createTable() {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `week_days` (" +

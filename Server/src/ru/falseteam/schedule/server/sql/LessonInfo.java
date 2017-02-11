@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
+import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
+import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
 /**
  * @author Evgeny Rudzyansky
@@ -119,7 +119,7 @@ public class LessonInfo {
         }
     }
 
-    static boolean createTable() {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `lessons` (" +

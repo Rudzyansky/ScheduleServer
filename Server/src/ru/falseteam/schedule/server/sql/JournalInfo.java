@@ -2,19 +2,19 @@ package ru.falseteam.schedule.server.sql;
 
 import ru.falseteam.schedule.serializable.JournalRecord;
 
-import java.nio.ByteBuffer;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
+import static ru.falseteam.vframe.sql.SQLConnection.*;
 
 /**
  * @author Evgeny Rudzyansky
  * @version 1.0
  */
 public class JournalInfo {
+    private static final String table = "journal";
 
     /**
      * getTemplates load table to variable
@@ -101,25 +101,29 @@ public class JournalInfo {
         record.weekDay = WeekDayInfo.getWeekDay(rs);
         record.lessonNumber = LessonNumberInfo.getLessonNumber(rs);
         record.lesson = LessonInfo.getLesson(rs);
+        record.presented = BitSet.valueOf(rs.getBytes("presented"));
 
-        String was = rs.getString("was");
-        if (was != null) {
-            byte[] bytes = Base64.getDecoder().decode(was);
-            ByteBuffer bb = ByteBuffer.allocate(bytes.length).put(bytes);
-            record.was = bb.asIntBuffer().array();
-        }
+//        String was = rs.getString("presented");
+//        if (was != null) {
+//            byte[] bytes = Base64.getDecoder().decode(was);
+//            ByteBuffer bb = ByteBuffer.allocate(bytes.length).put(bytes);
+//            record.was = bb.asIntBuffer().array();
+//        }
 
         record.task = rs.getString("task");
         return record;
     }
 
-    public static boolean updateWas(final JournalRecord record) {
+    public static boolean updatePresented(final JournalRecord record) {
         try {
-            ByteBuffer bb = ByteBuffer.allocate(4 * record.was.length);
-            bb.asIntBuffer().put(record.was);
-            executeUpdate("UPDATE `templates` SET" +
-                    " `was` = '" + Base64.getEncoder().encodeToString(bb.array()) + "'" +
-                    " WHERE `id` LIKE '" + record.id + "';");
+            String condition = "WHERE `id` LIKE '" + record.id + "'";
+            PreparedStatement ps = update(table, condition, "presented");
+            ps.setBytes(1, record.presented.toByteArray());
+            ps.execute();
+//            ByteBuffer bb = ByteBuffer.wrap(record.presented);
+//            executeUpdate("UPDATE `templates` SET" +
+//                    " `presented` = '" + bb + "'" +
+//                    " WHERE `id` LIKE '" + record.id + "';");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -143,7 +147,7 @@ public class JournalInfo {
         }
     }
 
-    static TimerTask addRec = new TimerTask() {
+    public static TimerTask addRec = new TimerTask() {
         @Override
         public void run() {
             try {
@@ -151,21 +155,27 @@ public class JournalInfo {
                         " WHERE `date` LIKE '" + new java.sql.Date(new Date().getTime()) + "';");
                 if (rs.first()) return;
                 Calendar c = Calendar.getInstance();
-                int evenness = (c.get(Calendar.WEEK_OF_YEAR) - 1) % 2;
                 int dayOfWeek = (c.get(Calendar.DAY_OF_WEEK) - 1);
                 if (dayOfWeek == 0) dayOfWeek = 7;
+                int week = (Calendar.getInstance().get(Calendar.WEEK_OF_YEAR) - 6);
                 int finalDayOfWeek = dayOfWeek;
-//                TemplateInfo.getTemplates().stream()
-//                        .filter(t -> t.weekDay.id == finalDayOfWeek && (t.weekEvenness == 0 || t.weekEvenness - 1 == evenness))
-//                        .forEach(t -> addRecord(JournalRecord.Factory.getFromTemplate(t)))
-//                ;
+                TemplateInfo.getTemplates().stream()
+                        .filter(t -> (
+                                t.weekDay.id == finalDayOfWeek + 1 && (
+                                        (t.weeks.get(31) &&
+                                                (t.weeks.get(30) || (t.weeks.get(29) && week % 2 == 1) || (!t.weeks.get(29) && week % 2 == 0))
+                                        ) || t.weeks.get(week - 1)
+                                )
+                        ))
+                        .forEach(t -> addRecord(JournalRecord.Factory.getFromTemplate(t)))
+                ;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     };
 
-    static boolean createTable() {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `journal` (" +
@@ -175,7 +185,7 @@ public class JournalInfo {
                     " `lesson_number_id` INT NOT NULL," +
                     " `lesson_id` INT NOT NULL," +
                     " `task` TEXT," +
-                    " `was` TEXT," +
+                    " `presented` BINARY(4)," +
 
                     " PRIMARY KEY (`id`)," +
                     " KEY `week_day_id` (`week_day_id`)," +

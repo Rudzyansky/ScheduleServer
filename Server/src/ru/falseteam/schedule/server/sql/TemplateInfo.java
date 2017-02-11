@@ -1,20 +1,15 @@
 package ru.falseteam.schedule.server.sql;
 
 import ru.falseteam.schedule.serializable.Template;
+import ru.falseteam.vframe.sql.SQLConnection;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.List;
+import java.util.*;
 
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
+import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
+import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
 /**
  * @author Evgeny Rudzyansky
@@ -22,7 +17,21 @@ import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
  */
 public class TemplateInfo {
 
+    static {
+//        SubscriptionManager.addEvent("templates", TemplateInfo::getTemplatesForSubscriptions);
+    }
+
     static final String table = "templates";
+
+    private static Map<String, Object> getTemplatesForSubscriptions() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("templates", getTemplates());
+        return map;
+    }
+
+    private static void onDataUpdate() {
+//        SubscriptionManager.onEventDataChange("templates", getTemplatesForSubscriptions());
+    }
 
     /**
      * getTemplates load table to variable
@@ -88,6 +97,7 @@ public class TemplateInfo {
             s.setInt(3, template.lesson.id);
             s.setBytes(4, template.weeks.toByteArray());
             s.execute();
+            onDataUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,6 +108,7 @@ public class TemplateInfo {
     public static boolean deleteTemplate(final Template template) {
         try {
             executeUpdate("DELETE FROM `templates` WHERE `id` LIKE '" + template.id + "';");
+            onDataUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -114,6 +125,7 @@ public class TemplateInfo {
             s.setInt(3, template.lesson.id);
             s.setBytes(4, template.weeks.toByteArray());
             s.execute();
+            onDataUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,7 +133,7 @@ public class TemplateInfo {
         }
     }
 
-    static boolean createTable() {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `templates` (" +
@@ -129,7 +141,7 @@ public class TemplateInfo {
                     " `week_day_id` INT NOT NULL," +
                     " `lesson_number_id` INT NOT NULL," +
                     " `lesson_id` INT NOT NULL," +
-                    " `weeks` BINARY 4 NOT NULL," +
+                    " `weeks` BINARY(4) NOT NULL," +
 
                     " PRIMARY KEY (`id`)," +
                     " KEY `week_day_id` (`week_day_id`)," +
