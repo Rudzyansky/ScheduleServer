@@ -13,7 +13,7 @@ public class UpdateJournalRecord extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         JournalRecord record = (JournalRecord) map.get("journal_record");
-        boolean b = JournalInfo.updateWas(record);
+        boolean b = JournalInfo.updatePresented(record);
         Container c = new Container("ToastShort", true);
         c.data.put("message", b ? "Запись журнала изменена" : "Произошла ошибка при изменении записи журнала");
         connection.send(c);

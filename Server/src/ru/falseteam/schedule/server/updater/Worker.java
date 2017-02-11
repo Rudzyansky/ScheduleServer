@@ -45,7 +45,7 @@ public class Worker implements Runnable {
         try {
             VFKeystore k = new VFKeystore(keystorePath, keystorePublicPassword, keystorePrivatePassword);
             ss = (SSLServerSocket) k.getSSLContext().getServerSocketFactory().createServerSocket(updatePort);
-            VFrame.print("VFrame: port " + ss.getLocalPort() + " open and listening");
+            VFrame.print("[Updater] port " + ss.getLocalPort() + " open and listening");
             if (ss == null) return;
             while (true) new Connection((SSLSocket) ss.accept());
         } catch (IOException ignore) {

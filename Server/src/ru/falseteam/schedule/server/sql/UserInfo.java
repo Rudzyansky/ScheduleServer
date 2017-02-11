@@ -165,12 +165,13 @@ public class UserInfo {
         }
     }
 
-    static boolean createTable() {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `users` (" +
                     " `user_id` INT NOT NULL AUTO_INCREMENT," +
                     " `user_name` TEXT NOT NULL," +
+                    " `group_id` INT NULL DEFAULT NULL," +
                     " `user_vk_id` INT NULL DEFAULT NULL," +
                     " `user_vk_token` TEXT," +
                     " `user_permissions` TEXT NOT NULL," +
@@ -181,7 +182,9 @@ public class UserInfo {
                     " PRIMARY KEY (`user_id`)," +
                     " INDEX (`user_id`)," +
                     " UNIQUE (`user_id`)," +
-                    " UNIQUE (`user_vk_id`)" +
+                    " UNIQUE (`user_vk_id`)," +
+                    " KEY `group_id` (`group_id`)," +
+                    " FOREIGN KEY (`group_id`) REFERENCES `groups`(`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT," +
                     ") ENGINE=InnoDB;");
             return true;
         } catch (SQLException ignore) {

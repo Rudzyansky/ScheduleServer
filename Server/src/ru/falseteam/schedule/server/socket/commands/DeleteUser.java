@@ -22,7 +22,7 @@ public class DeleteUser extends ProtocolAbstract {
                 && UserInfo.deleteUser(user);
         if (b) Worker.getClients().stream()
                 .filter(c -> ((Connection) c).getUser().id == user.id)
-                .forEach(c -> c.disconnect("user has been deleted"));
+                .forEach(c -> ((Connection) c).disconnect("user has been deleted"));
         Container c = new Container("ToastShort", true);
         c.data.put("message", b ? "Пользователь удален" : "Произошла ошибка при удалении пользователя");
         connection.send(c);

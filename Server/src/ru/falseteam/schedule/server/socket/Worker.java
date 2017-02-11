@@ -2,10 +2,10 @@ package ru.falseteam.schedule.server.socket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.falseteam.vframe.VFrame;
 import ru.falseteam.vframe.VFrameRuntimeException;
 import ru.falseteam.vframe.config.ConfigLoader;
 import ru.falseteam.vframe.config.LoadFromConfig;
-import ru.falseteam.vframe.socket.ConnectionAbstract;
 import ru.falseteam.vframe.socket.SocketWorker;
 import ru.falseteam.vframe.socket.VFKeystore;
 
@@ -35,17 +35,16 @@ public class Worker {
 
     public static void init() {
         ConfigLoader.load(Worker.class);
-        VFKeystore keystore;
         try {
-            keystore = new VFKeystore(keystorePath, keystorePublicPassword, keystorePrivatePassword);
+            VFKeystore keystore = new VFKeystore(keystorePath, keystorePublicPassword, keystorePrivatePassword);
+            ssw = new SocketWorker<>(Connection::new, keystore, port, new AccessManager(), null);
         } catch (FileNotFoundException e) {
             log.fatal("VFrame: keystore file not found");
             throw new VFrameRuntimeException(e);
         }
-        ssw = new SocketWorker(Connection::new, keystore, port);
     }
 
-    public static List<ConnectionAbstract> getClients() {
+    public static List getClients() {
         return ssw.getConnections();
     }
 

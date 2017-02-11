@@ -1,5 +1,7 @@
 package ru.falseteam.schedule.server.utils;
 
+import java.text.SimpleDateFormat;
+
 public class StringUtils {
     public static String addMargin(String data, int margin) {
         StringBuilder sb = new StringBuilder();
@@ -12,6 +14,7 @@ public class StringUtils {
 
     public static String getUptime(long uptime) {
         uptime = System.currentTimeMillis() - uptime;
+//        return new SimpleDateFormat("d HH:mm:ss.S").format(System.currentTimeMillis() - uptime);
         long tmp;
         StringBuilder sb = new StringBuilder();
         tmp = uptime / 1000 / 60 / 60 / 24;

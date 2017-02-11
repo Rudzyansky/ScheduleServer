@@ -37,7 +37,7 @@ public class LessonNumberInfo {
         return lessonNumber;
     }
 
-    static boolean createTable() {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `lesson_numbers` (" +

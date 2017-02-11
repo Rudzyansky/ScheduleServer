@@ -2,7 +2,6 @@ package ru.falseteam.schedule.server.sql;
 
 import ru.falseteam.schedule.serializable.Template;
 import ru.falseteam.vframe.sql.SQLConnection;
-import ru.falseteam.vframe.subscriptions.SubscriptionManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +18,7 @@ import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 public class TemplateInfo {
 
     static {
-        SubscriptionManager.addEvent("templates", TemplateInfo::getTemplatesForSubscriptions);
+//        SubscriptionManager.addEvent("templates", TemplateInfo::getTemplatesForSubscriptions);
     }
 
     static final String table = "templates";
@@ -31,7 +30,7 @@ public class TemplateInfo {
     }
 
     private static void onDataUpdate() {
-        SubscriptionManager.onEventDataChange("templates", getTemplatesForSubscriptions());
+//        SubscriptionManager.onEventDataChange("templates", getTemplatesForSubscriptions());
     }
 
     /**
@@ -134,7 +133,7 @@ public class TemplateInfo {
         }
     }
 
-    static boolean createTable() {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `templates` (" +
@@ -142,7 +141,7 @@ public class TemplateInfo {
                     " `week_day_id` INT NOT NULL," +
                     " `lesson_number_id` INT NOT NULL," +
                     " `lesson_id` INT NOT NULL," +
-                    " `weeks` BINARY 4 NOT NULL," +
+                    " `weeks` BINARY(4) NOT NULL," +
 
                     " PRIMARY KEY (`id`)," +
                     " KEY `week_day_id` (`week_day_id`)," +

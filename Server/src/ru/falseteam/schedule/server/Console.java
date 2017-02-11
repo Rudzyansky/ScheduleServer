@@ -12,6 +12,6 @@ public class Console {
     private static final String ANSI_RED = "\u001B[31m";
 
     public static void err(String str) {
-        System.out.println(new SimpleDateFormat("[HH:mm:ss] ").format(new Date()) + ANSI_RED + str + ANSI_RESET);
+        System.out.println(new SimpleDateFormat("[HH:mm:ss.S] ").format(new Date()) + ANSI_RED + str + ANSI_RESET);
     }
 }
