@@ -1,19 +1,17 @@
 package ru.falseteam.schedule.server.socket.commands;
 
-import ru.falseteam.schedule.server.socket.CommandAbstract;
-import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.JournalInfo;
+import ru.falseteam.vframe.socket.ConnectionAbstract;
+import ru.falseteam.vframe.socket.Container;
+import ru.falseteam.vframe.socket.ProtocolAbstract;
 
 import java.util.Map;
 
-public class GetJournal extends CommandAbstract {
-    public GetJournal() {
-        super("get_journal");
-    }
-
+public class GetJournal extends ProtocolAbstract {
     @Override
-    public void exec(Connection connection, Map<String, Object> map) {
-        map.put("journal", JournalInfo.getJournal());
-        connection.send(map);
+    public void exec(Map<String, Object> map, ConnectionAbstract connection) {
+        Container c = new Container(getName(), true);
+        c.data.put("journal", JournalInfo.getJournal());
+        connection.send(c);
     }
 }

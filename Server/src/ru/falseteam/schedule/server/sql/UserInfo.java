@@ -10,11 +10,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeQuery;
-import static ru.falseteam.schedule.server.sql.SQLConnection.executeUpdate;
+import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
+import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
 /**
- * translator {@link User} to database using {@link SQLConnection}
+ * translator {@link User} to database using {SQLConnection}
  *
  * @author Evgeny Rudzyansky
  * @version 1.0
@@ -27,10 +27,19 @@ public class UserInfo {
      */
     public static List<User> getUsers() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `user_name`;");
+//            ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `user_name`;");
+            ResultSet rs = executeQuery("SELECT `user_id`, `user_name`, `user_vk_id`, `user_permissions` FROM `users` ORDER BY `user_name`;");
             List<User> users = new ArrayList<>();
             if (!rs.first()) return users; // если таблица пустая.
-            do users.add(getUser(rs));
+            do {
+                User user = User.Factory.getDefault();
+                user.exists = true;
+                user.id = rs.getInt("user_id");
+                user.name = rs.getString("user_name");
+                user.permissions = Groups.valueOf(rs.getString("user_permissions"));
+                user.vkId = rs.getInt("user_vk_id");
+                users.add(user);
+            }
             while (rs.next());
             return users;
         } catch (SQLException e) {
@@ -165,12 +174,13 @@ public class UserInfo {
         }
     }
 
-    static boolean createTable() {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `users` (" +
                     " `user_id` INT NOT NULL AUTO_INCREMENT," +
                     " `user_name` TEXT NOT NULL," +
+                    " `group_id` INT NULL DEFAULT NULL," +
                     " `user_vk_id` INT NULL DEFAULT NULL," +
                     " `user_vk_token` TEXT," +
                     " `user_permissions` TEXT NOT NULL," +
@@ -181,7 +191,9 @@ public class UserInfo {
                     " PRIMARY KEY (`user_id`)," +
                     " INDEX (`user_id`)," +
                     " UNIQUE (`user_id`)," +
-                    " UNIQUE (`user_vk_id`)" +
+                    " UNIQUE (`user_vk_id`)," +
+                    " KEY `group_id` (`group_id`)," +
+                    " FOREIGN KEY (`group_id`) REFERENCES `groups`(`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT," +
                     ") ENGINE=InnoDB;");
             return true;
         } catch (SQLException ignore) {

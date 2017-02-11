@@ -3,10 +3,15 @@ package ru.falseteam.schedule.server.socket.commands;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.objects.users.UserXtrCounters;
 import com.vk.api.sdk.queries.users.UserField;
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
-import ru.falseteam.schedule.server.socket.CommandAbstract;
 import ru.falseteam.schedule.server.socket.Connection;
 import ru.falseteam.schedule.server.sql.UserInfo;
+import ru.falseteam.vframe.config.ConfigLoader;
+import ru.falseteam.vframe.config.LoadFromConfig;
+import ru.falseteam.vframe.socket.ConnectionAbstract;
+import ru.falseteam.vframe.socket.Container;
+import ru.falseteam.vframe.socket.ProtocolAbstract;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -15,15 +20,17 @@ import java.util.Map;
 
 import static ru.falseteam.schedule.serializable.Groups.unconfirmed;
 import static ru.falseteam.schedule.server.Main.vk;
-import static ru.falseteam.schedule.server.StaticSettings.getLastClientVersion;
 
-public class Auth extends CommandAbstract {
-    public Auth() {
-        super("auth");
+public class Auth extends ProtocolAbstract {
+    @LoadFromConfig(defaultValue = "")
+    private static String clientVersion;
+
+    static {
+        ConfigLoader.load(Auth.class);
     }
 
     @Override
-    public void exec(Connection connection, Map<String, Object> map) {
+    public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         User user;
         try {
             //Проверяем токен на валидность.
@@ -61,17 +68,23 @@ public class Auth extends CommandAbstract {
                 user.appVersion = appVersion;
                 UserInfo.updateStat(user);
             }
-            connection.setUser(user);
+            ((Connection) connection).setUser(user);
         } catch (Exception ignore) {
             ignore.printStackTrace();
             return;
         }
 
         // Формируем ответ пользователю.
-        map.clear();
-        map.put("command", "auth");
-        map.put("version", getLastClientVersion());
-        map.put("permissions", user.permissions.name());
-        connection.send(map);
+        Container c = new Container(getName(), true);
+        c.data.put("version", clientVersion);
+        c.data.put("permissions", user.permissions.name());
+        connection.send(c);
+    }
+
+    static Container getSetPermission(Groups group) {
+        Container c = new Container(Auth.class.getSimpleName(), true);
+        c.data.put("version", clientVersion);
+        c.data.put("permissions", group.name());
+        return c;
     }
 }

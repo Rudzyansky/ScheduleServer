@@ -5,14 +5,12 @@ import org.apache.commons.lang3.StringUtils;
 import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.server.Console;
-import ru.falseteam.schedule.server.console.CommandAbstract;
 import ru.falseteam.schedule.server.sql.UserInfo;
+import ru.falseteam.vframe.VFrame;
+import ru.falseteam.vframe.console.CommandAbstract;
 
 public class SetGroup extends CommandAbstract {
     public SetGroup() {
-        //noinspection SpellCheckingInspection
-        super("setgroup");
-
         addOptions("g", "permissions", 1, true, "new permissions from user");
         addOptions("i", "id", 1, false, "user vk id");
         addOptions("n", "name", 2, false, "user family and name");
@@ -38,7 +36,7 @@ public class SetGroup extends CommandAbstract {
             return;
         }
 
-        User user = null;
+        User user;
         if (id != null) {
             int vkId;
             try {
@@ -59,10 +57,8 @@ public class SetGroup extends CommandAbstract {
                 return;
             }
         }
-
         user.permissions = group;
         UserInfo.updateUser(user);
-        Console.print("Set permissions " + group.name() + " for user " + user.vkId + " " + user.name);
-
+        VFrame.print("Set permissions " + group.name() + " for user " + user.vkId + " " + user.name);
     }
 }
