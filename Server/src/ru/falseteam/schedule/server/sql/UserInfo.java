@@ -14,7 +14,7 @@ import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
 import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
 /**
- * translator {@link User} to database using {@link SQLConnection}
+ * translator {@link User} to database using {SQLConnection}
  *
  * @author Evgeny Rudzyansky
  * @version 1.0
@@ -27,10 +27,19 @@ public class UserInfo {
      */
     public static List<User> getUsers() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `user_name`;");
+//            ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `user_name`;");
+            ResultSet rs = executeQuery("SELECT `user_id`, `user_name`, `user_vk_id`, `user_permissions` FROM `users` ORDER BY `user_name`;");
             List<User> users = new ArrayList<>();
             if (!rs.first()) return users; // если таблица пустая.
-            do users.add(getUser(rs));
+            do {
+                User user = User.Factory.getDefault();
+                user.exists = true;
+                user.id = rs.getInt("user_id");
+                user.name = rs.getString("user_name");
+                user.permissions = Groups.valueOf(rs.getString("user_permissions"));
+                user.vkId = rs.getInt("user_vk_id");
+                users.add(user);
+            }
             while (rs.next());
             return users;
         } catch (SQLException e) {

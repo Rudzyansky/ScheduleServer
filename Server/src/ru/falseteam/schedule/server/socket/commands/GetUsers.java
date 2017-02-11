@@ -11,6 +11,7 @@ public class GetUsers extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         Container c = new Container(getName(), true);
+//        if (((Connection) connection).getUser().permissions == Groups.developer) ;
         c.data.put("users", UserInfo.getUsers());
         connection.send(c);
     }
