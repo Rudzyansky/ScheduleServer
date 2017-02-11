@@ -38,7 +38,7 @@ public class WeekDayInfo {
         return weekDay;
     }
 
-    static boolean createTable() {
+    public static boolean createTable() {
         try {
             //noinspection SpellCheckingInspection
             executeUpdate("CREATE TABLE `week_days` (" +

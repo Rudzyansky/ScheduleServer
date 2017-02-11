@@ -31,7 +31,7 @@ public class UpdateUser extends ProtocolAbstract {
                 && (user.exists ? UserInfo.updateUser(user) : UserInfo.addUser(user));
         if (b) Worker.getClients().stream()
                 .filter(c -> ((Connection) c).getUser().id == user.id)
-                .forEach(ConnectionAbstract::disconnect);
+                .forEach(c -> ((Connection) c).disconnect());
 //                .forEach(c -> c.send(Auth.getSetPermission(user.permissions)));
         Container c = new Container("ToastShort", true);
         c.data.put("message", b ? "Пользователь изменен" : "Произошла ошибка при изменении пользователя");
