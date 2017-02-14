@@ -29,6 +29,7 @@ public class JournalRecord implements Serializable {
             record.weekDay = new WeekDay();
             record.lessonNumber = new LessonNumber();
             record.lesson = Lesson.Factory.getDefault();
+            record.presented = new BitSet(32);
             return record;
         }
 
@@ -38,6 +39,7 @@ public class JournalRecord implements Serializable {
             record.weekDay = template.weekDay;
             record.lessonNumber = template.lessonNumber;
             record.lesson = template.lesson;
+            record.presented = new BitSet(32);
             return record;
         }
     }

@@ -18,8 +18,6 @@ import ru.falseteam.vframe.console.ConsoleWorker;
 import ru.falseteam.vframe.console.DefaultStopCommand;
 import ru.falseteam.vframe.sql.SQLConnection;
 
-import java.util.Date;
-
 /**
  * Основная точка входа.
  *
@@ -64,7 +62,8 @@ public class Main {
         TemplateInfo.createTable();
         WeekNumberInfo.createTable();
         JournalInfo.createTable();
-        VFrame.addPeriodicalTimerTask(JournalInfo.addRec, new Date(3 * 60 * 60 * 1000), 24 * 60 * 60 * 1000);
+        VFrame.addPeriodicalTimerTask(JournalInfo.addRec, 24 * 60 * 60 * 1000);
+//        VFrame.addPeriodicalTimerTask(JournalInfo.addRec, new Date(3 * 60 * 60 * 1000), 24 * 60 * 60 * 1000);
         Worker.init(); // Сервер сокет
         ru.falseteam.schedule.server.updater.Worker.init();
     }
