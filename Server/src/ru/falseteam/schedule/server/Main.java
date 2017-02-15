@@ -53,6 +53,7 @@ public class Main {
         ConsoleWorker.addCommand(new DefaultStopCommand(Main::stop));
         ConsoleWorker.startListenAsDaemon();
 
+        Worker.init(); // Сервер сокет
         // Инициализация основных модулей.
         SQLConnection.init();
         UserInfo.createTable();
@@ -64,7 +65,7 @@ public class Main {
         JournalInfo.createTable();
         VFrame.addPeriodicalTimerTask(JournalInfo.addRec, 24 * 60 * 60 * 1000);
 //        VFrame.addPeriodicalTimerTask(JournalInfo.addRec, new Date(3 * 60 * 60 * 1000), 24 * 60 * 60 * 1000);
-        Worker.init(); // Сервер сокет
+        Worker.getS().start();
         ru.falseteam.schedule.server.updater.Worker.init();
     }
 
