@@ -1,11 +1,15 @@
 package ru.falseteam.schedule.server.sql;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.LessonNumber;
+import ru.falseteam.schedule.server.socket.Worker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
 import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
@@ -15,6 +19,19 @@ import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
  * @version 1.0
  */
 public class LessonNumberInfo {
+
+    static {
+        Worker.getS().getSubscriptionManager().addEvent("GetLessonNumbers",
+                LessonNumberInfo::getLessonNumbersForSubscriptions,
+                Groups.developer, Groups.admin, Groups.user);
+    }
+
+    private static Map<String, Object> getLessonNumbersForSubscriptions() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("lesson_numbers", getLessonNumbers());
+        return map;
+    }
+
     public static List<LessonNumber> getLessonNumbers() {
         try {
             ResultSet rs = executeQuery("SELECT * FROM `lesson_numbers`;");

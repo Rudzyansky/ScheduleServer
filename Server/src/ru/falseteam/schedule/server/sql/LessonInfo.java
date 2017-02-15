@@ -1,11 +1,15 @@
 package ru.falseteam.schedule.server.sql;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.Lesson;
+import ru.falseteam.schedule.server.socket.Worker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
 import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
@@ -15,6 +19,22 @@ import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
  * @version 1.0
  */
 public class LessonInfo {
+
+    static {
+        Worker.getS().getSubscriptionManager().addEvent("GetLessons",
+                LessonInfo::getLessonsForSubscriptions,
+                Groups.developer, Groups.admin, Groups.user);
+    }
+
+    private static Map<String, Object> getLessonsForSubscriptions() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("lessons", getLessons());
+        return map;
+    }
+
+    private static void onLessonTableUpdate() {
+        Worker.getS().getSubscriptionManager().onEventDataChange("GetLessons", getLessonsForSubscriptions());
+    }
 
     /**
      * getLessons load table to variable
@@ -75,6 +95,7 @@ public class LessonInfo {
                     " `lesson_teacher` = '" + lesson.teacher + "'," +
                     " `lesson_last_task` = '" + lesson.lastTask + "'" +
                     " WHERE `lesson_id` LIKE '" + lesson.id + "';");
+            onLessonTableUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,6 +118,7 @@ public class LessonInfo {
     public static boolean deleteLesson(final Lesson lesson) {
         try {
             executeUpdate("DELETE FROM `lessons` WHERE `lesson_id` LIKE '" + lesson.id + "';");
+            onLessonTableUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -112,6 +134,7 @@ public class LessonInfo {
                     lesson.audience + "', '" +
                     lesson.teacher + "', '" +
                     lesson.lastTask + "');");
+            onLessonTableUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
