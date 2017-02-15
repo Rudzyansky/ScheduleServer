@@ -69,6 +69,7 @@ public class Auth extends ProtocolAbstract {
                 UserInfo.updateStat(user);
             }
             ((Connection) connection).setUser(user);
+            connection.setPermission(user.permissions);
         } catch (Exception ignore) {
             ignore.printStackTrace();
             return;
@@ -77,14 +78,6 @@ public class Auth extends ProtocolAbstract {
         // Формируем ответ пользователю.
         Container c = new Container(getName(), true);
         c.data.put("version", clientVersion);
-        c.data.put("permissions", user.permissions.name());
         connection.send(c);
-    }
-
-    static Container getSetPermission(Groups group) {
-        Container c = new Container(Auth.class.getSimpleName(), true);
-        c.data.put("version", clientVersion);
-        c.data.put("permissions", group.name());
-        return c;
     }
 }

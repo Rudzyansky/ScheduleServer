@@ -10,7 +10,6 @@ class AccessManager extends PermissionManager<Groups> {
     public AccessManager() {
         super(Groups.class, Groups.guest);
         addCommand(new Auth(), Groups.guest);
-        addCommand(new GetLessons(), Groups.developer, Groups.admin, Groups.user, Groups.unconfirmed);
         addCommand(new UpdateLesson(), Groups.developer, Groups.admin);
         addCommand(new DeleteLesson(), Groups.developer, Groups.admin);
         // опасная зона
@@ -18,8 +17,6 @@ class AccessManager extends PermissionManager<Groups> {
         addCommand(new DeleteUser(), Groups.developer, Groups.admin);
         // ------------
         addCommand(new GetTemplates(), Groups.developer, Groups.admin, Groups.user);
-        addCommand(new GetWeekDays(), Groups.developer, Groups.admin, Groups.user);
-        addCommand(new GetLessonNumbers(), Groups.developer, Groups.admin, Groups.user);
 
         addCommand(new UpdateTemplate(), Groups.developer, Groups.admin);
         addCommand(new DeleteTemplate(), Groups.developer, Groups.admin);
