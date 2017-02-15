@@ -1,6 +1,8 @@
 package ru.falseteam.schedule.server.sql;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.Template;
+import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.vframe.sql.SQLConnection;
 
 import java.sql.PreparedStatement;
@@ -18,7 +20,9 @@ import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 public class TemplateInfo {
 
     static {
-//        SubscriptionManager.addEvent("templates", TemplateInfo::getTemplatesForSubscriptions);
+        Worker.getS().getSubscriptionManager().addEvent(
+                "GetTemplates", TemplateInfo::getTemplatesForSubscriptions,
+                Groups.developer, Groups.admin, Groups.user, Groups.unconfirmed);
     }
 
     static final String table = "templates";
@@ -30,7 +34,7 @@ public class TemplateInfo {
     }
 
     private static void onDataUpdate() {
-//        SubscriptionManager.onEventDataChange("templates", getTemplatesForSubscriptions());
+        Worker.getS().getSubscriptionManager().onEventDataChange("GetTemplates", getTemplatesForSubscriptions());
     }
 
     /**
