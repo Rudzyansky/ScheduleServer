@@ -98,10 +98,12 @@ public class JournalInfo {
     private static JournalRecord getRecord(final ResultSet rs) throws SQLException {
         JournalRecord record = JournalRecord.Factory.getDefault();
         record.id = rs.getInt("id");
+        record.date = rs.getDate("date");
         record.weekDay = WeekDayInfo.getWeekDay(rs);
         record.lessonNumber = LessonNumberInfo.getLessonNumber(rs);
         record.lesson = LessonInfo.getLesson(rs);
-        record.presented = BitSet.valueOf(rs.getBytes("presented"));
+        byte[] rsb = rs.getBytes("presented");
+        if (rsb != null) record.presented = BitSet.valueOf(rsb);
 
 //        String was = rs.getString("presented");
 //        if (was != null) {
@@ -157,11 +159,11 @@ public class JournalInfo {
                 Calendar c = Calendar.getInstance();
                 int dayOfWeek = (c.get(Calendar.DAY_OF_WEEK) - 1);
                 if (dayOfWeek == 0) dayOfWeek = 7;
-                int week = (Calendar.getInstance().get(Calendar.WEEK_OF_YEAR) - 6);
+                int week = (Calendar.getInstance().get(Calendar.WEEK_OF_YEAR) - 5);
                 int finalDayOfWeek = dayOfWeek;
                 TemplateInfo.getTemplates().stream()
                         .filter(t -> (
-                                t.weekDay.id == finalDayOfWeek + 1 && (
+                                t.weekDay.id == finalDayOfWeek && (
                                         (t.weeks.get(31) &&
                                                 (t.weeks.get(30) || (t.weeks.get(29) && week % 2 == 1) || (!t.weeks.get(29) && week % 2 == 0))
                                         ) || t.weeks.get(week - 1)

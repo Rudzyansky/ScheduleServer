@@ -4,11 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.User;
+import ru.falseteam.schedule.server.socket.Worker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
 import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
@@ -22,13 +25,29 @@ import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 public class UserInfo {
     private static Logger log = LogManager.getLogger();
 
+    static {
+        Worker.getS().getSubscriptionManager().addEvent(
+                "GetUsers", UserInfo::getUsersForSubscriptions,
+                Groups.developer, Groups.admin, Groups.user);
+    }
+
+    private static Map<String, Object> getUsersForSubscriptions() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("users", getUsers());
+        return map;
+    }
+
+    private static void onUserTableUpdate() {
+        Worker.getS().getSubscriptionManager().onEventDataChange("GetUsers", getUsersForSubscriptions());
+    }
+
     /**
      * @return all user from database or null if throws internal exceptions.
      */
     public static List<User> getUsers() {
         try {
 //            ResultSet rs = executeQuery("SELECT * FROM `users` ORDER BY `user_name`;");
-            ResultSet rs = executeQuery("SELECT `user_id`, `user_name`, `user_vk_id`, `user_permissions` FROM `users` ORDER BY `user_name`;");
+            ResultSet rs = executeQuery("SELECT `user_id`, `user_name`, `user_at_list`, `user_vk_id`, `user_permissions` FROM `users` ORDER BY `user_at_list`;");
             List<User> users = new ArrayList<>();
             if (!rs.first()) return users; // если таблица пустая.
             do {
@@ -36,6 +55,7 @@ public class UserInfo {
                 user.exists = true;
                 user.id = rs.getInt("user_id");
                 user.name = rs.getString("user_name");
+                user.atList = rs.getInt("user_at_list");
                 user.permissions = Groups.valueOf(rs.getString("user_permissions"));
                 user.vkId = rs.getInt("user_vk_id");
                 users.add(user);
@@ -99,6 +119,7 @@ public class UserInfo {
         user.exists = true;
         user.id = rs.getInt("user_id");
         user.name = rs.getString("user_name");
+        user.atList = rs.getInt("user_at_list");
         user.permissions = Groups.valueOf(rs.getString("user_permissions"));
         user.vkId = rs.getInt("user_vk_id");
         user.vkToken = rs.getString("user_vk_token");
@@ -121,6 +142,7 @@ public class UserInfo {
                     " `user_sdk_version` = '" + user.sdkVersion + "'," +
                     " `user_app_version` = '" + user.appVersion + "'" +
                     " WHERE `user_id` LIKE '" + user.id + "';");
+            onUserTableUpdate();
             return true;
         } catch (SQLException e) {
             log.error("Database error", e);
@@ -147,6 +169,7 @@ public class UserInfo {
     public static boolean deleteUser(final User user) {
         try {
             executeUpdate("DELETE FROM `users` WHERE `user_id` LIKE '" + user.id + "';");
+            onUserTableUpdate();
             return true;
         } catch (SQLException e) {
             log.error("Database error", e);
@@ -167,6 +190,7 @@ public class UserInfo {
                     user.lastAuth + "', '" +
                     user.sdkVersion + "', '" +
                     user.appVersion + "');");
+            onUserTableUpdate();
             return true;
         } catch (SQLException e) {
             log.error("Database error", e);

@@ -7,6 +7,7 @@ import ru.falseteam.vframe.VFrameRuntimeException;
 import ru.falseteam.vframe.config.ConfigLoader;
 import ru.falseteam.vframe.config.LoadFromConfig;
 import ru.falseteam.vframe.socket.SocketWorker;
+import ru.falseteam.vframe.socket.SubscriptionManager;
 import ru.falseteam.vframe.socket.VFKeystore;
 
 import java.io.FileNotFoundException;
@@ -36,8 +37,10 @@ public class Worker {
     public static void init() {
         ConfigLoader.load(Worker.class);
         try {
-            VFKeystore keystore = new VFKeystore(keystorePath, keystorePublicPassword, keystorePrivatePassword);
-            ssw = new SocketWorker<>(Connection::new, keystore, port, new AccessManager(), null);
+            VFKeystore keystore = new VFKeystore(
+                    keystorePath, keystorePublicPassword, keystorePrivatePassword);
+            ssw = new SocketWorker<>(
+                    Connection::new, keystore, port, new AccessManager());
         } catch (FileNotFoundException e) {
             log.fatal("VFrame: keystore file not found");
             throw new VFrameRuntimeException(e);
@@ -51,5 +54,9 @@ public class Worker {
     public static void stop() {
         if (ssw != null) ssw.stop();
         ssw = null;
+    }
+
+    public static SocketWorker getS() {
+        return ssw;
     }
 }
