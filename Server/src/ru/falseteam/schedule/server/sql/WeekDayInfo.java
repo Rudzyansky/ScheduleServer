@@ -1,11 +1,15 @@
 package ru.falseteam.schedule.server.sql;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.WeekDay;
+import ru.falseteam.schedule.server.socket.Worker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static ru.falseteam.vframe.sql.SQLConnection.executeQuery;
 import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
@@ -16,6 +20,18 @@ import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
  */
 public class WeekDayInfo {
     public static final String table = "week_days";
+
+    static {
+        Worker.getS().getSubscriptionManager().addEvent("GetWeekDays",
+                WeekDayInfo::getWeekDaysForSubscriptions,
+                Groups.developer, Groups.admin, Groups.user);
+    }
+
+    private static Map<String, Object> getWeekDaysForSubscriptions() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("week_days", getWeekDays());
+        return map;
+    }
 
     public static List<WeekDay> getWeekDays() {
         try {
