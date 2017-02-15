@@ -40,7 +40,7 @@ public class Worker {
             VFKeystore keystore = new VFKeystore(
                     keystorePath, keystorePublicPassword, keystorePrivatePassword);
             ssw = new SocketWorker<>(
-                    Connection::new, keystore, port, new AccessManager(), new SubscriptionManager<>());
+                    Connection::new, keystore, port, new AccessManager());
         } catch (FileNotFoundException e) {
             log.fatal("VFrame: keystore file not found");
             throw new VFrameRuntimeException(e);
