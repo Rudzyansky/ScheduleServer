@@ -16,12 +16,10 @@ class AccessManager extends PermissionManager<Groups> {
         addCommand(new UpdateUser(), Groups.developer, Groups.admin);
         addCommand(new DeleteUser(), Groups.developer, Groups.admin);
         // ------------
-        addCommand(new GetTemplates(), Groups.developer, Groups.admin, Groups.user);
 
         addCommand(new UpdateTemplate(), Groups.developer, Groups.admin);
         addCommand(new DeleteTemplate(), Groups.developer, Groups.admin);
 
-        addCommand(new GetJournal(), Groups.developer, Groups.admin);
         addCommand(new UpdateJournalRecord(), Groups.developer, Groups.admin);
 
         setDefaultProtocol((container, connection) -> {

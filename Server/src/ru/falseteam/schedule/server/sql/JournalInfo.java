@@ -1,6 +1,8 @@
 package ru.falseteam.schedule.server.sql;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.JournalRecord;
+import ru.falseteam.schedule.server.socket.Worker;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +17,22 @@ import static ru.falseteam.vframe.sql.SQLConnection.*;
  */
 public class JournalInfo {
     private static final String table = "journal";
+
+    static {
+        Worker.getS().getSubscriptionManager().addEvent(
+                "GetJournal", JournalInfo::getJournalForSubscriptions,
+                Groups.developer, Groups.admin, Groups.user);
+    }
+
+    private static Map<String, Object> getJournalForSubscriptions() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("journal", getJournal());
+        return map;
+    }
+
+    private static void onDataUpdate() {
+        Worker.getS().getSubscriptionManager().onEventDataChange("GetJournal", getJournalForSubscriptions());
+    }
 
     /**
      * getTemplates load table to variable
@@ -126,6 +144,7 @@ public class JournalInfo {
 //            executeUpdate("UPDATE `templates` SET" +
 //                    " `presented` = '" + bb + "'" +
 //                    " WHERE `id` LIKE '" + record.id + "';");
+            onDataUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -142,6 +161,7 @@ public class JournalInfo {
                     record.lessonNumber.id + "', '" +
                     record.lesson.id + "', '" +
                     record.lesson.lastTask + "');");
+            onDataUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
