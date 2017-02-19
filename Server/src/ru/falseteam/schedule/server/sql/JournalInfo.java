@@ -55,12 +55,24 @@ public class JournalInfo {
         }
     }
 
-    public static List<JournalRecord> getDay(final java.sql.Date date) {
+    public static List<JournalRecord> getWeek() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `journal`" +
-                    " NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)" +
-                    " WHERE `date` LIKE '" + date + "'" +
-                    " ORDER BY `lesson_number_id`;");
+            Calendar c = Calendar.getInstance();
+            if (c.get(Calendar.DAY_OF_WEEK) == 1) c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) - 1);
+            c.set(Calendar.DAY_OF_WEEK, 2);
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM `journal`")
+                    .append(" NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)")
+                    .append(" WHERE `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            for (int i = 3; i < 8; ++i) {
+                c.set(Calendar.DAY_OF_WEEK, i);
+                sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            }
+            c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) + 1);
+            c.set(Calendar.DAY_OF_WEEK, 1);
+            sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            sb.append(" ORDER BY `week_day_id`, `lesson_number_id`;");
+            ResultSet rs = executeQuery(sb.toString());
             List<JournalRecord> records = new ArrayList<>();
             if (!rs.first()) return records;
             do records.add(getRecord(rs));
