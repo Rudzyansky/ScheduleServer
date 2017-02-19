@@ -21,6 +21,7 @@ class AccessManager extends PermissionManager<Groups> {
         addCommand(new DeleteTemplate(), Groups.developer, Groups.admin);
 
         addCommand(new UpdateJournalRecord(), Groups.developer, Groups.admin);
+        addCommand(new CountPresented(), Groups.developer, Groups.admin);
 
         setDefaultProtocol((container, connection) -> {
             Container c = new Container("AccessDenied", true);
