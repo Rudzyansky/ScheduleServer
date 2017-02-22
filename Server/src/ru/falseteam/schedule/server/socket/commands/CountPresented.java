@@ -4,7 +4,6 @@ import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.JournalRecord;
 import ru.falseteam.schedule.serializable.User;
 import ru.falseteam.schedule.serializable.UserPresented;
-import ru.falseteam.schedule.server.socket.Worker;
 import ru.falseteam.schedule.server.sql.JournalInfo;
 import ru.falseteam.schedule.server.sql.UserInfo;
 import ru.falseteam.vframe.socket.ConnectionAbstract;
@@ -12,7 +11,6 @@ import ru.falseteam.vframe.socket.Container;
 import ru.falseteam.vframe.socket.ProtocolAbstract;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +20,10 @@ public class CountPresented extends ProtocolAbstract {
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         Container c = new Container(getName(), true);
         List<JournalRecord> currentWeek = JournalInfo.getWeek();
-        c.data.put("count", currentWeek.size() - 2);
+        int count = 0;
+        for (JournalRecord record : currentWeek)
+            if (!record.lesson.audience.equals("с/з")) ++count;
+        c.data.put("count", count);
         List<UserPresented> users = new ArrayList<>();
         for (User u : UserInfo.getUsers()) {
             if (u.permissions.equals(Groups.unconfirmed)) continue;
