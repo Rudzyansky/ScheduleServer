@@ -11,6 +11,7 @@ import ru.falseteam.vframe.socket.Container;
 import ru.falseteam.vframe.socket.ProtocolAbstract;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,16 +20,21 @@ public class CountPresented extends ProtocolAbstract {
     @Override
     public void exec(Map<String, Object> map, ConnectionAbstract connection) {
         Container c = new Container(getName(), true);
-        List<JournalRecord> currentWeek = JournalInfo.getWeek();
+        List<JournalRecord> week;
+        if (map.containsKey("week_number"))
+            week = JournalInfo.getWeek((int) map.get("week_number"));
+        else if (map.containsKey("date"))
+            week = JournalInfo.getWeek((Date) map.get("date"));
+        else week = JournalInfo.getWeek();
         int count = 0;
-        for (JournalRecord record : currentWeek)
+        for (JournalRecord record : week)
             if (!record.lesson.audience.equals("с/з")) ++count;
         c.data.put("count", count);
         List<UserPresented> users = new ArrayList<>();
         for (User u : UserInfo.getUsers()) {
             if (u.permissions.equals(Groups.unconfirmed)) continue;
             UserPresented up = UserPresented.Factory.getFromUser(u);
-            for (JournalRecord record : currentWeek) {
+            for (JournalRecord record : week) {
                 if (record.lesson.audience.equals("с/з")) continue;
                 if (record.presented.get(up.user.atList)) ++up.presented;
                 else ++up.notPresented;

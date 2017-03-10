@@ -84,6 +84,65 @@ public class JournalInfo {
         }
     }
 
+    public static List<JournalRecord> getWeek(Date date) {
+        try {
+            Calendar c = new Calendar.Builder().setInstant(date).set(Calendar.DAY_OF_WEEK, 2).build();
+            if (c.get(Calendar.DAY_OF_WEEK) == 1) c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) - 1);
+            c.set(Calendar.DAY_OF_WEEK, 2);
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM `journal`")
+                    .append(" NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)")
+                    .append(" WHERE `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            for (int i = 3; i < 8; ++i) {
+                c.set(Calendar.DAY_OF_WEEK, i);
+                sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            }
+            c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) + 1);
+            c.set(Calendar.DAY_OF_WEEK, 1);
+            sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            sb.append(" ORDER BY `week_day_id`, `lesson_number_id`;");
+            ResultSet rs = executeQuery(sb.toString());
+            List<JournalRecord> records = new ArrayList<>();
+            if (!rs.first()) return records;
+            do records.add(getRecord(rs));
+            while (rs.next());
+            return records;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<JournalRecord> getWeek(final int weekNumber) {
+        try {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_WEEK, 2);
+            // TODO: 11.03.17 пофиксить костыль с прибалением статического числа (брать из базы надо)
+            c.set(Calendar.WEEK_OF_YEAR, weekNumber + 6 - 1);
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM `journal`")
+                    .append(" NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)")
+                    .append(" WHERE `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            for (int i = 3; i < 8; ++i) {
+                c.set(Calendar.DAY_OF_WEEK, i);
+                sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            }
+            c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) + 1);
+            c.set(Calendar.DAY_OF_WEEK, 1);
+            sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            sb.append(" ORDER BY `week_day_id`, `lesson_number_id`;");
+            ResultSet rs = executeQuery(sb.toString());
+            List<JournalRecord> records = new ArrayList<>();
+            if (!rs.first()) return records;
+            do records.add(getRecord(rs));
+            while (rs.next());
+            return records;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * getRecord load record from table `journal` using `date` field
      *
