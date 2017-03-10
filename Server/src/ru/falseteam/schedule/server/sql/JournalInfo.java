@@ -1,6 +1,8 @@
 package ru.falseteam.schedule.server.sql;
 
+import ru.falseteam.schedule.serializable.Groups;
 import ru.falseteam.schedule.serializable.JournalRecord;
+import ru.falseteam.schedule.server.socket.Worker;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +17,22 @@ import static ru.falseteam.vframe.sql.SQLConnection.*;
  */
 public class JournalInfo {
     private static final String table = "journal";
+
+    static {
+        Worker.getS().getSubscriptionManager().addEvent(
+                "GetJournal", JournalInfo::getJournalForSubscriptions,
+                Groups.developer, Groups.admin, Groups.user);
+    }
+
+    private static Map<String, Object> getJournalForSubscriptions() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("journal", getJournal());
+        return map;
+    }
+
+    private static void onDataUpdate() {
+        Worker.getS().getSubscriptionManager().onEventDataChange("GetJournal", getJournalForSubscriptions());
+    }
 
     /**
      * getTemplates load table to variable
@@ -37,12 +55,83 @@ public class JournalInfo {
         }
     }
 
-    public static List<JournalRecord> getDay(final java.sql.Date date) {
+    public static List<JournalRecord> getWeek() {
         try {
-            ResultSet rs = executeQuery("SELECT * FROM `journal`" +
-                    " NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)" +
-                    " WHERE `date` LIKE '" + date + "'" +
-                    " ORDER BY `lesson_number_id`;");
+            Calendar c = Calendar.getInstance();
+            if (c.get(Calendar.DAY_OF_WEEK) == 1) c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) - 1);
+            c.set(Calendar.DAY_OF_WEEK, 2);
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM `journal`")
+                    .append(" NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)")
+                    .append(" WHERE `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            for (int i = 3; i < 8; ++i) {
+                c.set(Calendar.DAY_OF_WEEK, i);
+                sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            }
+            c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) + 1);
+            c.set(Calendar.DAY_OF_WEEK, 1);
+            sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            sb.append(" ORDER BY `week_day_id`, `lesson_number_id`;");
+            ResultSet rs = executeQuery(sb.toString());
+            List<JournalRecord> records = new ArrayList<>();
+            if (!rs.first()) return records;
+            do records.add(getRecord(rs));
+            while (rs.next());
+            return records;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<JournalRecord> getWeek(Date date) {
+        try {
+            Calendar c = new Calendar.Builder().setInstant(date).set(Calendar.DAY_OF_WEEK, 2).build();
+            if (c.get(Calendar.DAY_OF_WEEK) == 1) c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) - 1);
+            c.set(Calendar.DAY_OF_WEEK, 2);
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM `journal`")
+                    .append(" NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)")
+                    .append(" WHERE `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            for (int i = 3; i < 8; ++i) {
+                c.set(Calendar.DAY_OF_WEEK, i);
+                sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            }
+            c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) + 1);
+            c.set(Calendar.DAY_OF_WEEK, 1);
+            sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            sb.append(" ORDER BY `week_day_id`, `lesson_number_id`;");
+            ResultSet rs = executeQuery(sb.toString());
+            List<JournalRecord> records = new ArrayList<>();
+            if (!rs.first()) return records;
+            do records.add(getRecord(rs));
+            while (rs.next());
+            return records;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<JournalRecord> getWeek(final int weekNumber) {
+        try {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_WEEK, 2);
+            // TODO: 11.03.17 пофиксить костыль с прибалением статического числа (брать из базы надо)
+            c.set(Calendar.WEEK_OF_YEAR, weekNumber + 6 - 1);
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM `journal`")
+                    .append(" NATURAL JOIN (`week_days`, `lesson_numbers`, `lessons`)")
+                    .append(" WHERE `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            for (int i = 3; i < 8; ++i) {
+                c.set(Calendar.DAY_OF_WEEK, i);
+                sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            }
+            c.set(Calendar.WEEK_OF_YEAR, c.get(Calendar.WEEK_OF_YEAR) + 1);
+            c.set(Calendar.DAY_OF_WEEK, 1);
+            sb.append(" OR `date` LIKE '").append(new java.sql.Date(c.getTimeInMillis())).append("'");
+            sb.append(" ORDER BY `week_day_id`, `lesson_number_id`;");
+            ResultSet rs = executeQuery(sb.toString());
             List<JournalRecord> records = new ArrayList<>();
             if (!rs.first()) return records;
             do records.add(getRecord(rs));
@@ -126,6 +215,7 @@ public class JournalInfo {
 //            executeUpdate("UPDATE `templates` SET" +
 //                    " `presented` = '" + bb + "'" +
 //                    " WHERE `id` LIKE '" + record.id + "';");
+            onDataUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -142,6 +232,7 @@ public class JournalInfo {
                     record.lessonNumber.id + "', '" +
                     record.lesson.id + "', '" +
                     record.lesson.lastTask + "');");
+            onDataUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
