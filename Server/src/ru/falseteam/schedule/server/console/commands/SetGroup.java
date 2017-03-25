@@ -11,9 +11,9 @@ import ru.falseteam.vframe.console.CommandAbstract;
 
 public class SetGroup extends CommandAbstract {
     public SetGroup() {
-        addOptions("g", "permissions", 1, true, "new permissions from user");
-        addOptions("i", "id", 1, false, "user vk id");
-        addOptions("n", "name", 2, false, "user family and name");
+        addOption("g", "permissions", 1, true, "new permissions from user");
+        addOption("i", "id", 1, false, "user vk id");
+        addOption("n", "name", 2, false, "user family and name");
     }
 
     @Override
