@@ -15,7 +15,6 @@ import ru.falseteam.vframe.VFrame;
 import ru.falseteam.vframe.config.ConfigLoader;
 import ru.falseteam.vframe.config.LoadFromConfig;
 import ru.falseteam.vframe.console.ConsoleWorker;
-import ru.falseteam.vframe.console.DefaultStopCommand;
 import ru.falseteam.vframe.sql.SQLConnection;
 
 /**
@@ -40,7 +39,7 @@ public class Main {
         ConfigLoader.load(Main.class);
         log.info("Server version {} has been started", version);
 
-        VFrame.init();
+        VFrame.init(true);
         // Инициализация клиента вк.
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
@@ -50,11 +49,9 @@ public class Main {
         ConsoleWorker.addCommand(new SetGroup());
         ConsoleWorker.addCommand(new Uptime());
         ConsoleWorker.addCommand(new Test());
-        ConsoleWorker.addCommand(new DefaultStopCommand(Main::stop));
-        ConsoleWorker.startListenAsDaemon();
 
-        Worker.init(); // Сервер сокет
         // Инициализация основных модулей.
+        Worker.init(); // Сервер сокет
         SQLConnection.init();
         UserInfo.createTable();
         WeekDayInfo.createTable();
