@@ -90,6 +90,7 @@ public class LessonInfo {
     public static boolean updateLesson(final Lesson lesson) {
         try {
             executeUpdate("UPDATE `lessons` SET" +
+                    " `lesson_type_id` = '" + lesson.type + "'," +
                     " `lesson_name` = '" + lesson.name + "'," +
                     " `lesson_audience` = '" + lesson.audience + "'," +
                     " `lesson_teacher` = '" + lesson.teacher + "'," +
@@ -128,8 +129,9 @@ public class LessonInfo {
 
     public static boolean addLesson(final Lesson lesson) {
         try {
-            executeUpdate("INSERT INTO `lessons` (`lesson_name`, `lesson_audience`, `lesson_teacher`," +
-                    " `lesson_last_task`) VALUES ('" +
+            executeUpdate("INSERT INTO `lessons` (`lesson_type_id`, `lesson_name`, `lesson_audience`,"+
+                    " `lesson_teacher`, `lesson_last_task`) VALUES ('" +
+                    lesson.type + "', '" +
                     lesson.name + "', '" +
                     lesson.audience + "', '" +
                     lesson.teacher + "', '" +
