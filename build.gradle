@@ -7,6 +7,9 @@ repositories {
 
 task buildServer(type: Jar) {
     manifest {
+        attributes(
+                "Main-Class": "ru.falseteam.schedule.server.Main"
+        )
     }
     baseName = "Server"
     destinationDir = file("$rootDir/out")
