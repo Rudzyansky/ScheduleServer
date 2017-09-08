@@ -18,6 +18,7 @@ import static ru.falseteam.vframe.sql.SQLConnection.*;
 public class JournalInfo {
     private static final String table = "journal";
 
+    // TODO: 14.05.17 сделать адекватную подписку. (не надо тащить весь журнал (тяжело))
     static {
         Worker.getS().getSubscriptionManager().addEvent(
                 "GetJournal", JournalInfo::getJournalForSubscriptions,
