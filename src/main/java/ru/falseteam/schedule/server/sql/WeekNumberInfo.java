@@ -1,8 +1,13 @@
 package ru.falseteam.schedule.server.sql;
 
+import ru.falseteam.schedule.serializable.Groups;
+import ru.falseteam.schedule.server.socket.Worker;
+
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 
@@ -13,6 +18,18 @@ import static ru.falseteam.vframe.sql.SQLConnection.executeUpdate;
 public class WeekNumberInfo {
     private static int first;
     private static int second;
+
+    static {
+        Worker.getS().getSubscriptionManager().addEvent("GetWeekNum",
+                WeekNumberInfo::getWeekNumbersForSubscriptions,
+                Groups.developer, Groups.admin, Groups.user);
+    }
+
+    private static Map<String, Object> getWeekNumbersForSubscriptions() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("current", getCurrentWeekOfSemester());
+        return map;
+    }
 
     public static int getStartWeek() {
         int week = getCurrentWeekOfYear();
